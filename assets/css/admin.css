@@ -1,0 +1,36 @@
+/* Guide.Ferryman — 管理後台樣式 */
+.admin-layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 66px)}
+@media (max-width:860px){.admin-layout{grid-template-columns:1fr}}
+.admin-side{background:var(--ink);padding:26px 16px;display:flex;flex-direction:column;gap:4px}
+.admin-side .lbl{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.22em;color:#6E86A0;padding:8px 12px 6px;text-transform:uppercase}
+.admin-side a{color:#C4D2DE;font-size:14.5px;padding:11px 14px;border-radius:9px;display:block}
+.admin-side a:hover{background:rgba(255,255,255,.08);text-decoration:none}
+.admin-side a.active{background:var(--teal);color:#fff;font-weight:700}
+.admin-main{padding:36px 34px;background:var(--paper)}
+.admin-main h1{font-family:var(--font-display);font-size:26px;margin-bottom:6px}
+.admin-main .sub{color:var(--slate);font-size:14px;margin-bottom:28px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+@media (max-width:1000px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px}
+.stat .k{font-size:12.5px;color:var(--slate)}
+.stat .v{font-family:var(--font-mono);font-size:30px;font-weight:600;color:var(--ink);margin-top:4px}
+.stat .d{font-size:12px;color:var(--teal-dark);margin-top:4px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:24px}
+.panel h2{font-size:17px;font-family:var(--font-display);margin-bottom:16px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:12px;color:var(--slate);border-bottom:2px solid var(--line);padding:9px 10px;white-space:nowrap}
+.tbl td{border-bottom:1px solid var(--line);padding:11px 10px;vertical-align:top}
+.tbl tr:hover td{background:#F7FAFB}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 10px}
+.b-wait{background:#FDF3E3;color:#9A6A17}.b-ok{background:#EDF9F0;color:#1F6B3A}.b-sub{background:#EAF5F5;color:var(--teal-dark)}.b-free{background:#EEF2F4;color:var(--slate)}
+.btn-sm{font-size:12.5px;padding:7px 13px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-weight:700;color:var(--ink);text-decoration:none;display:inline-block;margin:2px 3px 2px 0}
+.btn-sm:hover{border-color:var(--teal);color:var(--teal-dark);text-decoration:none}
+.btn-sm.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn-sm.danger:hover{border-color:#D14343;color:#D14343}
+.gate{max-width:400px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:38px;text-align:center}
+.gate img{width:56px;margin:0 auto 16px}
+.demo-note{font-size:12.5px;color:#9A6A17;background:#FDF3E3;border:1px solid #F3DFB9;border-radius:10px;padding:10px 16px;margin-bottom:22px}
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:160px;padding-top:10px}
+.bar-chart .bar{flex:1;background:linear-gradient(180deg,var(--teal),#0B7F83);border-radius:6px 6px 0 0;position:relative;min-width:20px}
+.bar-chart .bar span{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:10.5px;color:var(--slate);font-family:var(--font-mono);white-space:nowrap}
+.bar-chart .bar b{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;font-family:var(--font-mono);color:var(--ink)}

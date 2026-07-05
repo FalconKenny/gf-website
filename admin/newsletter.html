@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推播內容管理｜Guide.Ferryman Admin</title>
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+if (gfAdminGate()) {
+  gfAdminShell("news", "推播內容管理", "建立電子報推播：設定內容、發送對象（依訂閱分級）與排程時間。目前以 Gmail 密件副本半自動發送，之後可升級為 Brevo／Mailchimp 自動排程。", `
+    <div class="panel">
+      <h2 id="formTitle">建立推播</h2>
+      <div class="form-grid">
+        <div class="field"><label>主旨 *</label><input class="inp" id="fSubj" placeholder="例：本週台美產業動態｜機器人法案進度更新"></div>
+        <div class="field"><label>發送對象 *</label>
+          <select class="sel" id="fTarget">
+            <option>全部訂閱者</option><option>免費會員</option><option>標準訂閱</option><option>進階訂閱</option>
+          </select>
+        </div>
+        <div class="field"><label>排程時間 *</label><input class="inp" type="datetime-local" id="fWhen"></div>
+        <div class="field"><label>&nbsp;</label><span class="notice">半自動模式：到了排程時間，回到此頁按「立即發送」。升級 Brevo 後可全自動。</span></div>
+        <div class="field full"><label>內文 *</label><textarea class="inp" id="fBody" rows="10" placeholder="電子報內文（純文字）。提示：可從文章管理複製本週文章摘要。"></textarea></div>
+      </div>
+      <div style="margin-top:16px"><button class="btn-sm primary" onclick="save()">儲存推播</button></div>
+    </div>
+
+    <div class="panel">
+      <h2>推播列表與發送管理</h2>
+      <table class="tbl">
+        <thead><tr><th>排程時間</th><th>主旨</th><th>對象</th><th>預估人數</th><th>狀態</th><th style="width:250px">操作</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="notice" style="margin-top:16px">「立即發送」會開啟 Gmail，並把符合分級的訂閱者 Email 填入密件副本（BCC），內文已帶入——按下送出即完成。Gmail 單信收件人上限約 500 位；超過請依部署指南升級 Brevo（免費每日 300 封）。</p>
+    </div>
+  `);
+
+  const $ = id => document.getElementById(id);
+  function audience(target) {
+    const members = GF_getLocal("gf_members", []).filter(m => m.subscribe);
+    if (target === "全部訂閱者") return members;
+    return members.filter(m => m.tier === target);
+  }
+  function render() {
+    const list = GF_getLocal("gf_pushes", []);
+    $("rows").innerHTML = list.map((p,i) => `
+      <tr>
+        <td class="mono">${(p.when||"").replace("T"," ")}</td>
+        <td>${gfEsc(p.subj)}</td>
+        <td>${gfEsc(p.target)}</td>
+        <td class="mono">${audience(p.target).length}</td>
+        <td>${p.sent ? '<span class="badge b-ok">已發送</span>' : '<span class="badge b-wait">已排程</span>'}</td>
+        <td>
+          <button class="btn-sm primary" onclick="send(${i})">立即發送</button>
+          <button class="btn-sm danger" onclick="del(${i})">刪除</button>
+        </td>
+      </tr>`).join("") || `<tr><td colspan="6" style="color:var(--slate)">尚無推播。</td></tr>`;
+  }
+  window.save = function() {
+    if (!$("fSubj").value.trim() || !$("fBody").value.trim() || !$("fWhen").value) return alert("主旨、內文與排程時間為必填");
+    const list = GF_getLocal("gf_pushes", []);
+    list.unshift({ id:"p"+Date.now(), subj:$("fSubj").value.trim(), body:$("fBody").value.trim(),
+                   target:$("fTarget").value, when:$("fWhen").value, sent:false });
+    GF_setLocal("gf_pushes", list);
+    $("fSubj").value=""; $("fBody").value="";
+    render(); alert("已儲存排程");
+  };
+  window.send = function(i) {
+    const list = GF_getLocal("gf_pushes", []);
+    const p = list[i];
+    const bcc = audience(p.target).map(m => m.email).join(",");
+    if (!bcc) return alert("此對象目前沒有訂閱者");
+    const u = new URLSearchParams({ view:"cm", fs:"1", bcc, su:p.subj, body:p.body + "\n\n—\nGuide.Ferryman Strategic Advisory\n如欲取消訂閱，請回覆本信告知。" });
+    window.open("https://mail.google.com/mail/?" + u.toString(), "_blank");
+    if (confirm("已開啟 Gmail 撰寫視窗。送出後按「確定」將此推播標記為已發送。")) {
+      p.sent = true; GF_setLocal("gf_pushes", list); render();
+    }
+  };
+  window.del = i => { if(!confirm("刪除此推播？"))return; const l=GF_getLocal("gf_pushes",[]); l.splice(i,1); GF_setLocal("gf_pushes",l); render(); };
+  $("fWhen").value = new Date(Date.now()+86400000).toISOString().slice(0,16);
+  render();
+}
+</script>
+</body>
+</html>

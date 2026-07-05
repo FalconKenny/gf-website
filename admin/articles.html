@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文章管理｜Guide.Ferryman Admin</title>
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+if (gfAdminGate()) {
+  gfAdminShell("art", "文章管理", "台美動態資訊的新增、編輯與刪除。種子文章可覆寫或隱藏；自建文章完整可編。", `
+    <div class="panel">
+      <h2 id="formTitle">新增文章</h2>
+      <div class="form-grid">
+        <div class="field"><label>標題 *</label><input class="inp" id="fTitle"></div>
+        <div class="field"><label>分類 *</label>
+          <select class="sel" id="fCat">${GF_CATEGORIES.map(c=>`<option>${c}</option>`).join("")}</select>
+        </div>
+        <div class="field"><label>發布日期 *</label><input class="inp" type="date" id="fDate"></div>
+        <div class="field"><label>&nbsp;</label><span class="notice">預留欄位：未來可加「自動更新來源／訂閱推播內文」</span></div>
+        <div class="field full"><label>摘要（列表顯示）</label><textarea class="inp" id="fSummary" rows="2"></textarea></div>
+        <div class="field full"><label>內文 *</label><textarea class="inp" id="fBody" rows="10" placeholder="支援純文字換行；未來可升級為 Markdown 編輯器"></textarea></div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn-sm primary" onclick="saveArt()">儲存文章</button>
+        <button class="btn-sm" onclick="resetForm()">清空表單</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>文章列表</h2>
+      <table class="tbl"><thead><tr><th>日期</th><th>分類</th><th>標題</th><th>來源</th><th style="width:210px">操作</th></tr></thead>
+      <tbody id="artRows"></tbody></table>
+    </div>
+
+    <div class="panel">
+      <h2>每日熱門動態管理</h2>
+      <p class="notice" style="margin-bottom:14px">每類別一行一則。此區塊已預留：未來可改由自動抓取程式每日更新（寫入相同資料位置即可）。</p>
+      <div class="form-grid" id="hotFields"></div>
+      <div style="margin-top:16px"><button class="btn-sm primary" onclick="saveHot()">儲存熱門動態</button></div>
+    </div>
+  `);
+
+  let editingId = null;
+  const $ = id => document.getElementById(id);
+
+  function renderRows() {
+    const custom = GF_getLocal("gf_articles", []);
+    const overrides = GF_getLocal("gf_seed_overrides", {});
+    const hidden = GF_getLocal("gf_hidden_seeds", []);
+    const all = GF_getArticles();
+    $("artRows").innerHTML = all.map(a => {
+      const isSeed = a.id.startsWith("s");
+      return `<tr>
+        <td class="mono">${a.date||""}</td>
+        <td><span class="art-cat cat-${a.cat}" style="font-size:11px">${a.cat}</span></td>
+        <td>${gfEsc(a.title)}</td>
+        <td>${isSeed ? '<span class="badge b-free">種子</span>' : '<span class="badge b-sub">自建</span>'}</td>
+        <td>
+          <button class="btn-sm" onclick="editArt('${a.id}')">編輯</button>
+          <button class="btn-sm danger" onclick="delArt('${a.id}')">刪除</button>
+        </td></tr>`;
+    }).join("") || `<tr><td colspan="5" style="color:var(--slate)">尚無文章</td></tr>`;
+  }
+
+  window.editArt = function(id) {
+    const a = GF_getArticles().find(x => x.id === id);
+    if (!a) return;
+    editingId = id;
+    $("formTitle").textContent = "編輯文章";
+    $("fTitle").value = a.title; $("fCat").value = a.cat;
+    $("fDate").value = a.date || ""; $("fSummary").value = a.summary || ""; $("fBody").value = a.body || "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  window.saveArt = function() {
+    const rec = { title: $("fTitle").value.trim(), cat: $("fCat").value, date: $("fDate").value,
+                  summary: $("fSummary").value.trim(), body: $("fBody").value.trim() };
+    if (!rec.title || !rec.date || !rec.body) return alert("標題、日期與內文為必填");
+    if (editingId && editingId.startsWith("s")) {
+      const ov = GF_getLocal("gf_seed_overrides", {});
+      ov[editingId] = rec; GF_setLocal("gf_seed_overrides", ov);
+    } else if (editingId) {
+      const list = GF_getLocal("gf_articles", []);
+      const i = list.findIndex(x => x.id === editingId);
+      if (i > -1) list[i] = Object.assign(list[i], rec);
+      GF_setLocal("gf_articles", list);
+    } else {
+      const list = GF_getLocal("gf_articles", []);
+      list.unshift(Object.assign({ id: "a" + Date.now() }, rec));
+      GF_setLocal("gf_articles", list);
+    }
+    resetForm(); renderRows(); alert("已儲存，前台立即生效");
+  };
+
+  window.delArt = function(id) {
+    if (!confirm("確定刪除這篇文章？")) return;
+    if (id.startsWith("s")) {
+      const hidden = GF_getLocal("gf_hidden_seeds", []);
+      if (!hidden.includes(id)) hidden.push(id);
+      GF_setLocal("gf_hidden_seeds", hidden);
+    } else {
+      GF_setLocal("gf_articles", GF_getLocal("gf_articles", []).filter(x => x.id !== id));
+    }
+    renderRows();
+  };
+
+  window.resetForm = function() {
+    editingId = null; $("formTitle").textContent = "新增文章";
+    ["fTitle","fSummary","fBody"].forEach(i => $(i).value = "");
+    $("fDate").value = new Date().toISOString().slice(0,10);
+  };
+
+  /* 熱門動態 */
+  function renderHotFields() {
+    const hot = GF_getHot();
+    $("hotFields").innerHTML = GF_CATEGORIES.map(c => `
+      <div class="field full"><label>${c}</label>
+      <textarea class="inp" rows="3" data-hot="${c}">${(hot[c]||[]).join("\n")}</textarea></div>`).join("");
+  }
+  window.saveHot = function() {
+    const hot = {};
+    document.querySelectorAll("[data-hot]").forEach(t => {
+      hot[t.dataset.hot] = t.value.split("\n").map(s => s.trim()).filter(Boolean);
+    });
+    GF_setLocal("gf_hot", hot); alert("已更新前台熱門動態");
+  };
+
+  resetForm(); renderRows(); renderHotFields();
+}
+</script>
+</body>
+</html>

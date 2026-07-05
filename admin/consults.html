@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>諮詢排程管理｜Guide.Ferryman Admin</title>
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+if (gfAdminGate()) {
+  gfAdminShell("con", "諮詢排程管理", "前台諮詢表單送出後在此列出。確認排程 → 一鍵加入您的 Google 日曆 → 一鍵開啟 Gmail 寄送確認信給客戶。", `
+    <div class="panel">
+      <h2>諮詢需求列表</h2>
+      <table class="tbl">
+        <thead><tr><th>送出時間</th><th>客戶</th><th>服務</th><th>需求摘要</th><th>期望時間</th><th>狀態</th><th style="width:300px">操作</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="notice" style="margin-top:16px">
+        流程說明：①「加入 Google 日曆」會開啟已填好客戶資訊的日曆事件（免 API、立即可用）。
+        ②「寄送確認信」會開啟 Gmail 撰寫視窗，信件內容已依範本填好，按送出即可。
+        ③ 完成後點「標記已確認」。未來可依部署指南升級為 Google Calendar API 全自動同步。
+      </p>
+    </div>
+  `);
+
+  function render() {
+    const list = GF_getLocal("gf_consults", []);
+    document.getElementById("rows").innerHTML = list.map((c,i) => `
+      <tr>
+        <td class="mono">${c.created||""}</td>
+        <td>${gfEsc(c.name)}<br><span class="mono" style="font-size:11.5px;color:var(--slate)">${gfEsc(c.email)}</span></td>
+        <td style="max-width:130px">${gfEsc(c.service)}</td>
+        <td style="max-width:260px">${gfEsc(c.need)}</td>
+        <td class="mono">${c.date1||""}<br>${gfEsc(c.time1||"不指定")}</td>
+        <td>${c.status==="已確認" ? '<span class="badge b-ok">已確認</span>' : '<span class="badge b-wait">待確認</span>'}</td>
+        <td>
+          <a class="btn-sm" target="_blank" href="${gfCalendarURL(c)}">📅 加入 Google 日曆</a>
+          <button class="btn-sm" onclick="mail(${i})">✉️ 寄送確認信</button>
+          <button class="btn-sm primary" onclick="confirmIt(${i})">標記已確認</button>
+          <button class="btn-sm danger" onclick="del(${i})">刪除</button>
+        </td>
+      </tr>`).join("") || `<tr><td colspan="7" style="color:var(--slate)">尚無諮詢紀錄。前台「預約諮詢」送出後會顯示於此。</td></tr>`;
+  }
+  window.mail = i => {
+    const list = GF_getLocal("gf_consults", []);
+    const t = prompt("請輸入確認的諮詢時間（會寫入信件內容）：", `${list[i].date1} ${list[i].time1||""}`.trim());
+    if (t === null) return;
+    window.open(gfGmailURL(list[i], t), "_blank");
+  };
+  window.confirmIt = i => { const l=GF_getLocal("gf_consults",[]); l[i].status="已確認"; GF_setLocal("gf_consults",l); render(); };
+  window.del = i => { if(!confirm("刪除此筆諮詢？"))return; const l=GF_getLocal("gf_consults",[]); l.splice(i,1); GF_setLocal("gf_consults",l); render(); };
+  render();
+}
+</script>
+</body>
+</html>

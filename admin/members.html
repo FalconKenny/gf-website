@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>會員管理｜Guide.Ferryman Admin</title>
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+if (gfAdminGate()) {
+  gfAdminShell("mem", "會員與訂閱者管理", "檢視前台加入的會員、切換訂閱狀態與分級。分級欄位已為未來「分級訂閱制」預留。", `
+    <div class="panel">
+      <h2>會員清單</h2>
+      <div style="margin-bottom:14px">
+        <button class="btn-sm" onclick="exportCSV()">匯出 CSV（可匯入電子報服務）</button>
+        <button class="btn-sm" onclick="addDemo()">＋ 手動新增會員</button>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>加入日</th><th>姓名</th><th>Email</th><th>公司</th><th>關注領域</th><th>訂閱</th><th>分級</th><th>操作</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>分級訂閱制（預留）</h2>
+      <p style="font-size:14px;color:var(--slate)">目前分級：<span class="badge b-free">免費會員</span> <span class="badge b-sub">標準訂閱</span> <span class="badge b-ok">進階訂閱</span>。
+      未來加入付費訂閱時，於會員列表切換分級，推播管理頁即可依分級篩選發送對象；金流建議使用（台灣可用的）綠界／藍新或 Stripe，見部署指南第 8 節。</p>
+    </div>
+  `);
+
+  const TIERS = ["免費會員", "標準訂閱", "進階訂閱"];
+  function render() {
+    const list = GF_getLocal("gf_members", []);
+    document.getElementById("rows").innerHTML = list.map((m,i) => `
+      <tr>
+        <td class="mono">${m.joined||""}</td>
+        <td>${gfEsc(m.name)}</td>
+        <td class="mono">${gfEsc(m.email)}</td>
+        <td>${gfEsc(m.company)}</td>
+        <td>${gfEsc(m.interest||"")}</td>
+        <td>${m.subscribe ? '<span class="badge b-sub">訂閱中</span>' : '<span class="badge b-free">未訂閱</span>'}</td>
+        <td><select class="sel" style="padding:5px 8px;font-size:12.5px;width:auto" onchange="setTier(${i},this.value)">
+          ${TIERS.map(t=>`<option ${m.tier===t?"selected":""}>${t}</option>`).join("")}</select></td>
+        <td>
+          <button class="btn-sm" onclick="toggleSub(${i})">切換訂閱</button>
+          <button class="btn-sm danger" onclick="del(${i})">刪除</button>
+        </td>
+      </tr>`).join("") || `<tr><td colspan="8" style="color:var(--slate)">尚無會員。前台「加入會員」送出後會顯示於此。</td></tr>`;
+  }
+  window.setTier = (i,v)=>{ const l=GF_getLocal("gf_members",[]); l[i].tier=v; GF_setLocal("gf_members",l); render(); };
+  window.toggleSub = i=>{ const l=GF_getLocal("gf_members",[]); l[i].subscribe=!l[i].subscribe; GF_setLocal("gf_members",l); render(); };
+  window.del = i=>{ if(!confirm("刪除此會員？"))return; const l=GF_getLocal("gf_members",[]); l.splice(i,1); GF_setLocal("gf_members",l); render(); };
+  window.exportCSV = ()=>{
+    const l=GF_getLocal("gf_members",[]);
+    gfCSV([["加入日","姓名","Email","公司","關注領域","訂閱","分級"]]
+      .concat(l.map(m=>[m.joined,m.name,m.email,m.company,m.interest,m.subscribe?"是":"否",m.tier])), "members.csv");
+  };
+  window.addDemo = ()=>{
+    const name=prompt("姓名？"); if(!name) return;
+    const email=prompt("Email？"); if(!email) return;
+    const l=GF_getLocal("gf_members",[]);
+    l.push({id:"m"+Date.now(),name,email,company:"",interest:"",subscribe:true,tier:"免費會員",joined:new Date().toISOString().slice(0,10)});
+    GF_setLocal("gf_members",l); render();
+  };
+  render();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台美動態資訊｜Guide.Ferryman Strategic Advisory</title>
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+
+<header class="page-hero">
+  <div class="wrap">
+    <p class="kicker" style="color:var(--teal)">TAIWAN–US PULSE</p>
+    <h1>台美動態資訊</h1>
+    <p>追蹤台灣與美國在 AI、機器人、半導體、無人機領域的政策、補助與市場動態。加入會員即可每週收到精選電子報。</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cat-tabs" id="catTabs"></div>
+
+    <div class="hot-strip" style="margin:0 0 34px">
+      <h3><span class="dot"></span><span id="hotTitle">今日熱門動態</span></h3>
+      <div id="hotBox"></div>
+    </div>
+
+    <div class="art-grid" id="artList"></div>
+
+    <div class="center mt-40">
+      <p style="color:var(--slate);font-size:14.5px">想每週收到這些整理？</p>
+      <button class="btn btn-teal" style="margin-top:10px" onclick="gfOpenMember()">免費加入會員訂閱電子報</button>
+    </div>
+  </div>
+</section>
+
+<footer id="footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+gfNav("ins");
+let currentCat = "全部";
+function renderTabs(){
+  const cats = ["全部"].concat(GF_CATEGORIES);
+  document.getElementById("catTabs").innerHTML = cats.map(c =>
+    `<button class="cat-tab ${c===currentCat?'active':''}" onclick="setCat('${c}')">${c}</button>`).join("");
+}
+function setCat(c){
+  currentCat = c;
+  renderTabs();
+  gfRenderArticles("artList", { cat: c });
+  gfRenderHot("hotBox", c==="全部" ? null : c);
+  document.getElementById("hotTitle").textContent = c==="全部" ? "今日熱門動態" : `今日熱門動態 · ${c}`;
+}
+document.addEventListener("DOMContentLoaded", ()=> setCat("全部"));
+</script>
+</body>
+</html>

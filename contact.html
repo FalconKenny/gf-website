@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>預約諮詢｜Guide.Ferryman Strategic Advisory</title>
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+
+<header class="page-hero">
+  <div class="wrap">
+    <p class="kicker" style="color:var(--teal)">CONSULTATION</p>
+    <h1>預約諮詢</h1>
+    <p>留下您的需求與期望時間，我們確認排程後將以 Email 回覆確認信與正式諮詢時間。</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap" style="max-width:820px">
+    <form onsubmit="return gfConsultSubmit(event)" style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:38px">
+      <div class="form-grid">
+        <div class="field"><label>姓名 <span class="req">*</span></label><input class="inp" name="name" required></div>
+        <div class="field"><label>Email <span class="req">*</span></label><input class="inp" type="email" name="email" required></div>
+        <div class="field"><label>公司／單位</label><input class="inp" name="company"></div>
+        <div class="field"><label>想諮詢的服務 <span class="req">*</span></label>
+          <select class="sel" name="service" required>
+            <option value="">請選擇</option>
+            <option>產業趨勢分析</option>
+            <option>企業／產業赴美佈局</option>
+            <option>企業／產業產值評估</option>
+            <option>台灣政府補助申請陪跑</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="field full"><label>需求說明 <span class="req">*</span></label>
+          <textarea class="inp" name="need" rows="5" required placeholder="請簡述您的產業、目前面臨的問題或想達成的目標"></textarea>
+        </div>
+        <div class="field"><label>期望諮詢日期 <span class="req">*</span></label><input class="inp" type="date" name="date1" required></div>
+        <div class="field"><label>期望時段</label>
+          <select class="sel" name="time1">
+            <option value="">不指定</option>
+            <option>上午（09:00–12:00）</option>
+            <option>下午（13:30–17:30）</option>
+            <option>晚間（19:00–21:00）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-note">
+        送出後流程：① 系統將您的需求送達管理後台並以 Email 通知我們 → ② 我們於後台確認排程並同步至 Google 日曆 → ③ 您將收到確認信，載明正式諮詢時間。
+      </div>
+
+      <div class="ok-box" id="consultOk">
+        ✅ 已收到您的諮詢需求！我們將盡快確認排程，並以 Email 回覆確認信與正式諮詢時間。
+      </div>
+
+      <button class="btn btn-amber" type="submit" style="margin-top:8px">送出諮詢需求</button>
+      <p class="notice" style="margin-top:14px">※ 您的資料僅用於本次諮詢排程，不會作其他用途。</p>
+    </form>
+  </div>
+</section>
+
+<footer id="footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>gfNav("contact");</script>
+</body>
+</html>
