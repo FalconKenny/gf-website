@@ -7,27 +7,58 @@ const GF_ADMIN_PASS_KEY = "gf_admin_pass";
 const GF_ADMIN_DEFAULT_PASS = "ferryman2026";
 
 function gfAdminGate() {
-  if (sessionStorage.getItem("gf_admin_in") === "1") return true;
-  document.body.innerHTML = `
+  /* 正式版：Supabase Auth 帳密登入；未設定 Supabase 時退回示範密碼閘門 */
+  const sbMode = (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED);
+  if (sbMode && gfSbToken()) return true;
+  if (!sbMode && sessionStorage.getItem("gf_admin_in") === "1") return true;
+
+  document.body.innerHTML = sbMode ? `
+  <div class="gate">
+    <img src="../assets/img/logo.svg" alt="">
+    <h2 style="font-family:var(--font-display);margin-bottom:6px">管理後台登入</h2>
+    <p style="font-size:13px;color:var(--slate);margin-bottom:20px">Guide.Ferryman Admin Console</p>
+    <input class="inp" type="email" id="gateEmail" placeholder="管理者 Email" style="margin-bottom:10px" autocomplete="username">
+    <input class="inp" type="password" id="gatePass" placeholder="密碼" style="margin-bottom:14px" autocomplete="current-password">
+    <button class="btn btn-teal" style="width:100%" id="gateBtn" onclick="gfGateTry()">登入</button>
+    <p class="notice" style="margin-top:16px">以 Supabase Auth 驗證。帳號於 Supabase 後台 Authentication → Users 建立與管理。</p>
+  </div>` : `
   <div class="gate">
     <img src="../assets/img/logo.svg" alt="">
     <h2 style="font-family:var(--font-display);margin-bottom:6px">管理後台登入</h2>
     <p style="font-size:13px;color:var(--slate);margin-bottom:20px">Guide.Ferryman Admin Console</p>
     <input class="inp" type="password" id="gatePass" placeholder="請輸入管理密碼" style="margin-bottom:14px">
     <button class="btn btn-teal" style="width:100%" onclick="gfGateTry()">登入</button>
-    <p class="notice" style="margin-top:16px">預設密碼：ferryman2026（登入後可於儀表板變更）<br>正式上線前請改接 Supabase Auth（見部署指南）</p>
+    <p class="notice" style="margin-top:16px">預設密碼：ferryman2026（示範模式）</p>
   </div>`;
   document.getElementById("gatePass").addEventListener("keydown", e => { if (e.key === "Enter") gfGateTry(); });
   return false;
 }
-function gfGateTry() {
+async function gfGateTry() {
+  const sbMode = (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED);
+  if (sbMode) {
+    const btn = document.getElementById("gateBtn");
+    btn.disabled = true; btn.textContent = "登入中…";
+    try {
+      await gfSbLogin(document.getElementById("gateEmail").value.trim(),
+                      document.getElementById("gatePass").value);
+      location.reload();
+    } catch (err) {
+      alert(err.message || "登入失敗");
+      btn.disabled = false; btn.textContent = "登入";
+    }
+    return;
+  }
   const pass = localStorage.getItem(GF_ADMIN_PASS_KEY) || GF_ADMIN_DEFAULT_PASS;
   if (document.getElementById("gatePass").value === pass) {
     sessionStorage.setItem("gf_admin_in", "1");
     location.reload();
   } else alert("密碼錯誤");
 }
-function gfAdminLogout() { sessionStorage.removeItem("gf_admin_in"); location.href = "../index.html"; }
+function gfAdminLogout() {
+  if (typeof gfSbLogout === "function") gfSbLogout();
+  sessionStorage.removeItem("gf_admin_in");
+  location.href = "../index.html";
+}
 
 function gfAdminShell(active, title, sub, contentHTML) {
   document.body.insertAdjacentHTML("afterbegin", `
@@ -53,7 +84,9 @@ function gfAdminShell(active, title, sub, contentHTML) {
       <a href="consults.html" class="${active==='con'?'active':''}">🗓 諮詢排程管理</a>
     </aside>
     <main class="admin-main">
-      <div class="demo-note">⚠️ 示範模式：資料儲存於此瀏覽器（localStorage）。串接 Supabase 後即為正式多裝置資料庫——步驟見《部署與整合指南》。</div>
+      ${(typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED)
+    ? '<div class="demo-note" style="background:rgba(15,163,168,.08);border-color:rgba(15,163,168,.35)">☁️ 已連線 Supabase 雲端資料庫 · 登入者：' + (sessionStorage.getItem("gf_sb_email")||"") + '</div>'
+    : '<div class="demo-note">⚠️ 示範模式：資料儲存於此瀏覽器（localStorage）。</div>'}
       <h1>${title}</h1>
       <p class="sub">${sub}</p>
       ${contentHTML}

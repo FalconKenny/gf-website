@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
+<script src="../assets/js/sb.js"></script>
 <script src="../assets/js/data.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script>
@@ -34,8 +35,11 @@ if (gfAdminGate()) {
   `);
 
   const TIERS = ["免費會員", "標準訂閱", "進階訂閱"];
-  function render() {
-    const list = GF_getLocal("gf_members", []);
+  let LIST = [];
+  async function render() {
+    try { LIST = await gfSbSelect("members", "&order=joined.desc", true); }
+    catch (e) { alert("讀取會員失敗：" + e.message); LIST = GF_getLocal("gf_members", []); }
+    const list = LIST;
     document.getElementById("rows").innerHTML = list.map((m,i) => `
       <tr>
         <td class="mono">${m.joined||""}</td>
@@ -52,20 +56,21 @@ if (gfAdminGate()) {
         </td>
       </tr>`).join("") || `<tr><td colspan="8" style="color:var(--slate)">尚無會員。前台「加入會員」送出後會顯示於此。</td></tr>`;
   }
-  window.setTier = (i,v)=>{ const l=GF_getLocal("gf_members",[]); l[i].tier=v; GF_setLocal("gf_members",l); render(); };
-  window.toggleSub = i=>{ const l=GF_getLocal("gf_members",[]); l[i].subscribe=!l[i].subscribe; GF_setLocal("gf_members",l); render(); };
-  window.del = i=>{ if(!confirm("刪除此會員？"))return; const l=GF_getLocal("gf_members",[]); l.splice(i,1); GF_setLocal("gf_members",l); render(); };
+  window.setTier = async (i,v)=>{ try{ await gfSbUpdate("members", LIST[i].id, {tier:v}); render(); }catch(e){ alert("更新失敗："+e.message);} };
+  window.toggleSub = async i=>{ try{ await gfSbUpdate("members", LIST[i].id, {subscribe:!LIST[i].subscribe}); render(); }catch(e){ alert("更新失敗："+e.message);} };
+  window.del = async i=>{ if(!confirm("刪除此會員？"))return; try{ await gfSbDelete("members", LIST[i].id); render(); }catch(e){ alert("刪除失敗："+e.message);} };
   window.exportCSV = ()=>{
-    const l=GF_getLocal("gf_members",[]);
+    const l=LIST;
     gfCSV([["加入日","姓名","Email","公司","關注領域","訂閱","分級"]]
       .concat(l.map(m=>[m.joined,m.name,m.email,m.company,m.interest,m.subscribe?"是":"否",m.tier])), "members.csv");
   };
-  window.addDemo = ()=>{
+  window.addDemo = async ()=>{
     const name=prompt("姓名？"); if(!name) return;
     const email=prompt("Email？"); if(!email) return;
-    const l=GF_getLocal("gf_members",[]);
-    l.push({id:"m"+Date.now(),name,email,company:"",interest:"",subscribe:true,tier:"免費會員",joined:new Date().toISOString().slice(0,10)});
-    GF_setLocal("gf_members",l); render();
+    try {
+      await gfSbInsert("members", {id:"m"+Date.now(),name,email,company:"",interest:"",subscribe:true,tier:"免費會員",joined:new Date().toISOString().slice(0,10)}, true);
+      render();
+    } catch(e){ alert("新增失敗："+e.message); }
   };
   render();
 }

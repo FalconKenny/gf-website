@@ -10,11 +10,12 @@
 <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
+<script src="../assets/js/sb.js"></script>
 <script src="../assets/js/data.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script>
 if (gfAdminGate()) {
-  gfAdminShell("art", "文章管理", "台美動態資訊的新增、編輯與刪除。種子文章可覆寫或隱藏；自建文章完整可編。", `
+  gfAdminShell("art", "文章管理", "台美動態資訊的新增、編輯與刪除。所有文章存於 Supabase 雲端資料庫，儲存後前台立即全球生效。", `
     <div class="panel">
       <h2 id="formTitle">新增文章</h2>
       <div class="form-grid">
@@ -41,7 +42,7 @@ if (gfAdminGate()) {
 
     <div class="panel">
       <h2>每日熱門動態管理</h2>
-      <p class="notice" style="margin-bottom:14px">每類別一行一則。此區塊已預留：未來可改由自動抓取程式每日更新（寫入相同資料位置即可）。</p>
+      <p class="notice" style="margin-bottom:14px">每類別一行一則。存於雲端 hot_topics 表。已預留：未來可由自動抓取程式每日直接寫入該表。</p>
       <div class="form-grid" id="hotFields"></div>
       <div style="margin-top:16px"><button class="btn-sm primary" onclick="saveHot()">儲存熱門動態</button></div>
     </div>
@@ -50,27 +51,23 @@ if (gfAdminGate()) {
   let editingId = null;
   const $ = id => document.getElementById(id);
 
-  function renderRows() {
-    const custom = GF_getLocal("gf_articles", []);
-    const overrides = GF_getLocal("gf_seed_overrides", {});
-    const hidden = GF_getLocal("gf_hidden_seeds", []);
-    const all = GF_getArticles();
-    $("artRows").innerHTML = all.map(a => {
-      const isSeed = a.id.startsWith("s");
-      return `<tr>
+  let ART_LIST = [];
+  async function renderRows() {
+    try { ART_LIST = await GF_fetchArticles(); }
+    catch (e) { ART_LIST = GF_getArticles(); }
+    $("artRows").innerHTML = ART_LIST.map(a => `<tr>
         <td class="mono">${a.date||""}</td>
         <td><span class="art-cat cat-${a.cat}" style="font-size:11px">${a.cat}</span></td>
         <td>${gfEsc(a.title)}</td>
-        <td>${isSeed ? '<span class="badge b-free">種子</span>' : '<span class="badge b-sub">自建</span>'}</td>
+        <td><span class="badge b-sub">雲端</span></td>
         <td>
           <button class="btn-sm" onclick="editArt('${a.id}')">編輯</button>
           <button class="btn-sm danger" onclick="delArt('${a.id}')">刪除</button>
-        </td></tr>`;
-    }).join("") || `<tr><td colspan="5" style="color:var(--slate)">尚無文章</td></tr>`;
+        </td></tr>`).join("") || `<tr><td colspan="5" style="color:var(--slate)">尚無文章</td></tr>`;
   }
 
   window.editArt = function(id) {
-    const a = GF_getArticles().find(x => x.id === id);
+    const a = ART_LIST.find(x => x.id === id);
     if (!a) return;
     editingId = id;
     $("formTitle").textContent = "編輯文章";
@@ -79,36 +76,21 @@ if (gfAdminGate()) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  window.saveArt = function() {
+  window.saveArt = async function() {
     const rec = { title: $("fTitle").value.trim(), cat: $("fCat").value, date: $("fDate").value,
                   summary: $("fSummary").value.trim(), body: $("fBody").value.trim() };
     if (!rec.title || !rec.date || !rec.body) return alert("標題、日期與內文為必填");
-    if (editingId && editingId.startsWith("s")) {
-      const ov = GF_getLocal("gf_seed_overrides", {});
-      ov[editingId] = rec; GF_setLocal("gf_seed_overrides", ov);
-    } else if (editingId) {
-      const list = GF_getLocal("gf_articles", []);
-      const i = list.findIndex(x => x.id === editingId);
-      if (i > -1) list[i] = Object.assign(list[i], rec);
-      GF_setLocal("gf_articles", list);
-    } else {
-      const list = GF_getLocal("gf_articles", []);
-      list.unshift(Object.assign({ id: "a" + Date.now() }, rec));
-      GF_setLocal("gf_articles", list);
-    }
-    resetForm(); renderRows(); alert("已儲存，前台立即生效");
+    try {
+      if (editingId) await gfSbUpdate("articles", editingId, rec);
+      else await gfSbInsert("articles", Object.assign({ id: "a" + Date.now() }, rec), true);
+      resetForm(); await renderRows(); alert("已儲存，前台立即生效（全球可見）");
+    } catch (err) { alert("儲存失敗：" + err.message + "\n（請確認已登入且網路正常）"); }
   };
 
-  window.delArt = function(id) {
+  window.delArt = async function(id) {
     if (!confirm("確定刪除這篇文章？")) return;
-    if (id.startsWith("s")) {
-      const hidden = GF_getLocal("gf_hidden_seeds", []);
-      if (!hidden.includes(id)) hidden.push(id);
-      GF_setLocal("gf_hidden_seeds", hidden);
-    } else {
-      GF_setLocal("gf_articles", GF_getLocal("gf_articles", []).filter(x => x.id !== id));
-    }
-    renderRows();
+    try { await gfSbDelete("articles", id); await renderRows(); }
+    catch (err) { alert("刪除失敗：" + err.message); }
   };
 
   window.resetForm = function() {
@@ -118,18 +100,22 @@ if (gfAdminGate()) {
   };
 
   /* 熱門動態 */
-  function renderHotFields() {
-    const hot = GF_getHot();
+  async function renderHotFields() {
+    const hot = await GF_fetchHot();
     $("hotFields").innerHTML = GF_CATEGORIES.map(c => `
       <div class="field full"><label>${c}</label>
       <textarea class="inp" rows="3" data-hot="${c}">${(hot[c]||[]).join("\n")}</textarea></div>`).join("");
   }
-  window.saveHot = function() {
-    const hot = {};
-    document.querySelectorAll("[data-hot]").forEach(t => {
-      hot[t.dataset.hot] = t.value.split("\n").map(s => s.trim()).filter(Boolean);
-    });
-    GF_setLocal("gf_hot", hot); alert("已更新前台熱門動態");
+  window.saveHot = async function() {
+    try {
+      const els = document.querySelectorAll("[data-hot]");
+      for (const t of els) {
+        const items = t.value.split("\n").map(s => s.trim()).filter(Boolean);
+        await gfSb("/rest/v1/hot_topics?cat=eq." + encodeURIComponent(t.dataset.hot),
+                   { method: "PATCH", auth: true, body: { items: items, updated_at: new Date().toISOString() } });
+      }
+      alert("已更新前台熱門動態（全球生效）");
+    } catch (err) { alert("儲存失敗：" + err.message); }
   };
 
   resetForm(); renderRows(); renderHotFields();

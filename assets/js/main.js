@@ -92,33 +92,52 @@ function gfMemberModalHTML() {
         </div>
         <div class="ok-box" id="memberOk">已完成加入！我們將透過 Email 與您聯繫。</div>
         <div style="margin-top:18px"><button class="btn btn-teal" type="submit">送出</button></div>
-        <p class="notice" style="margin-top:14px">※ 目前為示範模式，資料儲存於本網站的示範資料庫。正式上線後將串接 Supabase 會員系統（見部署指南）。</p>
+        <p class="notice" style="margin-top:14px">※ 您的資料僅用於產業動態通知與服務聯繫，我們不會對外提供。</p>
       </form>
     </div>
   </div>`;
 }
-function gfMemberSubmit(e) {
+async function gfMemberSubmit(e) {
   e.preventDefault();
   const f = new FormData(e.target);
-  const members = GF_getLocal("gf_members", []);
-  members.push({
+  const rec = {
     id: "m" + Date.now(), name: f.get("name"), email: f.get("email"),
     company: f.get("company") || "", interest: f.get("interest"),
     subscribe: !!f.get("subscribe"), tier: "免費會員",
     joined: new Date().toISOString().slice(0, 10)
-  });
-  GF_setLocal("gf_members", members);
+  };
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true; btn.textContent = "送出中…";
+  let saved = false;
+  if (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED) {
+    try { await gfSbInsert("members", rec); saved = true; }
+    catch (err) {
+      if (err.status === 409 || /duplicate|unique/i.test(err.message)) {
+        alert("這個 Email 已經是會員了，感謝您的支持！");
+        btn.disabled = false; btn.textContent = "送出";
+        return false;
+      }
+      console.warn("Supabase 寫入失敗，改存本地：", err.message);
+    }
+  }
+  if (!saved) {
+    const members = GF_getLocal("gf_members", []);
+    members.push(rec);
+    GF_setLocal("gf_members", members);
+  }
   document.getElementById("memberOk").style.display = "block";
-  e.target.querySelector("button[type=submit]").disabled = true;
+  btn.textContent = "已送出";
   return false;
 }
 
 /* ---------- 文章卡片渲染 + 分類篩選 ---------- */
-function gfRenderArticles(containerId, opts) {
+window.GF_ART_CACHE = null;
+async function gfRenderArticles(containerId, opts) {
   opts = opts || {};
   const box = document.getElementById(containerId);
   if (!box) return;
-  let list = GF_getArticles();
+  if (!window.GF_ART_CACHE) window.GF_ART_CACHE = await GF_fetchArticles();
+  let list = window.GF_ART_CACHE.slice();
   if (opts.cat && opts.cat !== "全部") list = list.filter(a => a.cat === opts.cat);
   if (opts.limit) list = list.slice(0, opts.limit);
   if (!list.length) {
@@ -137,7 +156,7 @@ function gfRenderArticles(containerId, opts) {
     </article>`).join("");
 }
 function gfOpenArticle(id) {
-  const a = GF_getArticles().find(x => x.id === id);
+  const a = (window.GF_ART_CACHE || GF_getArticles()).find(x => x.id === id);
   if (!a) return;
   let m = document.getElementById("articleModal");
   if (!m) {
@@ -155,10 +174,10 @@ function gfOpenArticle(id) {
 }
 
 /* ---------- 每日熱門動態 ---------- */
-function gfRenderHot(containerId, cat) {
+async function gfRenderHot(containerId, cat) {
   const box = document.getElementById(containerId);
   if (!box) return;
-  const hot = GF_getHot();
+  const hot = await GF_fetchHot();
   const cats = cat ? [cat] : GF_CATEGORIES;
   box.innerHTML = cats.map(c => `
     <div style="margin-bottom:6px">
@@ -183,12 +202,19 @@ async function gfConsultSubmit(e) {
     service: f.get("service"), need: f.get("need"),
     date1: f.get("date1"), time1: f.get("time1") || "",
     status: "待確認",
-    created: new Date().toISOString().slice(0, 16).replace("T", " ")
+    created: new Date().toISOString()
   };
-  // 存入示範資料庫（後台可見）
-  const list = GF_getLocal("gf_consults", []);
-  list.unshift(rec);
-  GF_setLocal("gf_consults", list);
+  // 寫入 Supabase 資料庫（後台可見）；連線失敗時退回本地儲存
+  let savedToDb = false;
+  if (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED) {
+    try { await gfSbInsert("consults", rec); savedToDb = true; }
+    catch (err) { console.warn("Supabase 寫入失敗，改存本地：", err.message); }
+  }
+  if (!savedToDb) {
+    const list = GF_getLocal("gf_consults", []);
+    list.unshift(rec);
+    GF_setLocal("gf_consults", list);
+  }
 
   // 若已設定 Formspree，同步寄出 email 通知
   if (GF_FORM_ENDPOINT) {

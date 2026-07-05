@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
+<script src="../assets/js/sb.js"></script>
 <script src="../assets/js/data.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script>
@@ -29,11 +30,14 @@ if (gfAdminGate()) {
     </div>
   `);
 
-  function render() {
-    const list = GF_getLocal("gf_consults", []);
+  let LIST = [];
+  async function render() {
+    try { LIST = await gfSbSelect("consults", "&order=created.desc", true); }
+    catch (e) { alert("讀取諮詢失敗：" + e.message); LIST = GF_getLocal("gf_consults", []); }
+    const list = LIST;
     document.getElementById("rows").innerHTML = list.map((c,i) => `
       <tr>
-        <td class="mono">${c.created||""}</td>
+        <td class="mono">${(c.created||"").replace("T"," ").slice(0,16)}</td>
         <td>${gfEsc(c.name)}<br><span class="mono" style="font-size:11.5px;color:var(--slate)">${gfEsc(c.email)}</span></td>
         <td style="max-width:130px">${gfEsc(c.service)}</td>
         <td style="max-width:260px">${gfEsc(c.need)}</td>
@@ -48,13 +52,12 @@ if (gfAdminGate()) {
       </tr>`).join("") || `<tr><td colspan="7" style="color:var(--slate)">尚無諮詢紀錄。前台「預約諮詢」送出後會顯示於此。</td></tr>`;
   }
   window.mail = i => {
-    const list = GF_getLocal("gf_consults", []);
-    const t = prompt("請輸入確認的諮詢時間（會寫入信件內容）：", `${list[i].date1} ${list[i].time1||""}`.trim());
+    const t = prompt("請輸入確認的諮詢時間（會寫入信件內容）：", `${LIST[i].date1} ${LIST[i].time1||""}`.trim());
     if (t === null) return;
-    window.open(gfGmailURL(list[i], t), "_blank");
+    window.open(gfGmailURL(LIST[i], t), "_blank");
   };
-  window.confirmIt = i => { const l=GF_getLocal("gf_consults",[]); l[i].status="已確認"; GF_setLocal("gf_consults",l); render(); };
-  window.del = i => { if(!confirm("刪除此筆諮詢？"))return; const l=GF_getLocal("gf_consults",[]); l.splice(i,1); GF_setLocal("gf_consults",l); render(); };
+  window.confirmIt = async i => { try{ await gfSbUpdate("consults", LIST[i].id, {status:"已確認"}); render(); }catch(e){ alert("更新失敗："+e.message);} };
+  window.del = async i => { if(!confirm("刪除此筆諮詢？"))return; try{ await gfSbDelete("consults", LIST[i].id); render(); }catch(e){ alert("刪除失敗："+e.message);} };
   render();
 }
 </script>

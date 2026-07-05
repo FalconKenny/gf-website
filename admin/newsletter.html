@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
+<script src="../assets/js/sb.js"></script>
 <script src="../assets/js/data.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script>
@@ -42,16 +43,21 @@ if (gfAdminGate()) {
   `);
 
   const $ = id => document.getElementById(id);
+  let MEMBERS = [], PUSHES = [];
   function audience(target) {
-    const members = GF_getLocal("gf_members", []).filter(m => m.subscribe);
+    const members = MEMBERS.filter(m => m.subscribe);
     if (target === "全部訂閱者") return members;
     return members.filter(m => m.tier === target);
   }
-  function render() {
-    const list = GF_getLocal("gf_pushes", []);
+  async function render() {
+    try {
+      MEMBERS = await gfSbSelect("members", "", true);
+      PUSHES = await gfSbSelect("pushes", "&order=send_at.desc", true);
+    } catch (e) { alert("讀取失敗：" + e.message); MEMBERS = []; PUSHES = []; }
+    const list = PUSHES;
     $("rows").innerHTML = list.map((p,i) => `
       <tr>
-        <td class="mono">${(p.when||"").replace("T"," ")}</td>
+        <td class="mono">${(p.send_at||"").replace("T"," ")}</td>
         <td>${gfEsc(p.subj)}</td>
         <td>${gfEsc(p.target)}</td>
         <td class="mono">${audience(p.target).length}</td>
@@ -62,27 +68,27 @@ if (gfAdminGate()) {
         </td>
       </tr>`).join("") || `<tr><td colspan="6" style="color:var(--slate)">尚無推播。</td></tr>`;
   }
-  window.save = function() {
+  window.save = async function() {
     if (!$("fSubj").value.trim() || !$("fBody").value.trim() || !$("fWhen").value) return alert("主旨、內文與排程時間為必填");
-    const list = GF_getLocal("gf_pushes", []);
-    list.unshift({ id:"p"+Date.now(), subj:$("fSubj").value.trim(), body:$("fBody").value.trim(),
-                   target:$("fTarget").value, when:$("fWhen").value, sent:false });
-    GF_setLocal("gf_pushes", list);
-    $("fSubj").value=""; $("fBody").value="";
-    render(); alert("已儲存排程");
+    try {
+      await gfSbInsert("pushes", { id:"p"+Date.now(), subj:$("fSubj").value.trim(), body:$("fBody").value.trim(),
+                     target:$("fTarget").value, send_at:$("fWhen").value, sent:false }, true);
+      $("fSubj").value=""; $("fBody").value="";
+      render(); alert("已儲存排程");
+    } catch (e) { alert("儲存失敗：" + e.message); }
   };
-  window.send = function(i) {
-    const list = GF_getLocal("gf_pushes", []);
-    const p = list[i];
+  window.send = async function(i) {
+    const p = PUSHES[i];
     const bcc = audience(p.target).map(m => m.email).join(",");
     if (!bcc) return alert("此對象目前沒有訂閱者");
     const u = new URLSearchParams({ view:"cm", fs:"1", bcc, su:p.subj, body:p.body + "\n\n—\nGuide.Ferryman Strategic Advisory\n如欲取消訂閱，請回覆本信告知。" });
     window.open("https://mail.google.com/mail/?" + u.toString(), "_blank");
     if (confirm("已開啟 Gmail 撰寫視窗。送出後按「確定」將此推播標記為已發送。")) {
-      p.sent = true; GF_setLocal("gf_pushes", list); render();
+      try { await gfSbUpdate("pushes", p.id, {sent:true}); } catch(e){}
+      render();
     }
   };
-  window.del = i => { if(!confirm("刪除此推播？"))return; const l=GF_getLocal("gf_pushes",[]); l.splice(i,1); GF_setLocal("gf_pushes",l); render(); };
+  window.del = async i => { if(!confirm("刪除此推播？"))return; try{ await gfSbDelete("pushes", PUSHES[i].id); render(); }catch(e){ alert("刪除失敗："+e.message);} };
   $("fWhen").value = new Date(Date.now()+86400000).toISOString().slice(0,16);
   render();
 }

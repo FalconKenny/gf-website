@@ -126,3 +126,28 @@ function GF_getArticles() {
 function GF_getHot() {
   return Object.assign({}, GF_SEED_HOT, GF_getLocal("gf_hot", {}));
 }
+
+/* ---------- Supabase 雲端讀取（連線失敗時自動退回本地資料） ---------- */
+async function GF_fetchArticles() {
+  if (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED) {
+    try {
+      const rows = await gfSbSelect("articles", "&order=date.desc,created_at.desc");
+      if (Array.isArray(rows)) return rows;
+    } catch (e) { console.warn("Supabase 文章讀取失敗，改用本地資料：", e.message); }
+  }
+  return GF_getArticles();
+}
+async function GF_fetchHot() {
+  if (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED) {
+    try {
+      const rows = await gfSbSelect("hot_topics", "");
+      if (Array.isArray(rows) && rows.length) {
+        const hot = {};
+        rows.forEach(r => { hot[r.cat] = Array.isArray(r.items) ? r.items : []; });
+        const hasAny = Object.keys(hot).some(k => hot[k].length);
+        if (hasAny) return hot;
+      }
+    } catch (e) { console.warn("Supabase 熱門動態讀取失敗，改用本地資料：", e.message); }
+  }
+  return GF_getHot();
+}
