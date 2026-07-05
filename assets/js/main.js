@@ -55,7 +55,7 @@ function gfFooter() {
       <h4>聯絡我們</h4>
       <ul>
         <li><a href="${path}contact.html">諮詢表單</a></li>
-        <li><span style="font-size:13.5px">Email：待補（部署時設定）</span></li>
+        <li><span style="font-size:13.5px">Email：<a href="mailto:guide.ferryman@gmail.com">guide.ferryman@gmail.com</a></span></li>
         <li><span style="font-size:13.5px">台灣・台北</span></li>
       </ul>
     </div>
