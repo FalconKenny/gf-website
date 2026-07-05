@@ -55,7 +55,7 @@ function gfFooter() {
       <h4>聯絡我們</h4>
       <ul>
         <li><a href="${path}contact.html">諮詢表單</a></li>
-        <li><span style="font-size:13.5px">Email：<a href="mailto:guide.ferryman@gmail.com">guide.ferryman@gmail.com</a></span></li>
+        <li><span style="font-size:13.5px">Email：待補（部署時設定）</span></li>
         <li><span style="font-size:13.5px">台灣・台北</span></li>
       </ul>
     </div>
@@ -138,6 +138,10 @@ async function gfRenderArticles(containerId, opts) {
   if (!box) return;
   if (!window.GF_ART_CACHE) window.GF_ART_CACHE = await GF_fetchArticles();
   let list = window.GF_ART_CACHE.slice();
+  if (opts.q) {
+    const q = opts.q.toLowerCase();
+    list = list.filter(a => ((a.title||"") + (a.summary||"") + (a.body||"") + (a.cat||"")).toLowerCase().includes(q));
+  }
   if (opts.cat && opts.cat !== "全部") list = list.filter(a => a.cat === opts.cat);
   if (opts.limit) list = list.slice(0, opts.limit);
   if (!list.length) {
@@ -239,3 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.insertAdjacentHTML("beforeend", gfMemberModalHTML());
   }
 });
+
+
+/* ---------- Hero 產業動態搜尋 ---------- */

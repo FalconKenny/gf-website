@@ -45,6 +45,21 @@
       <div style="margin-top:20px"><a class="btn btn-teal" style="padding:10px 20px;font-size:14px" href="contact.html">諮詢${s.name}佈局 →</a></div>`;
   };
 
+
+  /* 各州英文縮寫（地圖標籤用） */
+  const GF_ABBR = {"Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE","District of Columbia":"DC","Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS","Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA","West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","Puerto Rico":"PR"};
+
+  /* 每州不同深淺：以州名產生穩定色階（重點州更亮，與「深色州別＝已有資料」說明一致） */
+  function stateShade(d) {
+    let h = 0;
+    const n = d.properties.name;
+    for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 997;
+    const t = h / 997; // 0–1 穩定亂數
+    return GF_STATES[d.id]
+      ? d3.interpolateRgb("#1E5A96", "#3F86C8")(t)   // 15 個重點州：較亮的藍
+      : d3.interpolateRgb("#10294A", "#1B4573")(t);  // 其他州：較深的藍
+  }
+
   if (typeof d3 === "undefined" || typeof topojson === "undefined") {
     return fallback("地圖元件載入失敗。");
   }
@@ -62,6 +77,7 @@
       .data(states.features).join("path")
       .attr("d", geoPath)
       .attr("class", d => "state" + (GF_STATES[d.id] ? " has-data" : ""))
+      .attr("fill", stateShade)
       .attr("data-fips", d => d.id)
       .attr("tabindex", 0)
       .attr("aria-label", d => (GF_STATES[d.id] ? GF_STATES[d.id].name : d.properties.name))
@@ -82,6 +98,15 @@
       .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
       .attr("fill", "none").attr("stroke", "#0A1C30").attr("stroke-width", 1)
       .attr("d", geoPath);
+
+    // 每州名稱標籤（縮寫，置於各州幾何中心；過小的州縮小字級）
+    svg.append("g").selectAll("text")
+      .data(states.features).join("text")
+      .attr("class", "state-label")
+      .attr("transform", d => `translate(${geoPath.centroid(d)})`)
+      .attr("dy", "0.35em")
+      .style("font-size", d => geoPath.area(d) < 900 ? "7px" : (geoPath.area(d) < 2600 ? "9px" : "11px"))
+      .text(d => GF_ABBR[d.properties.name] || "");
 
     buildSelector();
   }).catch(() => fallback("地圖資料載入失敗。"));
