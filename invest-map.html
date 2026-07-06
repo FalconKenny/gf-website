@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美洲產業投資地圖｜Guide.Ferryman Strategic Advisory</title>
+<meta name="description" content="Guide.Ferryman 美洲產業投資地圖：美國 50 州重點產業、招商機構（EDO）、政策補助、稅率與可查證台商投資案的完整盤點。">
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/investmap.css">
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+
+<!-- ============ 頁首 ============ -->
+<header class="im-hero">
+  <div class="wrap">
+    <p class="eyebrow">INVESTMENT MAP · 美洲產業投資地圖</p>
+    <h1>美國 50 州產業投資盤點<span class="en">US STATE-BY-STATE INDUSTRY &amp; INVESTMENT ATLAS</span></h1>
+    <p class="lead">整合各州重點產業、官方招商機構（EDO）、代表性政策補助、稅制條件，以及<b>可查證的台商投資案</b>。把游標移到任何一州即可預覽；點擊州別或使用下拉選單，查看完整投資情報。</p>
+    <div class="im-legend">
+      <span class="lg"><i class="sw sw-verified"></i>已查證台商投資州</span>
+      <span class="lg"><i class="sw sw-normal"></i>基礎盤點完成</span>
+      <span class="lg"><i class="sw sw-hover"></i>游標所在</span>
+      <span class="lg"><i class="sw sw-sel"></i>目前選取</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 地圖 ============ -->
+<section class="section im-map-section">
+  <div class="wrap">
+    <div class="im-toolbar">
+      <div class="field">
+        <label for="imStateSelect">直接選擇州別</label>
+        <select class="sel" id="imStateSelect"></select>
+      </div>
+      <p class="im-hint mono">HOVER：預覽 ｜ CLICK：完整資訊</p>
+    </div>
+    <div class="im-map-box" id="imMapBox">
+      <div class="im-tip" id="imTip" role="tooltip" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 州別完整資訊 ============ -->
+<section class="section alt" id="im-profile-section">
+  <div class="wrap">
+    <div id="imProfile" class="im-profile">
+      <p class="coord mono">STATE INVESTMENT PROFILE</p>
+      <h2 class="im-empty-title">選擇一州，展開完整投資情報</h2>
+      <p class="im-empty">點擊上方地圖任一州（或使用下拉選單），此處將顯示該州的重點產業、代表性公司、招商機構、政策補助、稅率條件、可查證台商投資案與台灣鏈結重點。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section">
+  <div class="wrap center">
+    <p class="kicker">NEXT STEP</p>
+    <h2 class="title">想評估特定州的落地方案？</h2>
+    <p style="color:var(--slate);margin:14px auto 24px;max-width:36em">各州補助多綁定在地就業、設備存續年限等條件。Guide.Ferryman 以「政策熟悉度 × 在地資源網絡」協助您把州級補助條件轉化為可執行的落地計畫。</p>
+    <a class="btn btn-amber" href="contact.html">預約諮詢 →</a>
+  </div>
+</section>
+
+<footer id="footer"></footer>
+
+<script src="assets/vendor/d3.min.js"></script>
+<script src="assets/vendor/topojson-client.min.js"></script>
+<script src="assets/js/sb.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/investmap-data.js"></script>
+<script>gfNav("map");</script>
+<script src="assets/js/investmap.js" defer></script>
+</body>
+</html>

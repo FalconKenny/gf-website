@@ -18,6 +18,7 @@ function gfNav(active) {
     <div class="nav-links">
       <a href="${path}index.html" ${active==="home"?'class="active"':''}>首頁</a>
       <a href="${path}services.html" ${active==="svc"?'class="active"':''}>服務項目</a>
+      <a href="${path}invest-map.html" ${active==="map"?'class="active"':''}>產業投資地圖</a>
       <a href="${path}insights.html" ${active==="ins"?'class="active"':''}>台美動態資訊</a>
       <a href="${path}about.html" ${active==="about"?'class="active"':''}>關於我們</a>
       <a href="#" class="nav-member" onclick="gfOpenMember(event)">加入會員</a>
@@ -45,6 +46,7 @@ function gfFooter() {
       <h4>快速連結</h4>
       <ul>
         <li><a href="${path}services.html">服務項目</a></li>
+        <li><a href="${path}invest-map.html">產業投資地圖</a></li>
         <li><a href="${path}insights.html">台美動態資訊</a></li>
         <li><a href="${path}about.html">關於我們</a></li>
         <li><a href="${path}contact.html">預約諮詢</a></li>
