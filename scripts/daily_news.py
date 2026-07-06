@@ -173,9 +173,19 @@ def gemini_enrich(items, api_key):
         "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2},
     }
     try:
-        r = requests.post(url, json=body, timeout=120)
-        r.raise_for_status()
-        text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+        text = None
+        for attempt in range(3):                     # 502/503 暫時性錯誤自動重試
+            try:
+                r = requests.post(url, json=body, timeout=120)
+                r.raise_for_status()
+                text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+                break
+            except Exception as ex:
+                print(f"[Gemini 第{attempt+1}次失敗] {ex}")
+                if attempt < 2:
+                    import time; time.sleep(15 * (attempt + 1))
+        if text is None:
+            raise RuntimeError("Gemini 重試 3 次皆失敗")
         results = json.loads(text)
         for res in results:
             idx = res.get("i")
@@ -366,7 +376,7 @@ def main():
         try:
             push_supabase(items, os.environ["SUPABASE_URL"],
                           os.environ["SUPABASE_SERVICE_KEY"],
-                          os.environ.get("SUPABASE_TABLE", "hot_topics"))
+                          os.environ.get("SUPABASE_TABLE") or "hot_topics")
         except Exception as ex:
             ok = False
             print(f"[錯誤] {ex}")
