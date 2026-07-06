@@ -6,8 +6,8 @@
     "source": "白宮新聞",
     "region": "us_federal",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "Today, our Nation commemorates the Battle of Chippawa—the historic victory in wh",
+    "category": "其他",
+    "summary": "美國總統紀念奇帕瓦戰役250週年。",
     "implication": "—"
   },
   {
@@ -18,7 +18,7 @@
     "region": "us_federal",
     "published_at": "2026-07-06",
     "category": "其他",
-    "summary": "On the 161st anniversary of the United States Secret Service, we celebrate the e",
+    "summary": "美國總統紀念特勤局成立161週年。",
     "implication": "—"
   },
   {
@@ -29,7 +29,7 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "其他",
-    "summary": "數十億年前，一顆類太陽恆星步入死亡，在膨脹為「紅巨星」吞噬周圍行星後，外層瓦解並留下一顆核心殘骸──「白矮星」 […]",
+    "summary": "韋伯望遠鏡揭示系外行星逃過紅巨星吞噬之謎。",
     "implication": "—"
   },
   {
@@ -40,8 +40,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "隨著生成式 AI、Agentic AI 與即時個人化互動逐漸成為金融業競爭關鍵，台灣金融產業正迎來雲端數據與 […]",
-    "implication": "—"
+    "summary": "台灣金融業藉雲端數據與AI實現數據驅動成長。",
+    "implication": "台灣AI軟體服務商機增，助金融業數位轉型。"
   },
   {
     "title": "中裕：愛滋新藥獲 TFDA 領證通知，台灣上市邁最後階段",
@@ -51,7 +51,7 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "其他",
-    "summary": "中裕新藥宣布，研發的愛滋病新藥 Trogarzo 已接獲台灣衛生福利部食品藥物管理署（TFDA）領證通知，行銷 […]",
+    "summary": "中裕愛滋新藥獲TFDA領證，台灣上市在即。",
     "implication": "—"
   },
   {
@@ -61,9 +61,9 @@
     "source": "TechNews 科技新報",
     "region": "taiwan",
     "published_at": "2026-07-06",
-    "category": "其他",
-    "summary": "宇瞻（8271）公布 6 月合併營收 29.14 億元，較上（5）月成長 -3.6%，與去年同期相比為年增 2 […]",
-    "implication": "—"
+    "category": "半導體",
+    "summary": "宇瞻6月營收月減3.6%，年增2%。",
+    "implication": "記憶體模組廠營收波動，需關注市場需求變化。"
   },
   {
     "title": "昇陽半導體6月營收4.83 億元",
@@ -73,8 +73,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "半導體",
-    "summary": "昇陽半導體（8028）今（6）日公布 6 月營收，達 4.83 億元，較 5 月成長 0.8%，較去年同期成長 […]",
-    "implication": "—"
+    "summary": "昇陽半導體6月營收月增0.8%，年增。",
+    "implication": "台灣半導體供應鏈表現穩健，有利產業發展。"
   },
   {
     "title": "日本擬導入無人干擾器，盼癱瘓對手雷達與通訊",
@@ -83,9 +83,9 @@
     "source": "TechNews 科技新報",
     "region": "taiwan",
     "published_at": "2026-07-06",
-    "category": "其他",
-    "summary": "日媒引述消息人士披露，日本防衛省正在評估導入無人「防區內干擾器」（Stand-in Jammer）到自衛隊。這 […]",
-    "implication": "—"
+    "category": "無人機",
+    "summary": "日本擬導入無人干擾器，以癱瘓敵方雷達通訊。",
+    "implication": "台灣無人機產業可借鏡，發展軍用電子戰技術。"
   },
   {
     "title": "創惟6月營收月減1.4%",
@@ -94,9 +94,9 @@
     "source": "TechNews 科技新報",
     "region": "taiwan",
     "published_at": "2026-07-06",
-    "category": "其他",
-    "summary": "創惟（6104）公布 6 月合併營收 3.58 億元，較上（5）月成長 -1.4%，與去年同期相比為年增 5. […]",
-    "implication": "—"
+    "category": "半導體",
+    "summary": "創惟6月營收月減1.4%，年增5.4%。",
+    "implication": "IC設計廠營收波動，反映市場需求變化。"
   },
   {
     "title": "不靠 EUV 也能獨自升級！華為公開新論文：麒麟 2026 導入 3D 堆疊 + 混合鍵合技術",
@@ -106,8 +106,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "半導體",
-    "summary": "雖然受限於美國出口管制影響，無法取得最先進的 EUV 曝光設備，但華為仍持續開發具競爭力的晶片。根據華為最新的 […]",
-    "implication": "—"
+    "summary": "華為發表新論文，不靠EUV以3D堆疊升級晶片。",
+    "implication": "台灣半導體廠需關注非EUV技術發展，維持競爭力。"
   },
   {
     "title": "三星重申技術藍圖，分析師：良率仍是關鍵",
@@ -117,8 +117,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "半導體",
-    "summary": "三星重申技術藍圖，在先進製程持續追趕台積電，規劃 2029 年量產 1.4 奈米製程。分析師指出，先進製程競爭 […]",
-    "implication": "—"
+    "summary": "三星重申先進製程藍圖，良率是追趕台積電關鍵。",
+    "implication": "台積電需持續精進良率與技術，鞏固領先地位。"
   },
   {
     "title": "傳華為 Mate 90 秋季登場，料搭載韜定律新麒麟晶片",
@@ -128,8 +128,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "半導體",
-    "summary": "綜合中媒報導，科創板日報據知情人士獲悉，將於 2026 年秋季發布的華為 Mate 90 系列手機，計畫搭載基 […]",
-    "implication": "—"
+    "summary": "傳華為Mate 90將搭載新麒麟晶片於秋季登場。",
+    "implication": "台灣IC設計與晶圓代工廠需關注華為晶片發展。"
   },
   {
     "title": "研究人員揭露透過提示注入繞過ChatGPT防護機制漏洞，OpenAI已完成修補",
@@ -139,8 +139,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "資安研究人員zer0dac近日揭露ChatGPT一項安全防護機制繞過漏洞，攻擊者可透過提示注入（Prompt Injection）手法，以誤刪上傳檔案為由，誘使",
-    "implication": "—"
+    "summary": "ChatGPT提示注入漏洞已修補，強化AI資安。",
+    "implication": "台灣AI業者應重視模型資安，確保服務安全可靠。"
   },
   {
     "title": "Godot更新貢獻規範，禁止AI代理提交程式碼",
@@ -150,8 +150,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "開源遊戲引擎Godot上周更新貢獻規範，開始禁止使用自主AI代理（Autonomous AI Agent）提交程式碼，並禁止利用AI產生大段程式碼投稿，同時要求",
-    "implication": "—"
+    "summary": "Godot禁止AI代理提交程式碼，要求揭露AI輔助。",
+    "implication": "台灣軟體開發者需注意AI輔助工具使用規範與倫理。"
   },
   {
     "title": "JetBrains修補開發環境身分管理平臺重大漏洞，未更新恐導致帳號接管與權限提升",
@@ -160,9 +160,9 @@
     "source": "iThome",
     "region": "taiwan",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "軟體開發工具業者JetBrains近日發布資安公告，修補其身分與存取管理平臺JetBrains Hub的三項重大漏洞。在JetBrains的開發環境中，JetB",
-    "implication": "—"
+    "category": "其他",
+    "summary": "JetBrains修補身分管理平台重大漏洞，用戶應更新。",
+    "implication": "台灣軟體開發商應重視開發工具資安，防範潛在風險。"
   },
   {
     "title": "Microsoft Teams加強控管外部機器人，經會議組織者確認後才放行",
@@ -172,8 +172,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "隨著AI會議助理、轉錄與筆記工具普及，企業線上會議也開始面臨「非人類與會者」的控管問題。微軟（Microsoft）6月29日宣布，Microsoft Teams",
-    "implication": "—"
+    "summary": "Teams加強外部機器人控管，需會議組織者批准。",
+    "implication": "台灣AI會議助理開發商需符合平台規範，確保服務。"
   },
   {
     "title": "AI晶片熱潮燒到供應鏈！台灣Unimicron衝全球募資潮、亞洲半導體搶錢戰開打 - CMoney投資網誌",
@@ -183,8 +183,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "半導體",
-    "summary": "AI晶片熱潮燒到供應鏈！台灣Unimicron衝全球募資潮、亞洲半導體搶錢戰開打    CMoney投資網誌",
-    "implication": "—"
+    "summary": "AI晶片熱潮帶動欣興等台廠全球募資，半導體競爭加劇。",
+    "implication": "台灣半導體供應鏈受惠AI需求，擴廠與募資機會增。"
   },
   {
     "title": "研發、製造到應用落地！台南打造智慧機器人金三角 - 台灣民眾電子報",
@@ -194,8 +194,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "機器人",
-    "summary": "研發、製造到應用落地！台南打造智慧機器人金三角    台灣民眾電子報",
-    "implication": "—"
+    "summary": "台南打造智慧機器人金三角，涵蓋研發製造應用。",
+    "implication": "台灣機器人產業聚落成形，有利技術創新與產業升級。"
   },
   {
     "title": "Agility Robotics 上市聚焦產業機器人，家用機器人再等十年吧 - cyberq.tw",
@@ -205,8 +205,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "機器人",
-    "summary": "Agility Robotics 上市聚焦產業機器人，家用機器人再等十年吧    cyberq.tw",
-    "implication": "—"
+    "summary": "Agility Robotics上市，聚焦產業機器人市場。",
+    "implication": "台灣機器人業者可借鏡，專注產業應用市場發展。"
   },
   {
     "title": "震撼市場！位元幣飆漲推動加密股狂升，特斯拉擴充套件機器人計程車服務！ - CMoney投資網誌",
@@ -216,8 +216,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "機器人",
-    "summary": "震撼市場！位元幣飆漲推動加密股狂升，特斯拉擴充套件機器人計程車服務！    CMoney投資網誌",
-    "implication": "—"
+    "summary": "特斯拉擴展機器人計程車服務，推動自動駕駛應用。",
+    "implication": "台灣自駕車與機器人相關供應鏈有望受惠。"
   },
   {
     "title": "榮耀HONOR 600系列有請李多慧助陣! AI機器人手機Robot Phone同場現身 | 太報 - LINE TODAY",
@@ -226,9 +226,9 @@
     "source": "LINE TODAY",
     "region": "taiwan",
     "published_at": "2026-07-06",
-    "category": "機器人",
-    "summary": "榮耀HONOR 600系列有請李多慧助陣! AI機器人手機Robot Phone同場現身 | 太報    LINE TODAY",
-    "implication": "—"
+    "category": "AI",
+    "summary": "榮耀推出AI機器人手機，結合智慧功能與娛樂。",
+    "implication": "台灣手機零組件與AI軟體開發商可關注此趨勢。"
   },
   {
     "title": "機器人進駐醫院！台南智慧照護再升級 | 中華日報 - LINE TODAY",
@@ -238,8 +238,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "機器人",
-    "summary": "機器人進駐醫院！台南智慧照護再升級 | 中華日報    LINE TODAY",
-    "implication": "—"
+    "summary": "台南醫院導入機器人，提升智慧照護服務品質。",
+    "implication": "台灣醫療機器人與智慧醫療解決方案市場潛力大。"
   },
   {
     "title": "台灣無人機產業爆炸式成長 外媒揭「戰略起飛」關鍵內幕 - Yahoo新聞",
@@ -249,8 +249,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "無人機",
-    "summary": "台灣無人機產業爆炸式成長 外媒揭「戰略起飛」關鍵內幕    Yahoo新聞",
-    "implication": "—"
+    "summary": "外媒揭露台灣無人機產業爆炸性成長的戰略關鍵。",
+    "implication": "台灣無人機產業受國際關注，有利爭取全球訂單。"
   },
   {
     "title": "台廠搶攻「非紅供應鏈」百億商機！ 台灣無人機產業鏈全解析航太軍工國家隊成形 - 理財周刊",
@@ -260,8 +260,19 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "無人機",
-    "summary": "台廠搶攻「非紅供應鏈」百億商機！ 台灣無人機產業鏈全解析航太軍工國家隊成形    理財周刊",
-    "implication": "—"
+    "summary": "台廠搶攻無人機「非紅供應鏈」百億商機，國家隊成形。",
+    "implication": "台灣無人機產業鏈發展成熟，強化國防自主與國際合作。"
+  },
+  {
+    "title": "汲取俄烏戰場經驗！台灣建構無人機非紅供應鏈 不能仰賴單次採購 - 自由軍武頻道",
+    "snippet": "汲取俄烏戰場經驗！台灣建構無人機非紅供應鏈 不能仰賴單次採購    自由軍武頻道",
+    "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9CYnJETW5XQ1ltcDlhUm5MaEFfd1V5cUlhdkhvc2ZGWlcxSW85Y3QwRnEzc1EtdzVQVDFNWlFETy03RXRoMWtFMEdqa3FjZVBqaXpwRHVNN2ZjRGZGWXY5YdIBZkFVX3lxTFBtNU1LNEdLRkhDVHZ5LUF1cHFLRGV4WS1ScmpSZDVjT0NmYmgzaFhWRXV3R3NfZm4wSGxOSFpzc2VmS1NFcFh5SWpjUWRNU0NxTmVnUEFxRnpWblFPMWNCREhuS3hyQQ?oc=5",
+    "source": "自由軍武頻道",
+    "region": "taiwan",
+    "published_at": "2026-07-06",
+    "category": "無人機",
+    "summary": "台灣借鑑俄烏經驗，建構無人機非紅供應鏈。",
+    "implication": "台灣無人機產業鏈將更具韌性，提升國防自主能力。"
   },
   {
     "title": "無人機預算解套爆商機，台廠供應鏈全解析-財經焦點情報站 - CMoney投資網誌",
@@ -271,8 +282,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "無人機",
-    "summary": "無人機預算解套爆商機，台廠供應鏈全解析-財經焦點情報站    CMoney投資網誌",
-    "implication": "—"
+    "summary": "台灣無人機預算解套，台廠供應鏈迎來龐大商機。",
+    "implication": "台灣無人機產業鏈將加速發展，帶動相關企業成長。"
   },
   {
     "title": "高雄拚產業轉型 市府：無人機、無人艇政策將成傳產升級新引擎 - 蕃新聞",
@@ -282,19 +293,8 @@
     "region": "taiwan",
     "published_at": "2026-07-06",
     "category": "無人機",
-    "summary": "高雄拚產業轉型 市府：無人機、無人艇政策將成傳產升級新引擎    蕃新聞",
-    "implication": "—"
-  },
-  {
-    "title": "世紀民生切入反無人機 為政府採購標案預作準備 - 知新聞",
-    "snippet": "世紀民生切入反無人機 為政府採購標案預作準備    知新聞",
-    "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE4zZkE4bWNWeTZ3MFdyZ25SaFMyRm0xMFNXQkYzbHRWWmliRmZNQ1Y3RDhyV0M3N0JmNVJnVk1lb1FNaUdsaVh1VWJQeUhhb19yd0xZM0wwQmxCeDBLQzZHU3R4YXJ6dF9jWFZaVXQ3SQ?oc=5",
-    "source": "知新聞",
-    "region": "taiwan",
-    "published_at": "2026-07-06",
-    "category": "無人機",
-    "summary": "世紀民生切入反無人機 為政府採購標案預作準備    知新聞",
-    "implication": "—"
+    "summary": "高雄推無人機、無人艇政策，助傳產升級轉型。",
+    "implication": "台灣南部無人機產業聚落發展，創造新興產業機會。"
   },
   {
     "title": "The White House AI Executive Order: Why Cybersecurity Matters for America’s AI Leadership - GovCon Wire",
@@ -304,8 +304,8 @@
     "region": "us_federal",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "The White House AI Executive Order: Why Cybersecurity Matters for America’s AI L",
-    "implication": "—"
+    "summary": "白宮AI行政命令強調網路安全對美國AI領導力重要。",
+    "implication": "台灣AI業者應關注美國政策，強化AI資安合作。"
   },
   {
     "title": "Keyfactor Announces $1B+ Strategic Growth Investment Led by Summit Partners to Expand Leadership in Securing the AI and Post-Quantum Enterprise - Yahoo Finance",
@@ -315,8 +315,8 @@
     "region": "us_federal",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "Keyfactor Announces $1B+ Strategic Growth Investment Led by Summit Partners to E",
-    "implication": "—"
+    "summary": "Keyfactor獲逾10億美元投資，擴展AI與後量子資安。",
+    "implication": "台灣資安業者可尋求合作，搶攻AI資安市場。"
   },
   {
     "title": "White House Adviser Rules Out FDA-Style AI Regulator - Let's Data Science",
@@ -326,8 +326,8 @@
     "region": "us_federal",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "White House Adviser Rules Out FDA-Style AI Regulator    Let's Data Science",
-    "implication": "—"
+    "summary": "白宮顧問排除設立FDA式AI監管機構的可能性。",
+    "implication": "台灣AI產業發展可參考美國監管方向，避免過度限制。"
   },
   {
     "title": "Trump restrictions on private AI models turn attention to open source - The Hill",
@@ -337,8 +337,8 @@
     "region": "us_federal",
     "published_at": "2026-07-06",
     "category": "AI",
-    "summary": "Trump restrictions on private AI models turn attention to open source    The Hil",
-    "implication": "—"
+    "summary": "川普對私有AI模型限制，促使關注開源AI發展。",
+    "implication": "台灣AI業者可投入開源AI生態系，降低政策風險。"
   },
   {
     "title": "Trump administration lifts restrictions on Anthropic's Claude models after cybersecurity alarm - AOL.com",
@@ -347,8 +347,30 @@
     "source": "AOL.com",
     "region": "us_federal",
     "published_at": "2026-07-06",
+    "category": "AI",
+    "summary": "川普政府解除對Anthropic Claude模型的限制。",
+    "implication": "台灣AI業者可關注美國政策變化，調整市場策略。"
+  },
+  {
+    "title": "White House touts over 700 regulatory cuts, including emissions rules for cars - CBT News",
+    "snippet": "White House touts over 700 regulatory cuts, including emissions rules for cars    CBT News",
+    "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1nS0pSMkxmelRGSFdFQlNsTkhzTldwX1hjV296MHRMRHUzU1I2X01pdUpTRjlCanN5dWVxQmhxVkg0TDlDbEZGV3Rac0N3R1ZkY1ZTT2l5S2UwUVFPVVFpZjJiMzFlZkp1RG9MakNR?oc=5",
+    "source": "CBT News",
+    "region": "us_federal",
+    "published_at": "2026-07-06",
     "category": "其他",
-    "summary": "Trump administration lifts restrictions on Anthropic's Claude models after cyber",
+    "summary": "白宮宣稱削減逾700項法規，包括汽車排放標準。",
+    "implication": "—"
+  },
+  {
+    "title": "White House Report Brands Smithsonian Leadership As Radical Activists Who Can't Be Trusted - TV News Check",
+    "snippet": "White House Report Brands Smithsonian Leadership As Radical Activists Who Can't Be Trusted    TV News Check",
+    "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQMjUwMzM2ck11QVBhVzUyUDVCZENsVGp0RDMyU0wzanc5ZzBaS0MyaDY3eUtpQnRJLW9IMnJyQ0pNaDhmMzQ2aVdPcDZYWk16TVJkRHdsVlJZYTF2R1lxNy1aMmlOdXdoMHlEdnlNUkdlV1lxWm5UY3RyVFVnMkw0STJzc2ZBUExjMzNwdGl3ZWFHQm1NZUdUWVNVRERGZWp2VXFSbk8wdWNVREx6RGI5ZGQzcHhER2tzTjZlMkMwckZTajZrU0xIVl9USjdkdw?oc=5",
+    "source": "TV News Check",
+    "region": "us_federal",
+    "published_at": "2026-07-06",
+    "category": "其他",
+    "summary": "白宮報告批評史密森尼學會領導層為激進分子。",
     "implication": "—"
   },
   {
@@ -359,29 +381,7 @@
     "region": "us_federal",
     "published_at": "2026-07-06",
     "category": "其他",
-    "summary": "Belgium set to appeal as FIFA reverses Balogun's World Cup suspension after Trum",
-    "implication": "—"
-  },
-  {
-    "title": "White House touts over 700 regulatory cuts, including emissions rules for cars - CBT News",
-    "snippet": "White House touts over 700 regulatory cuts, including emissions rules for cars    CBT News",
-    "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1nS0pSMkxmelRGSFdFQlNsTkhzTldwX1hjV296MHRMRHUzU1I2X01pdUpTRjlCanN5dWVxQmhxVkg0TDlDbEZGV3Rac0N3R1ZkY1ZTT2l5S2UwUVFPVVFpZjJiMzFlZkp1RG9MakNR?oc=5",
-    "source": "CBT News",
-    "region": "us_federal",
-    "published_at": "2026-07-06",
-    "category": "其他",
-    "summary": "White House touts over 700 regulatory cuts, including emissions rules for cars  ",
-    "implication": "—"
-  },
-  {
-    "title": "White House report brands Smithsonian leadership as radical activists who can't be trusted - The Courier of Montgomery County",
-    "snippet": "White House report brands Smithsonian leadership as radical activists who can't be trusted    The Courier of Montgomery County",
-    "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOalZnRzZ2NDhmZ2c5NjFrZm5VSkI1aEU2cVhTYWFSTUIxaXRwUUZqTnh1ZGJlQVFLSmhENnZBM3Bab2cyMEEwM3ZGOTZ5RC13TEZvaEhST1RVYnVEeWdhZ1B4UUxib0MxT29zbG1IOF9JelVmcWdZVHNQZ3VDcHdsUFYwSTNJLTVzZTlaWkQ3cFlLYmhWeFRWRmNRSXd3OHRqRzNOTmhpN0R1cUR0SDRHLVF4Mng?oc=5",
-    "source": "The Courier of Montgomery County",
-    "region": "us_federal",
-    "published_at": "2026-07-06",
-    "category": "其他",
-    "summary": "White House report brands Smithsonian leadership as radical activists who can't ",
+    "summary": "傳川普介入，FIFA撤銷巴洛根世界盃禁賽。",
     "implication": "—"
   },
   {
@@ -391,9 +391,9 @@
     "source": "AOL.com",
     "region": "us_federal",
     "published_at": "2026-07-06",
-    "category": "半導體",
-    "summary": "What smart people are saying about the return of Anthropic's Fable 5    AOL.com",
-    "implication": "—"
+    "category": "AI",
+    "summary": "專家討論Anthropic Fable 5模型的重返。",
+    "implication": "台灣AI研究與開發者可關注最新模型進展。"
   },
   {
     "title": "Samsung SDI Splits a 25 Trillion Won Battery Bet Between Ulsan and Cheonan - Tech Times",
@@ -403,8 +403,8 @@
     "region": "us_states",
     "published_at": "2026-07-06",
     "category": "其他",
-    "summary": "Samsung SDI Splits a 25 Trillion Won Battery Bet Between Ulsan and Cheonan    Te",
-    "implication": "—"
+    "summary": "三星SDI投資25兆韓元，擴大電池產能。",
+    "implication": "台灣電池材料與設備供應商可尋求合作機會。"
   },
   {
     "title": "Hyundai to Build 30,000 Atlas Robots Annually - MEXC",
@@ -413,9 +413,9 @@
     "source": "MEXC",
     "region": "us_states",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "Hyundai to Build 30,000 Atlas Robots Annually    MEXC",
-    "implication": "—"
+    "category": "機器人",
+    "summary": "現代汽車計劃年產3萬台Atlas機器人。",
+    "implication": "台灣機器人零組件與系統整合商有望受惠。"
   },
   {
     "title": "Taiwan Tech Update: July 6, 2026 - dominotheory.com",
@@ -424,9 +424,9 @@
     "source": "dominotheory.com",
     "region": "us_states",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "Taiwan Tech Update: July 6, 2026    dominotheory.com",
-    "implication": "—"
+    "category": "其他",
+    "summary": "台灣科技更新報導，關注產業最新動態。",
+    "implication": "台灣科技產業持續發展，吸引國際關注。"
   },
   {
     "title": "Micron's 14 Trillion Won Hiroshima Investment Sparks Semiconductor Race - 조선일보",
@@ -436,8 +436,8 @@
     "region": "us_states",
     "published_at": "2026-07-06",
     "category": "半導體",
-    "summary": "Micron's 14 Trillion Won Hiroshima Investment Sparks Semiconductor Race    조선일보",
-    "implication": "—"
+    "summary": "美光投資廣島14兆韓元，加劇半導體競爭。",
+    "implication": "台灣半導體產業面臨國際競爭，需持續創新。"
   },
   {
     "title": "Kratos Expands Oklahoma City Manufacturing Facility to Accelerate Production of Valkyrie, Firejet and Other Jet Drone Systems - The Manila Times",
@@ -447,8 +447,8 @@
     "region": "us_states",
     "published_at": "2026-07-06",
     "category": "無人機",
-    "summary": "Kratos Expands Oklahoma City Manufacturing Facility to Accelerate Production of ",
-    "implication": "—"
+    "summary": "Kratos擴建奧克拉荷馬廠，加速噴射無人機生產。",
+    "implication": "台灣無人機零組件與製造商可尋求國際合作機會。"
   },
   {
     "title": "Micron expands factories in Taiwan, India, and Singapore as Samsung and SK face supply chain diversification challenge - 매일경제",
@@ -457,9 +457,9 @@
     "source": "매일경제",
     "region": "us_states",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "Micron expands factories in Taiwan, India, and Singapore as Samsung and SK face ",
-    "implication": "—"
+    "category": "半導體",
+    "summary": "美光在台、印、星擴廠，三星SK面臨供應鏈挑戰。",
+    "implication": "台灣半導體製造地位提升，吸引國際投資與合作。"
   },
   {
     "title": "AI Supply Chain Bottlenecks in 2026: Semiconductor, Memory, Power, and Laser Constraints - News and Statistics - IndexBox",
@@ -468,9 +468,9 @@
     "source": "IndexBox",
     "region": "us_states",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "AI Supply Chain Bottlenecks in 2026: Semiconductor, Memory, Power, and Laser Con",
-    "implication": "—"
+    "category": "半導體",
+    "summary": "2026年AI供應鏈面臨半導體、記憶體等瓶頸。",
+    "implication": "台灣半導體業者可把握機會，解決AI供應鏈挑戰。"
   },
   {
     "title": "Taiwan opens new office in Phoenix, Arizona ᐉ News from Fakti.bg - World - Fakti.bg",
@@ -479,9 +479,9 @@
     "source": "Fakti.bg",
     "region": "us_states",
     "published_at": "2026-07-06",
-    "category": "AI",
-    "summary": "Taiwan opens new office in Phoenix, Arizona ᐉ News from Fakti.bg - World    Fakt",
-    "implication": "—"
+    "category": "其他",
+    "summary": "台灣在亞利桑那州鳳凰城設立新辦事處。",
+    "implication": "強化台美半導體合作，深化供應鏈連結。"
   },
   {
     "title": "Netherlands Bets €30 Million That Drone Software Beats Drone Hardware - DroneXL.co",
@@ -491,7 +491,7 @@
     "region": "us_states",
     "published_at": "2026-07-06",
     "category": "無人機",
-    "summary": "Netherlands Bets €30 Million That Drone Software Beats Drone Hardware    DroneXL",
-    "implication": "—"
+    "summary": "荷蘭投資3千萬歐元，看好無人機軟體發展潛力。",
+    "implication": "台灣無人機產業應加強軟體研發，提升附加價值。"
   }
 ]
