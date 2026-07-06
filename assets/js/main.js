@@ -21,6 +21,7 @@ function gfNav(active) {
       <a href="${path}invest-map.html" ${active==="map"?'class="active"':''}>產業投資地圖</a>
       <a href="${path}insights.html" ${active==="ins"?'class="active"':''}>台美動態資訊</a>
       <a href="${path}about.html" ${active==="about"?'class="active"':''}>關於我們</a>
+      <a href="#" class="nav-member" onclick="gfOpenMember(event)">📩 訂閱電子報</a>
       <a href="#" class="nav-member" onclick="gfOpenMember(event)">加入會員</a>
       <a href="${path}contact.html" class="nav-cta">預約諮詢</a>
     </div>
@@ -79,7 +80,7 @@ function gfMemberModalHTML() {
       <button class="close" onclick="gfCloseModal('memberModal')">✕</button>
       <p class="kicker">MEMBERSHIP</p>
       <h3>加入 Guide.Ferryman 會員</h3>
-      <p style="font-size:14px;color:var(--slate);margin-bottom:18px">免費加入會員，未來將優先收到每週台美產業動態電子報與訂閱制內容。</p>
+      <p style="font-size:14px;color:var(--slate);margin-bottom:18px">免費加入會員即訂閱每週台美產業動態電子報(每週一發送)。未來將推出進階訂閱方案,提供更深入的分級內容。</p>
       <form onsubmit="return gfMemberSubmit(event)">
         <div class="form-grid">
           <div class="field"><label>姓名 <span class="req">*</span></label><input class="inp" name="name" required></div>

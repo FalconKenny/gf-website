@@ -131,7 +131,8 @@ function GF_getHot() {
 async function GF_fetchArticles() {
   if (typeof GF_SB_ENABLED !== "undefined" && GF_SB_ENABLED) {
     try {
-      const rows = await gfSbSelect("articles", "&order=date.desc,created_at.desc");
+      /* visible=false 的文章不在前台顯示(後台可勾選控制;舊資料 visible 為空值視同顯示) */
+      const rows = await gfSbSelect("articles", "&visible=not.is.false&order=date.desc,created_at.desc");
       if (Array.isArray(rows)) return rows;
     } catch (e) { console.warn("Supabase 文章讀取失敗，改用本地資料：", e.message); }
   }
