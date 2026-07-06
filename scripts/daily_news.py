@@ -60,17 +60,9 @@ CAT_COLORS = {
 }
 REGION_COLORS = {"taiwan": "#0FA3A8", "us_federal": "#0A1C30", "us_states": "#E8A23D"}
 
-# -------- Supabase 欄位對應(若你的 hot_topics 欄位名不同,改這裡即可) --------
-FIELD_MAP = {
-    "title":        "title",         # 標題
-    "summary":      "summary",       # 一句話重點
-    "implication":  "implication",   # 對台灣產業意涵(若表中無此欄,設為 None 即略過)
-    "category":     "category",      # AI/機器人/半導體/無人機/其他
-    "region":       "region",        # 台灣/美國聯邦/美國各州
-    "source":       "source",        # 來源媒體
-    "url":          "source_url",    # 原文連結
-    "published_at": "published_at",  # 發布日期
-}
+# -------- Supabase 寫入設定(已依實際 hot_topics 結構調整:cat / items / updated_at) --------
+# 每個類別一列,items 為 JSONB 字串陣列;每日以「前一天動態標題」整批更新該類別
+ADD_REGION_TAG = True   # True: 標題前加【台灣】【美聯邦】【美州】;不想要改 False
 
 # ---------------------------------------------------------------
 # 1. 抓取
@@ -265,24 +257,31 @@ def render_cards(items):
 # ---------------------------------------------------------------
 # 5. Supabase 寫入
 # ---------------------------------------------------------------
+REGION_TAG = {"taiwan": "【台灣】", "us_federal": "【美聯邦】", "us_states": "【美州】"}
+
 def push_supabase(items, url, key, table):
-    rows = []
+    # 依類別分組 → 每類別一列 upsert(on_conflict=cat)
+    by_cat = {}
     for it in items:
-        row = {}
-        for src_key, col in FIELD_MAP.items():
-            if col:
-                val = REGIONS.get(it[src_key], it[src_key]) if src_key == "region" else it.get(src_key)
-                row[col] = val
-        rows.append(row)
+        tag = REGION_TAG.get(it["region"], "") if ADD_REGION_TAG else ""
+        by_cat.setdefault(it["category"], []).append(tag + it["title"])
+    if not by_cat:
+        print("[Supabase] 無資料可更新")
+        return
+    now_iso = dt.datetime.now(TAIPEI).isoformat()
+    rows = [{"cat": c, "items": titles, "updated_at": now_iso}
+            for c, titles in by_cat.items()]
     r = requests.post(
-        f"{url}/rest/v1/{table}",
+        f"{url}/rest/v1/{table}?on_conflict=cat",
         headers={"apikey": key, "Authorization": f"Bearer {key}",
-                 "Content-Type": "application/json", "Prefer": "return=minimal"},
+                 "Content-Type": "application/json",
+                 "Prefer": "resolution=merge-duplicates,return=minimal"},
         json=rows, timeout=60,
     )
     if r.status_code >= 300:
         raise RuntimeError(f"Supabase 寫入失敗 {r.status_code}: {r.text[:300]}")
-    print(f"[Supabase] 已寫入 {len(rows)} 筆至 {table}")
+    updated = "、".join(f"{c}({len(t)}則)" for c, t in by_cat.items())
+    print(f"[Supabase] 已更新類別:{updated}")
 
 # ---------------------------------------------------------------
 # 6. Gmail 通知
