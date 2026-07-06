@@ -1,0 +1,137 @@
+{
+  "_說明": "所有來源皆可自行增刪。type=rss 為固定 RSS 來源;type=gnews 會自動組成 Google News RSS 查詢(只抓前一天)。region 必須是 taiwan / us_federal / us_states 之一。",
+
+  "feeds": [
+    {
+      "name": "白宮新聞",
+      "type": "rss",
+      "url": "https://www.whitehouse.gov/news/feed/",
+      "region": "us_federal",
+      "lang": "en"
+    },
+    {
+      "name": "美國聯邦公報-半導體",
+      "type": "rss",
+      "url": "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bterm%5D=semiconductor",
+      "region": "us_federal",
+      "lang": "en"
+    },
+    {
+      "name": "美國商務部新聞",
+      "type": "rss",
+      "url": "https://www.commerce.gov/feeds/news",
+      "region": "us_federal",
+      "lang": "en"
+    },
+    {
+      "name": "TechNews 科技新報",
+      "type": "rss",
+      "url": "https://technews.tw/feed/",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+    {
+      "name": "中央社科技",
+      "type": "rss",
+      "url": "https://feeds.feedburner.com/rsscna/technology",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+    {
+      "name": "iThome",
+      "type": "rss",
+      "url": "https://www.ithome.com.tw/rss",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+
+    {
+      "name": "GNews-台灣-AI",
+      "type": "gnews",
+      "query": "台灣 AI 人工智慧 (政策 OR 投資 OR 補助 OR 布局)",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+    {
+      "name": "GNews-台灣-機器人",
+      "type": "gnews",
+      "query": "台灣 機器人 (產業 OR 政策 OR 投資)",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+    {
+      "name": "GNews-台灣-半導體",
+      "type": "gnews",
+      "query": "台灣 半導體 (政策 OR 投資 OR 擴廠 OR 補助)",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+    {
+      "name": "GNews-台灣-無人機",
+      "type": "gnews",
+      "query": "台灣 無人機 (產業 OR 政策 OR 訂單)",
+      "region": "taiwan",
+      "lang": "zh"
+    },
+
+    {
+      "name": "GNews-美聯邦-AI",
+      "type": "gnews",
+      "query": "White House OR Congress OR federal AI policy executive order",
+      "region": "us_federal",
+      "lang": "en"
+    },
+    {
+      "name": "GNews-美聯邦-半導體",
+      "type": "gnews",
+      "query": "CHIPS Act OR Commerce Department semiconductor policy funding",
+      "region": "us_federal",
+      "lang": "en"
+    },
+    {
+      "name": "GNews-美聯邦-機器人無人機",
+      "type": "gnews",
+      "query": "federal robotics OR drone policy legislation procurement",
+      "region": "us_federal",
+      "lang": "en"
+    },
+
+    {
+      "name": "GNews-美各州-半導體投資",
+      "type": "gnews",
+      "query": "state governor semiconductor plant investment incentives announcement",
+      "region": "us_states",
+      "lang": "en"
+    },
+    {
+      "name": "GNews-美各州-機器人製造",
+      "type": "gnews",
+      "query": "state robotics manufacturing facility investment announcement",
+      "region": "us_states",
+      "lang": "en"
+    },
+    {
+      "name": "GNews-美各州-台商投資",
+      "type": "gnews",
+      "query": "Taiwan company investment United States factory announcement",
+      "region": "us_states",
+      "lang": "en"
+    },
+    {
+      "name": "GNews-美各州-無人機",
+      "type": "gnews",
+      "query": "state drone manufacturing investment program announcement",
+      "region": "us_states",
+      "lang": "en"
+    }
+  ],
+
+  "分類關鍵字": {
+    "AI": ["ai", "人工智慧", "artificial intelligence", "machine learning", "llm", "生成式", "genai", "gpu", "算力"],
+    "機器人": ["機器人", "robot", "robotics", "humanoid", "人形", "自動化", "automation", "amr", "cobot"],
+    "半導體": ["半導體", "semiconductor", "chip", "晶片", "晶圓", "fab", "foundry", "封裝", "cowos", "tsmc", "台積", "ic design"],
+    "無人機": ["無人機", "drone", "uav", "uas", "無人載具", "evtol"]
+  },
+
+  "每區每類上限": 5
+}
