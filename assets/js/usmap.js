@@ -32,7 +32,7 @@
       panel.innerHTML = `
         <p class="coord">STATE PROFILE</p>
         <h3>${nameFromMap || "該州"}</h3>
-        <p class="empty">此州的產業資料建置中。<br><br>Guide.Ferryman 已針對 15 個重點州完成產業盤點，其餘州別資料將陸續上線。若您有特定州的佈局需求，歡迎<a href="contact.html">預約諮詢</a>。</p>`;
+        <p class="empty">Guide.Ferryman 已完成美國 50 州的基本產業盤點。此州的完整投資情報，請至<a href="invest-map.html">美洲產業投資地圖</a>查看；若您有特定州的佈局需求，歡迎<a href="contact.html">預約諮詢</a>。</p>`;
       return;
     }
     panel.innerHTML = `
@@ -49,14 +49,14 @@
   /* 各州英文縮寫（地圖標籤用） */
   const GF_ABBR = {"Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE","District of Columbia":"DC","Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS","Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA","West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","Puerto Rico":"PR"};
 
-  /* 每州不同深淺：以州名產生穩定色階（重點州更亮，與「深色州別＝已有資料」說明一致） */
+  /* 每州不同深淺：以州名產生穩定色階（重點州較亮） */
   function stateShade(d) {
     let h = 0;
     const n = d.properties.name;
     for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 997;
     const t = h / 997; // 0–1 穩定亂數
     return GF_STATES[d.id]
-      ? d3.interpolateRgb("#1E5A96", "#3F86C8")(t)   // 15 個重點州：較亮的藍
+      ? d3.interpolateRgb("#1E5A96", "#3F86C8")(t)   // 已建置詳細資料州：較亮的藍
       : d3.interpolateRgb("#10294A", "#1B4573")(t);  // 其他州：較深的藍
   }
 
@@ -87,7 +87,7 @@
         tip.style.left = (event.clientX - box.left) + "px";
         tip.style.top = (event.clientY - box.top) + "px";
         const s = GF_STATES[d.id];
-        tip.textContent = s ? `${s.name} · ${s.industries[0]}` : d.properties.name + "（資料建置中）";
+        tip.textContent = s ? `${s.name} · ${s.industries[0]}` : d.properties.name;
       })
       .on("mouseleave", () => { tip.style.opacity = 0; })
       .on("click", (event, d) => showState(d.id, d.properties.name))

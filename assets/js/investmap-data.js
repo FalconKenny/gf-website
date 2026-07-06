@@ -1,8 +1,7 @@
 /* ============================================================
-   Guide.Ferryman — 美洲產業投資地圖資料層
-   來源：GF_美洲50州產業盤點_2.xlsx（50 州 × 12 欄）
+   Guide.Ferryman — 美洲產業投資地圖資料層 v2
+   來源：GF_美洲50州產業盤點_2.xlsx（50 州）
    鍵值：FIPS 州代碼（對應 us-atlas states-albers-10m.json）
-   verified: true = 台商投資案已查證（✔）
    ============================================================ */
 const GF_INVEST = {
  "01": {
@@ -15,10 +14,7 @@ const GF_INVEST = {
   "policy": "Alabama Jobs Act 稅收抵免",
   "features": "汽車與航太製造聚落(Mercedes/Airbus/Hyundai);鋼鐵、天然氣、木材;南方低成本、右工作州",
   "tax": "企業所得稅6.5%;綜合銷售稅約9.46%(全美第5高)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "汽車/航太供應鏈零組件切入",
-  "status": "待查證",
-  "verified": false
+  "twLink": "汽車/航太供應鏈零組件切入"
  },
  "02": {
   "name": "阿拉斯加州",
@@ -30,25 +26,19 @@ const GF_INVEST = {
   "policy": "AIDEA 融資",
   "features": "石油天然氣、漁業、國防雷達;北極戰略位置、豐富礦產;無州所得稅、無州銷售稅",
   "tax": "企業所得稅2.0–9.4%累進;無州銷售稅(僅地方稅約1.82%)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "能源/北極物流利基",
-  "status": "待查證",
-  "verified": false
+  "twLink": "能源/北極物流利基"
  },
  "04": {
   "name": "亞利桑那州",
   "en": "Arizona",
   "industries": "先進半導體製造、半導體封裝(CoWoS)、航太國防",
   "companies": "TSMC(鳳凰城6廠)、Intel、Amkor、Honeywell",
-  "twCompanies": "TSMC(鳳凰城6廠+封裝+研發)  ✔",
+  "twCompanies": "TSMC(鳳凰城6廠+封裝+研發)",
   "edo": "Arizona Commerce Authority(設Taiwan Trade & Investment Center)",
   "policy": "CHIPS聯邦補助$66億(TSMC)；GPEC區域招商",
   "features": "半導體大聚落(TSMC/Intel);太陽能豐富、乾燥氣候利於晶圓廠;親商、對台設專責窗口",
   "tax": "企業所得稅4.9%;綜合銷售稅約8.4%",
-  "twCases": "TSMC鳳凰城$1,650億(美史上最大外資綠地投資)，帶動台灣封測/材料供應鏈群聚",
-  "twLink": "台積電效應帶動台廠群聚；州府設專責台灣窗口；2025對台進出口暴增",
-  "status": "✔已查證 commerce.gov/tsmc.com/azcommerce.com",
-  "verified": true
+  "twLink": "台積電效應帶動台廠群聚；州府設專責台灣窗口；2025對台進出口暴增"
  },
  "05": {
   "name": "阿肯色州",
@@ -60,25 +50,19 @@ const GF_INVEST = {
   "policy": "Create Rebate 就業補貼",
   "features": "航太國防、鋼鐵、鋰礦(Smackover);沃爾瑪總部生態;農業食品",
   "tax": "企業所得稅3.9%;綜合銷售稅約9.46%(全美前段)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "鋼鋁/國防零組件；鋰電上游",
-  "status": "待查證",
-  "verified": false
+  "twLink": "鋼鋁/國防零組件；鋰電上游"
  },
  "06": {
   "name": "加利福尼亞州",
   "en": "California",
   "industries": "AI與軟體(矽谷)、機器人新創、半導體設計/設備、航太",
   "companies": "NVIDIA、Apple、Google、Applied Materials、Samsung Semiconductor",
-  "twCompanies": "Quanta廣達、Wistron緯創、Foxconn鴻海(AI伺服器產線/研發)  ✔",
+  "twCompanies": "Quanta廣達、Wistron緯創、Foxconn鴻海(AI伺服器產線/研發)",
   "edo": "GO-Biz(加州州長經濟發展辦公室)",
   "policy": "CalCompetes稅收抵免/補助(Applied Materials獲$3,000萬)",
   "features": "全球AI/半導體設計/創投核心;港口與人才;稅負與法規較高但市場最大",
   "tax": "企業所得稅8.84%;綜合銷售稅約8.8%(州率7.25%全美最高)",
-  "twCases": "(台灣IC設計/AI新創於矽谷設點普遍；具體個案待逐案查證)",
-  "twLink": "AI/機器人新創與創投最密集(全美2/3創投)；半導體設計技轉入口",
-  "status": "✔已查證 business.ca.gov/gov.ca.gov",
-  "verified": true
+  "twLink": "AI/機器人新創與創投最密集(全美2/3創投)；半導體設計技轉入口"
  },
  "08": {
   "name": "科羅拉多州",
@@ -90,10 +74,7 @@ const GF_INVEST = {
   "policy": "Job Growth Incentive Tax Credit",
   "features": "航太、量子、無人機聚落;豐富礦產與再生能源;單一稅率親商",
   "tax": "企業所得稅4.4%;綜合銷售稅約7.8%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "航太/量子/無人機技術合作",
-  "status": "待查證",
-  "verified": false
+  "twLink": "航太/量子/無人機技術合作"
  },
  "09": {
   "name": "康乃狄克州",
@@ -105,10 +86,7 @@ const GF_INVEST = {
   "policy": "JobsCT 退稅",
   "features": "航太引擎(P&W)、國防造船;高教人才密集;高生活成本",
   "tax": "企業所得稅7.5%;綜合銷售稅6.35%(無地方稅)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "航太精密零組件供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "航太精密零組件供應鏈"
  },
  "10": {
   "name": "德拉瓦州",
@@ -120,10 +98,7 @@ const GF_INVEST = {
   "policy": "EDGE Grants",
   "features": "化工、金融、生技;公司法友善(註冊天堂);無州銷售稅",
   "tax": "企業所得稅8.7%+特許稅;無州銷售稅",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "特用化學/材料利基",
-  "status": "待查證",
-  "verified": false
+  "twLink": "特用化學/材料利基"
  },
  "12": {
   "name": "佛羅里達州",
@@ -135,10 +110,7 @@ const GF_INVEST = {
   "policy": "Capital Investment Tax Credit",
   "features": "太空/國防/模擬訓練;港口物流、觀光;無個人所得稅、稅負低",
   "tax": "企業所得稅5.5%;綜合銷售稅約7.0%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "太空/國防電子;無人系統",
-  "status": "待查證",
-  "verified": false
+  "twLink": "太空/國防電子;無人系統"
  },
  "13": {
   "name": "喬治亞州",
@@ -150,10 +122,7 @@ const GF_INVEST = {
   "policy": "REBA 招商補貼;州就業稅抵免",
   "features": "EV電池大聚落(Hyundai/SK/Rivian);港口(Savannah)、物流;稅率調降中",
   "tax": "企業所得稅5.19%(2026續降);綜合銷售稅約7.4%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "EV電池供應鏈(隔膜/銅箔/材料)切入重點",
-  "status": "待查證",
-  "verified": false
+  "twLink": "EV電池供應鏈(隔膜/銅箔/材料)切入重點"
  },
  "15": {
   "name": "夏威夷州",
@@ -165,10 +134,7 @@ const GF_INVEST = {
   "policy": "HTDC 補助",
   "features": "觀光、國防、天文;太平洋戰略位置;GET廣稅基",
   "tax": "企業所得稅4.4–6.4%;GET銷售稅約4.5%(最低之一)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "太平洋國防/天文利基",
-  "status": "待查證",
-  "verified": false
+  "twLink": "太平洋國防/天文利基"
  },
  "16": {
   "name": "愛達荷州",
@@ -180,10 +146,7 @@ const GF_INVEST = {
   "policy": "Tax Reimbursement Incentive",
   "features": "記憶體半導體(Micron);農業食品、水電資源;單一低稅率",
   "tax": "企業所得稅5.3%;綜合銷售稅約6.0%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "Micron記憶體供應鏈;封測/材料",
-  "status": "待查證",
-  "verified": false
+  "twLink": "Micron記憶體供應鏈;封測/材料"
  },
  "17": {
   "name": "伊利諾州",
@@ -195,10 +158,7 @@ const GF_INVEST = {
   "policy": "EDGE Tax Credit;量子園區",
   "features": "農機/工業機械、資料中心;運輸樞紐;稅負偏高",
   "tax": "企業所得稅9.5%(含附加稅);綜合銷售稅約8.8%",
-  "twCases": "(台廠伺服器/資料中心供應鏈布局;具體個案待查證)",
-  "twLink": "農機自動化/工業機器人;資料中心",
-  "status": "待查證",
-  "verified": false
+  "twLink": "農機自動化/工業機器人;資料中心"
  },
  "18": {
   "name": "印第安納州",
@@ -210,10 +170,7 @@ const GF_INVEST = {
   "policy": "Hoosier Business Investment Tax Credit",
   "features": "半導體封裝(SK海力士)、汽車;製造業中心、物流;低稅親商",
   "tax": "企業所得稅4.9%;綜合銷售稅7.0%(無地方稅)",
-  "twCases": "(SK海力士封裝廠帶動供應鏈;台廠切入待查證)",
-  "twLink": "先進封裝供應鏈;汽車電子",
-  "status": "待查證",
-  "verified": false
+  "twLink": "先進封裝供應鏈;汽車電子"
  },
  "19": {
   "name": "愛荷華州",
@@ -225,10 +182,7 @@ const GF_INVEST = {
   "policy": "High Quality Jobs Program",
   "features": "農業科技、風電、資料中心;玉米/風能資源豐富",
   "tax": "企業所得稅7.1%;綜合銷售稅約6.9%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "農業自動化/資料中心",
-  "status": "待查證",
-  "verified": false
+  "twLink": "農業自動化/資料中心"
  },
  "20": {
   "name": "堪薩斯州",
@@ -240,40 +194,31 @@ const GF_INVEST = {
   "policy": "APEX 大型投資獎勵",
   "features": "航太、電池(Panasonic)、農機;APEX大型投資獎勵;中部物流",
   "tax": "企業所得稅6.5%;綜合銷售稅約8.7%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "電池/航太供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "電池/航太供應鏈"
  },
  "21": {
   "name": "肯塔基州",
   "en": "Kentucky",
   "industries": "汽車、電動車電池、鋁業",
   "companies": "Ford BlueOval SK、Toyota、GE Appliances",
-  "twCompanies": "Foxconn鴻海(Louisville首座美國製造廠.73億)  ✔",
+  "twCompanies": "Foxconn鴻海(Louisville首座美國製造廠.73億)",
   "edo": "Kentucky Cabinet for Economic Development",
   "policy": "KBI 稅收抵免",
   "features": "EV電池(Ford BlueOval SK)、汽車、鋁;物流(UPS樞紐);低成本",
   "tax": "企業所得稅5.0%;綜合銷售稅6.0%(無地方稅)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "EV電池(BlueOval)供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "EV電池(BlueOval)供應鏈"
  },
  "22": {
   "name": "路易斯安那州",
   "en": "Louisiana",
   "industries": "化工、天然氣、航太、造船",
   "companies": "Dow、ExxonMobil、Northrop Grumman",
-  "twCompanies": "Pegatron和碩(路易斯安那AI伺服器廠)  ✔",
+  "twCompanies": "Pegatron和碩(路易斯安那AI伺服器廠)",
   "edo": "Louisiana Economic Development",
   "policy": "Quality Jobs Program",
   "features": "化工、LNG、航太造船;密西西比河港口、天然氣;稅制改革降稅",
   "tax": "企業所得稅5.5%;綜合銷售稅約10.1%(全美最高)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "化工/LNG/國防造船",
-  "status": "待查證",
-  "verified": false
+  "twLink": "化工/LNG/國防造船"
  },
  "23": {
   "name": "緬因州",
@@ -285,10 +230,7 @@ const GF_INVEST = {
   "policy": "Pine Tree Development Zones",
   "features": "國防造船、林業、複合材料;林木與海洋資源",
   "tax": "企業所得稅8.93%;綜合銷售稅5.5%(全美低段)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "國防造船/複合材料",
-  "status": "待查證",
-  "verified": false
+  "twLink": "國防造船/複合材料"
  },
  "24": {
   "name": "馬里蘭州",
@@ -300,10 +242,7 @@ const GF_INVEST = {
   "policy": "Job Creation Tax Credit",
   "features": "網路安全、生技、量子、國防;鄰近華府、NSA生態;稅負中高",
   "tax": "企業所得稅8.25%;綜合銷售稅6.0%(無地方稅)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "資安/量子/國防電子",
-  "status": "待查證",
-  "verified": false
+  "twLink": "資安/量子/國防電子"
  },
  "25": {
   "name": "麻薩諸塞州",
@@ -315,10 +254,7 @@ const GF_INVEST = {
   "policy": "MassRobotics Accelerator $10萬;NSF FRR全美第一($15.1M)",
   "features": "全球機器人研發樞紐、生技、AI學研;頂尖大學密集;稅負中等",
   "tax": "企業所得稅8.0%;綜合銷售稅6.25%(無地方稅)",
-  "twCases": "(台灣機器人零組件/新創可透過MassRobotics會員網絡切入;具體個案待查證)",
-  "twLink": "全球機器人研發樞紐;500+機器人公司;技轉/會員合作入口",
-  "status": "✔已查證 masstech.org/massrobotics.org",
-  "verified": true
+  "twLink": "全球機器人研發樞紐;500+機器人公司;技轉/會員合作入口"
  },
  "26": {
   "name": "密西根州",
@@ -330,10 +266,7 @@ const GF_INVEST = {
   "policy": "Michigan Strategic Fund;SOAR/MEGA",
   "features": "汽車與自駕、EV電池、工業機器人;製造業重鎮、五大湖水源;SOAR招商基金",
   "tax": "企業所得稅6.0%;綜合銷售稅6.0%(無地方稅)",
-  "twCases": "(台廠汽車電子/EV零組件布局;具體個案待查證)",
-  "twLink": "汽車自駕/EV電池;工業機器人供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "汽車自駕/EV電池;工業機器人供應鏈"
  },
  "27": {
   "name": "明尼蘇達州",
@@ -345,10 +278,7 @@ const GF_INVEST = {
   "policy": "Job Creation Fund",
   "features": "醫材(Medtronic)、農機、精密製造;高技術人才;稅負偏高",
   "tax": "企業所得稅9.8%(全美第2高);綜合銷售稅約7.5%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "醫材/精密製造供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "醫材/精密製造供應鏈"
  },
  "28": {
   "name": "密西西比州",
@@ -360,10 +290,7 @@ const GF_INVEST = {
   "policy": "MFlex 獎勵",
   "features": "航太、造船、汽車、電池;低成本、右工作州;港口",
   "tax": "企業所得稅4.0–5.0%;綜合銷售稅約7.1%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "航太/造船/電池",
-  "status": "待查證",
-  "verified": false
+  "twLink": "航太/造船/電池"
  },
  "29": {
   "name": "密蘇里州",
@@ -375,10 +302,7 @@ const GF_INVEST = {
   "policy": "Missouri Works",
   "features": "國防航太(Boeing)、汽車、農業科技;中部物流;低單一稅率",
   "tax": "企業所得稅4.0%(全美最低之一);綜合銷售稅約8.4%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "國防航太電子",
-  "status": "待查證",
-  "verified": false
+  "twLink": "國防航太電子"
  },
  "30": {
   "name": "蒙大拿州",
@@ -390,10 +314,7 @@ const GF_INVEST = {
   "policy": "Big Sky Trust Fund",
   "features": "礦業、農業、國防光電;豐富礦產與能源;無州銷售稅",
   "tax": "企業所得稅6.75%;無州銷售稅",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "光電/稀有金屬利基",
-  "status": "待查證",
-  "verified": false
+  "twLink": "光電/稀有金屬利基"
  },
  "31": {
   "name": "內布拉斯加州",
@@ -405,10 +326,7 @@ const GF_INVEST = {
   "policy": "ImagiNE Nebraska Act",
   "features": "農業科技、資料中心;風能、農產;稅率調降中",
   "tax": "企業所得稅4.55%(2027續降);綜合銷售稅約6.9%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "資料中心供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "資料中心供應鏈"
  },
  "32": {
   "name": "內華達州",
@@ -420,10 +338,7 @@ const GF_INVEST = {
   "policy": "可退還稅收抵免;大型投資獎勵",
   "features": "EV電池(Tesla超級工廠)、資料中心、物流;無州所得稅;西部物流",
   "tax": "無企業所得稅(改採商業毛利稅);綜合銷售稅約8.2%",
-  "twCases": "(Tesla/Panasonic電池供應鏈台廠布局;具體個案待查證)",
-  "twLink": "EV電池供應鏈;電池回收;物流",
-  "status": "待查證",
-  "verified": false
+  "twLink": "EV電池供應鏈;電池回收;物流"
  },
  "33": {
   "name": "新罕布夏州",
@@ -435,10 +350,7 @@ const GF_INVEST = {
   "policy": "Economic Revitalization Zone",
   "features": "國防電子、精密製造、半導體;無州所得稅、無州銷售稅;鄰近波士頓",
   "tax": "企業利潤稅7.5%;無州銷售稅",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "國防電子/精密製造",
-  "status": "待查證",
-  "verified": false
+  "twLink": "國防電子/精密製造"
  },
  "34": {
   "name": "新澤西州",
@@ -450,10 +362,7 @@ const GF_INVEST = {
   "policy": "Emerge Program 稅收抵免",
   "features": "製藥生技、AI、金融科技;鄰近紐約人才;稅負最高之一",
   "tax": "企業所得稅11.5%(全美最高);綜合銷售稅約6.6%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "製藥/AI研發",
-  "status": "待查證",
-  "verified": false
+  "twLink": "製藥/AI研發"
  },
  "35": {
   "name": "新墨西哥州",
@@ -465,10 +374,7 @@ const GF_INVEST = {
   "policy": "LEDA;JTIP",
   "features": "半導體(Intel)、國家實驗室、太空、量子;聯邦研發資源;GRT廣稅基",
   "tax": "企業所得稅5.9%;GRT銷售稅約7.6%",
-  "twCases": "(Intel封裝廠供應鏈;台廠切入待查證)",
-  "twLink": "半導體封裝;國家實驗室量子/國防",
-  "status": "待查證",
-  "verified": false
+  "twLink": "半導體封裝;國家實驗室量子/國防"
  },
  "36": {
   "name": "紐約州",
@@ -480,10 +386,7 @@ const GF_INVEST = {
   "policy": "Green CHIPS;Excelsior Jobs;無人機走廊",
   "features": "半導體(GlobalFoundries/Micron)、AI、無人機走廊、金融;Green CHIPS;人才",
   "tax": "企業所得稅7.25%;綜合銷售稅約8.5%",
-  "twCases": "(Micron/GF供應鏈;台廠材料設備切入待查證)",
-  "twLink": "半導體聚落(Albany NY CREATES);無人機測試走廊",
-  "status": "待查證",
-  "verified": false
+  "twLink": "半導體聚落(Albany NY CREATES);無人機測試走廊"
  },
  "37": {
   "name": "北卡羅來納州",
@@ -495,10 +398,7 @@ const GF_INVEST = {
   "policy": "JDIG 就業補貼",
   "features": "化合物半導體(Wolfspeed SiC)、生技、EV;研究三角園區;全美最低企業稅",
   "tax": "企業所得稅2.0%(全美最低,2030歸零);綜合銷售稅約7.0%",
-  "twCases": "(Wolfspeed碳化矽供應鏈;台廠切入待查證)",
-  "twLink": "化合物半導體(SiC);EV電池;生醫",
-  "status": "待查證",
-  "verified": false
+  "twLink": "化合物半導體(SiC);EV電池;生醫"
  },
  "38": {
   "name": "北達科他州",
@@ -510,10 +410,7 @@ const GF_INVEST = {
   "policy": "無人機Vantis系統;Automation Tax Credit",
   "features": "無人機(UAS國家級重鎮)、能源、農業科技;Grand Sky園區;低稅",
   "tax": "企業所得稅4.31%;綜合銷售稅約7.0%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "無人機(BVLOS測試)國家級重鎮",
-  "status": "待查證",
-  "verified": false
+  "twLink": "無人機(BVLOS測試)國家級重鎮"
  },
  "39": {
   "name": "俄亥俄州",
@@ -525,10 +422,7 @@ const GF_INVEST = {
   "policy": "Ohio Onshoring Incentive;JobsOhio補助",
   "features": "半導體(Intel 80億)、EV、航太、聚合物;無州所得稅(改CAT);製造業中心",
   "tax": "無企業所得稅(改採CAT商業活動稅);綜合銷售稅約7.2%",
-  "twCases": "(Intel俄亥俄供應鏈;台廠設備材料切入待查證)",
-  "twLink": "Intel先進製程聚落;EV;航太",
-  "status": "待查證",
-  "verified": false
+  "twLink": "Intel先進製程聚落;EV;航太"
  },
  "40": {
   "name": "奧克拉荷馬州",
@@ -540,10 +434,7 @@ const GF_INVEST = {
   "policy": "Quality Jobs Program",
   "features": "航太MRO、無人機、能源;油氣資源;低成本",
   "tax": "企業所得稅4.0%;綜合銷售稅約9.0%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "航太MRO;無人機測試",
-  "status": "待查證",
-  "verified": false
+  "twLink": "航太MRO;無人機測試"
  },
  "41": {
   "name": "奧勒岡州",
@@ -555,10 +446,7 @@ const GF_INVEST = {
   "policy": "Strategic Investment Program(SIP)",
   "features": "半導體「矽森林」(Intel)、清潔科技;無州銷售稅;SIP大型投資減免",
   "tax": "企業所得稅7.6%;無州銷售稅(另有CAT)",
-  "twCases": "(Intel矽森林供應鏈;台廠設備切入待查證)",
-  "twLink": "半導體『矽森林』聚落;設備/材料",
-  "status": "待查證",
-  "verified": false
+  "twLink": "半導體『矽森林』聚落;設備/材料"
  },
  "42": {
   "name": "賓夕法尼亞州",
@@ -570,10 +458,7 @@ const GF_INVEST = {
   "policy": "PA機器人聚落;就業稅抵免;存續5年條件",
   "features": "機器人(匹茲堡/CMU)、先進製造、國防、能源;天然氣豐富;稅率調降中",
   "tax": "企業所得稅7.49%(2031降至4.99%);綜合銷售稅約6.3%",
-  "twCases": "(CMU機器人生態系合作;台廠切入待查證)",
-  "twLink": "匹茲堡自駕/機器人;CMU技轉;NSF FRR前段班($12.9M)",
-  "status": "待查證",
-  "verified": false
+  "twLink": "匹茲堡自駕/機器人;CMU技轉;NSF FRR前段班($12.9M)"
  },
  "44": {
   "name": "羅德島州",
@@ -585,10 +470,7 @@ const GF_INVEST = {
   "policy": "Qualified Jobs Tax Credit",
   "features": "國防造船、海洋科技、生技;水下作戰研發;小而密",
   "tax": "企業所得稅7.0%;綜合銷售稅7.0%(無地方稅)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "海洋/水下機器人利基",
-  "status": "待查證",
-  "verified": false
+  "twLink": "海洋/水下機器人利基"
  },
  "45": {
   "name": "南卡羅來納州",
@@ -600,10 +482,7 @@ const GF_INVEST = {
   "policy": "Job Development Credit",
   "features": "航太(Boeing)、EV(BMW/Scout)、輪胎、電池;港口(Charleston);右工作州",
   "tax": "企業所得稅5.0%;綜合銷售稅約7.5%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "航太/EV/電池供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "航太/EV/電池供應鏈"
  },
  "46": {
   "name": "南達科他州",
@@ -615,40 +494,31 @@ const GF_INVEST = {
   "policy": "Reinvestment Payment Program",
   "features": "農業科技、國防電子、精密製造;無州所得稅、無企業稅;低負擔",
   "tax": "無企業所得稅;綜合銷售稅約6.1%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "農業自動化/精密電子",
-  "status": "待查證",
-  "verified": false
+  "twLink": "農業自動化/精密電子"
  },
  "47": {
   "name": "田納西州",
   "en": "Tennessee",
   "industries": "電動車與電池、汽車、AI資料中心",
   "companies": "Ford BlueOval City、VW、Nissan、xAI",
-  "twCompanies": "Quanta廣達(AI伺服器廠,多次擴產)  ✔",
+  "twCompanies": "Quanta廣達(AI伺服器廠,多次擴產)",
   "edo": "TNECD",
   "policy": "FastTrack 補助",
   "features": "EV電池大聚落(Ford BlueOval City)、汽車、AI資料中心;無個人所得稅;物流",
   "tax": "企業所得稅6.5%;綜合銷售稅約9.6%(全美第2高)",
-  "twCases": "(BlueOval City電池供應鏈;台廠切入待查證)",
-  "twLink": "EV電池大聚落;AI資料中心",
-  "status": "待查證",
-  "verified": false
+  "twLink": "EV電池大聚落;AI資料中心"
  },
  "48": {
   "name": "德克薩斯州",
   "en": "Texas",
   "industries": "半導體製造、AI資料中心、航太與無人機測試走廊、電動車",
   "companies": "Samsung(泰勒2nm廠)、Texas Instruments、Tesla、NVIDIA",
-  "twCompanies": "GlobalWafers(Sherman矽晶圓5億)、Wistron/Foxconn/Inventec/Pegatron/Delta/Lite-On/King Slide(AI伺服器)  ✔",
+  "twCompanies": "GlobalWafers(Sherman矽晶圓5億)、Wistron/Foxconn/Inventec/Pegatron/Delta/Lite-On/King Slide(AI伺服器)",
   "edo": "Texas Economic Dev. & Tourism;Texas CHIPS Office",
   "policy": "Texas CHIPS Act/TSIF(Samsung獲$2.5億);無州所得稅",
   "features": "半導體(Samsung/TI)、AI資料中心、無人機走廊、EV;無州所得稅、對台招商積極;能源與土地充足",
   "tax": "無企業所得稅(改採營業毛利稅);綜合銷售稅約8.2%",
-  "twCases": "(半導體設備/材料台廠隨Samsung、TI供應鏈布局;具體個案待逐案查證)",
-  "twLink": "無州所得稅+對台招商積極;半導體與資料中心供應鏈落地首選",
-  "status": "✔已查證 gov.texas.gov/communityimpact",
-  "verified": true
+  "twLink": "無州所得稅+對台招商積極;半導體與資料中心供應鏈落地首選"
  },
  "49": {
   "name": "猶他州",
@@ -660,10 +530,7 @@ const GF_INVEST = {
   "policy": "Economic Dev. Tax Increment Financing",
   "features": "半導體、航太國防、資料中心、生技;人才與親商;單一低稅",
   "tax": "企業所得稅4.55%;綜合銷售稅約7.3%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "半導體封測;航太國防",
-  "status": "待查證",
-  "verified": false
+  "twLink": "半導體封測;航太國防"
  },
  "50": {
   "name": "佛蒙特州",
@@ -675,10 +542,7 @@ const GF_INVEST = {
   "policy": "VEGI 獎勵",
   "features": "半導體(GlobalFoundries)、精密製造;小型高技術;稅負偏高",
   "tax": "企業所得稅8.5%;綜合銷售稅6.36%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "半導體晶圓供應鏈",
-  "status": "待查證",
-  "verified": false
+  "twLink": "半導體晶圓供應鏈"
  },
  "51": {
   "name": "維吉尼亞州",
@@ -690,10 +554,7 @@ const GF_INVEST = {
   "policy": "Commonwealth's Opportunity Fund",
   "features": "全球最大資料中心聚落、國防網路、航太;鄰近華府;親商穩定",
   "tax": "企業所得稅6.0%;綜合銷售稅約5.8%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "資料中心供應鏈;資安/國防",
-  "status": "待查證",
-  "verified": false
+  "twLink": "資料中心供應鏈;資安/國防"
  },
  "53": {
   "name": "華盛頓州",
@@ -705,10 +566,7 @@ const GF_INVEST = {
   "policy": "Aerospace/Manufacturing稅率優惠",
   "features": "航太(Boeing)、雲端AI、量子;無州所得稅(改B&O毛利稅);港口與電力",
   "tax": "無企業所得稅(改採B&O毛利稅);綜合銷售稅約9.5%(全美前段)",
-  "twCases": "(航太/雲端供應鏈台廠布局;具體個案待查證)",
-  "twLink": "航太供應鏈;雲端AI;量子",
-  "status": "待查證",
-  "verified": false
+  "twLink": "航太供應鏈;雲端AI;量子"
  },
  "54": {
   "name": "西維吉尼亞州",
@@ -720,25 +578,19 @@ const GF_INVEST = {
   "policy": "Economic Opportunity Tax Credit",
   "features": "化工、能源、汽車零件、國防;天然氣與煤;低成本",
   "tax": "企業所得稅6.5%;綜合銷售稅約6.6%",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "汽車零件/特用化學",
-  "status": "待查證",
-  "verified": false
+  "twLink": "汽車零件/特用化學"
  },
  "55": {
   "name": "威斯康辛州",
   "en": "Wisconsin",
   "industries": "工業自動化、醫材、電子製造",
   "companies": "Rockwell Automation、GE Healthcare、Foxconn",
-  "twCompanies": "Foxconn鴻海(Mount Pleasant,累計投資逾0億,AI基礎設施)  ✔",
+  "twCompanies": "Foxconn鴻海(Mount Pleasant,累計投資逾0億,AI基礎設施)",
   "edo": "Wisconsin Economic Development Corp (WEDC)",
   "policy": "Enterprise Zone Tax Credit",
   "features": "工業自動化(Rockwell)、醫材、電子製造(Foxconn);製造業與農業;綜合銷售稅低",
   "tax": "企業所得稅7.9%;綜合銷售稅約5.7%(全美低段)",
-  "twCases": "鴻海(Foxconn)威州園區(已大幅縮減,建議查證最新狀態)",
-  "twLink": "工業機器人/自動化;電子製造",
-  "status": "待查證",
-  "verified": false
+  "twLink": "工業機器人/自動化;電子製造"
  },
  "56": {
   "name": "懷俄明州",
@@ -750,9 +602,6 @@ const GF_INVEST = {
   "policy": "Business Ready Community Grant",
   "features": "能源、稀土、資料中心、碳捕捉;煤/天然氣/風能;無州所得稅、無企業稅",
   "tax": "無企業所得稅;綜合銷售稅約5.44%(全美低段)",
-  "twCases": "查無公開來源，待查證",
-  "twLink": "稀土/能源利基",
-  "status": "待查證",
-  "verified": false
+  "twLink": "稀土/能源利基"
  }
 };

@@ -19,8 +19,6 @@
     let h = 0; const n = d.properties.name;
     for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 997;
     const t = h / 997;
-    const s = GF_INVEST[d.id];
-    if (s && s.verified) return d3.interpolateRgb("#C98A2E", "#E8A23D")(t);
     return d3.interpolateRgb("#10294A", "#3F86C8")(t);
   }
 
@@ -30,7 +28,7 @@
     if (!sel) return;
     const opts = Object.entries(GF_INVEST)
       .sort((a, b) => a[1].en.localeCompare(b[1].en))
-      .map(([f, s]) => `<option value="${f}">${s.verified ? "✔ " : ""}${s.name}（${s.en}）</option>`).join("");
+      .map(([f, s]) => `<option value="${f}">${s.name}（${s.en}）</option>`).join("");
     sel.innerHTML = `<option value="">— 選擇想了解的州（共 50 州） —</option>` + opts;
     sel.addEventListener("change", () => { if (sel.value) showProfile(sel.value, true); });
   }
@@ -42,7 +40,7 @@
     const body = pending
       ? `<p class="pending">查無公開來源，待查證——Guide.Ferryman 將於後續盤點更新。</p>`
       : `<p>${esc(val)}</p>`;
-    return `<div class="im-cell${opts.full ? " full" : ""}${opts.hl && !pending ? " hl" : ""}"><h4>${title}</h4>${body}</div>`;
+    return `<div class="im-cell${opts.full ? " full" : ""}"><h4>${title}</h4>${body}</div>`;
   }
 
   function showProfile(fips, fromSelect) {
@@ -59,22 +57,20 @@
 
     box.innerHTML = `
       <p class="coord mono">FIPS ${fips} · STATE INVESTMENT PROFILE</p>
-      <h2>${esc(s.name)}${s.verified ? `<span class="im-badge-verified">✔ 已查證台商投資</span>` : ""}</h2>
+      <h2>${esc(s.name)}</h2>
       <p class="en-name">${esc(s.en)}</p>
       <div class="im-grid">
         ${cell("重點產業 KEY INDUSTRIES", s.industries, { full: true })}
         ${cell("代表性公司 ANCHOR COMPANIES", s.companies)}
-        ${cell("與台灣有關之代表企業 TAIWAN-LINKED COMPANIES", s.twCompanies, { hl: true })}
+        ${cell("與台灣有關之代表企業 TAIWAN-LINKED COMPANIES", s.twCompanies)}
         ${cell("官方招商機構 EDO", s.edo)}
         ${cell("代表性政策／補助 POLICY & INCENTIVES", s.policy)}
         ${cell("招商特點（聚落／資源／稅收） LOCATION ADVANTAGES", s.features, { full: true })}
         ${cell("稅率（企業所得稅／銷售稅） TAX", s.tax)}
-        ${cell("可查證台商投資案 VERIFIED TAIWAN INVESTMENT", s.twCases, { hl: true })}
-        ${cell("台灣鏈結重點 TAIWAN LINKAGE FOCUS", s.twLink, { full: true, hl: true })}
+        ${cell("台灣鏈結重點 TAIWAN LINKAGE FOCUS", s.twLink, { full: true })}
       </div>
       <div class="im-cta-row">
         <a class="btn btn-teal" style="padding:11px 22px;font-size:14px" href="contact.html">諮詢${esc(s.name)}佈局 →</a>
-        <span class="im-src">查證狀態：${esc(s.status || "待查證")}</span>
       </div>`;
 
     document.getElementById("im-profile-section").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -91,7 +87,6 @@
       </div>
       <div class="t-row"><b>重點產業</b>：${shortInd(s.industries)}</div>
       <div class="t-row"><b>台灣鏈結</b>：${esc(s.twLink)}</div>
-      ${s.verified ? `<span class="t-badge">✔ 已查證台商投資案</span>` : ""}
       <div class="t-more">CLICK → 完整投資情報</div>`;
   }
 
