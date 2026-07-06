@@ -271,16 +271,24 @@ REGION_TAG = {"taiwan": "【台灣】", "us_federal": "【美聯邦】", "us_sta
 
 def push_supabase(items, url, key, table):
     # 依類別分組 → 每類別一列 upsert(on_conflict=cat)
+    # items 內容為物件:{t:標題, s:一句話重點, i:產業意涵, u:原文連結, src:來源, d:日期}
     by_cat = {}
     for it in items:
         tag = REGION_TAG.get(it["region"], "") if ADD_REGION_TAG else ""
-        by_cat.setdefault(it["category"], []).append(tag + it["title"])
+        by_cat.setdefault(it["category"], []).append({
+            "t": tag + it["title"],
+            "s": it.get("summary", ""),
+            "i": it.get("implication", "—"),
+            "u": it.get("url", ""),
+            "src": it.get("source", ""),
+            "d": it.get("published_at", DATE_STR),
+        })
     if not by_cat:
         print("[Supabase] 無資料可更新")
         return
     now_iso = dt.datetime.now(TAIPEI).isoformat()
-    rows = [{"cat": c, "items": titles, "updated_at": now_iso}
-            for c, titles in by_cat.items()]
+    rows = [{"cat": c, "items": objs, "updated_at": now_iso}
+            for c, objs in by_cat.items()]
     r = requests.post(
         f"{url}/rest/v1/{table}?on_conflict=cat",
         headers={"apikey": key, "Authorization": f"Bearer {key}",
@@ -292,6 +300,51 @@ def push_supabase(items, url, key, table):
         raise RuntimeError(f"Supabase 寫入失敗 {r.status_code}: {r.text[:300]}")
     updated = "、".join(f"{c}({len(t)}則)" for c, t in by_cat.items())
     print(f"[Supabase] 已更新類別:{updated}")
+
+def push_daily_article(items, url, key):
+    """每日自動發布一篇「台美產業動態日報」至 articles 表,讓文章區每天有新內容"""
+    if not items:
+        return
+    counts = {}
+    for it in items:
+        counts[it["category"]] = counts.get(it["category"], 0) + 1
+    stat = "、".join(f"{c} {n} 則" for c, n in counts.items())
+    top3 = ";".join(it["title"] for it in items[:3])
+    summary = f"本日彙整台灣與美國動態共 {len(items)} 則({stat})。精選:{top3}。"[:200]
+
+    lines = []
+    for rkey, rname in REGIONS.items():
+        group = [x for x in items if x["region"] == rkey]
+        if not group:
+            continue
+        lines.append(f"■ {rname}({len(group)} 則)")
+        for it in group:
+            lines.append(f"\n【{it['category']}】{it['title']}")
+            lines.append(f"・重點:{it['summary']}")
+            if it.get("implication") and it["implication"] != "—":
+                lines.append(f"・對台灣產業意涵:{it['implication']}")
+            lines.append(f"・來源:{it['source']}({it['published_at']}){it['url']}")
+        lines.append("")
+    body = "\n".join(lines) + "\n(本文由 Guide.Ferryman 每日動態系統自動彙整,資料來源見各則連結)"
+
+    row = {
+        "id": f"daily-{DATE_STR}",
+        "cat": "其他",
+        "date": DATE_STR,
+        "title": f"台美產業動態日報|{DATE_STR}",
+        "summary": summary,
+        "body": body,
+    }
+    r = requests.post(
+        f"{url}/rest/v1/articles?on_conflict=id",
+        headers={"apikey": key, "Authorization": f"Bearer {key}",
+                 "Content-Type": "application/json",
+                 "Prefer": "resolution=merge-duplicates,return=minimal"},
+        json=row, timeout=60,
+    )
+    if r.status_code >= 300:
+        raise RuntimeError(f"日報文章寫入失敗 {r.status_code}: {r.text[:300]}")
+    print(f"[Articles] 已發布日報文章:台美產業動態日報|{DATE_STR}")
 
 # ---------------------------------------------------------------
 # 6. Gmail 通知
@@ -377,6 +430,12 @@ def main():
             push_supabase(items, os.environ["SUPABASE_URL"],
                           os.environ["SUPABASE_SERVICE_KEY"],
                           os.environ.get("SUPABASE_TABLE") or "hot_topics")
+        except Exception as ex:
+            ok = False
+            print(f"[錯誤] {ex}")
+        try:
+            push_daily_article(items, os.environ["SUPABASE_URL"],
+                               os.environ["SUPABASE_SERVICE_KEY"])
         except Exception as ex:
             ok = False
             print(f"[錯誤] {ex}")
