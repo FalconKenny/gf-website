@@ -228,3 +228,17 @@ footer ul{list-style:none;display:flex;flex-direction:column;gap:9px}
 .mt-40{margin-top:40px}
 
 
+
+/* ============ 熱門動態:類別底色、可點擊與知識卡 modal(v1.3) ============ */
+.hot-list li{border-bottom:none;border-radius:7px;padding:8px 12px;margin-bottom:3px;border-left:3px solid transparent}
+.hot-list .hot-date{font-size:10.5px;color:#8FA3B5;margin-right:8px}
+.hot-list li.hot-item{cursor:pointer;transition:filter .15s ease,transform .15s ease}
+.hot-list li.hot-item:hover{filter:brightness(1.35);transform:translateX(2px)}
+li.hot-AI{background:rgba(37,99,235,.14);border-left-color:#2563EB}
+li.hot-機器人{background:rgba(15,163,168,.14);border-left-color:#0FA3A8}
+li.hot-半導體{background:rgba(124,58,237,.16);border-left-color:#7C3AED}
+li.hot-無人機{background:rgba(232,130,61,.14);border-left-color:#E8823D}
+li.hot-其他{background:rgba(91,107,124,.18);border-left-color:#5B6B7C}
+.hot-modal-sum{margin-top:10px;font-size:15px;line-height:1.7;color:var(--ink)}
+.hot-modal-impl{margin-top:14px;background:var(--paper,#F4F6F7);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.65}
+.hot-modal-impl span{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;color:#E8A23D;margin-bottom:4px}
