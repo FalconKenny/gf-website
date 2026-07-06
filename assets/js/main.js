@@ -179,18 +179,53 @@ function gfOpenArticle(id) {
   m.classList.add("open");
 }
 
-/* ---------- 每日熱門動態 ---------- */
+/* ---------- 每日熱門動態 ----------
+   items 支援兩種格式:
+   ・舊:純文字標題(不可點)
+   ・新:物件 {t:標題, s:一句話重點, i:產業意涵, u:原文連結, src:來源, d:日期} → 可點開知識卡 */
+let GF_HOT_CACHE = {};
+function gfEsc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 async function gfRenderHot(containerId, cat) {
   const box = document.getElementById(containerId);
   if (!box) return;
   const hot = await GF_fetchHot();
+  GF_HOT_CACHE = hot;
   const cats = cat ? [cat] : GF_CATEGORIES;
   box.innerHTML = cats.map(c => `
     <div style="margin-bottom:6px">
       <ul class="hot-list">
-        ${(hot[c] || []).map(t => `<li><b>${c}</b>${t}</li>`).join("")}
+        ${(hot[c] || []).map((raw, i) => {
+          const o = (raw && typeof raw === "object") ? raw : { t: String(raw) };
+          const date = o.d ? `<span class="hot-date mono">${gfEsc(o.d).replace(/-/g, "/")}</span>` : "";
+          const clickable = !!(o.s || o.u);
+          return `<li class="hot-${c}${clickable ? " hot-item" : ""}"${clickable ? ` onclick="gfOpenHotModal('${c}',${i})"` : ""}>
+            <b>${c}</b>${date}${gfEsc(o.t)}</li>`;
+        }).join("")}
       </ul>
     </div>`).join("");
+}
+function gfOpenHotModal(cat, idx) {
+  const o = (GF_HOT_CACHE[cat] || [])[idx];
+  if (!o || typeof o !== "object") return;
+  let m = document.getElementById("hotModal");
+  if (!m) {
+    document.body.insertAdjacentHTML("beforeend",
+      `<div class="modal-bg" id="hotModal" onclick="if(event.target===this)gfCloseModal('hotModal')">
+        <div class="modal"><button class="close" onclick="gfCloseModal('hotModal')">✕</button>
+        <div id="hotModalBody"></div></div></div>`);
+    m = document.getElementById("hotModal");
+  }
+  document.getElementById("hotModalBody").innerHTML = `
+    <div class="art-meta">
+      <span class="art-cat cat-${cat}">${cat}</span>
+      <span class="art-date mono">${gfEsc(o.d || "").replace(/-/g, "/")}</span>
+      ${o.src ? `<span class="art-date mono">${gfEsc(o.src)}</span>` : ""}
+    </div>
+    <h3>${gfEsc(o.t)}</h3>
+    ${o.s ? `<p class="hot-modal-sum">${gfEsc(o.s)}</p>` : ""}
+    ${o.i && o.i !== "—" ? `<div class="hot-modal-impl"><span>對台灣產業意涵</span>${gfEsc(o.i)}</div>` : ""}
+    ${o.u ? `<p style="margin-top:16px"><a class="btn btn-teal" href="${gfEsc(o.u)}" target="_blank" rel="noopener">閱讀原文 →</a></p>` : ""}`;
+  m.classList.add("open");
 }
 
 /* ---------- 諮詢表單 ----------
