@@ -65,4 +65,4 @@ const GF_PAY = {
 - 這兩項等你選定金流商後，我再幫你寫。
 
 ---
-Guide.Ferryman Strategic Advisory · v4-membership · 2026-07-07
+Guide.Ferryman Strategic Advisory · v4.3-membership · 2026-07-07

@@ -44,6 +44,12 @@
   }
 
   function showProfile(fips, fromSelect) {
+    /* v4.3：未達青銅會員 → 不顯示州別情報，捲動至鎖定提示 */
+    if (window.GF_MAP_LOCK) {
+      const lock = document.getElementById("imProfile");
+      if (lock) lock.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     const s = GF_INVEST[fips];
     const box = document.getElementById("imProfile");
     if (!s || !box) return;

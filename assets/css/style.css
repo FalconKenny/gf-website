@@ -328,3 +328,10 @@ a.nav-tierbadge{cursor:pointer}
 /* v4.2：會員登入鈕 */
 .nav-login{border:1.5px solid var(--teal);color:var(--teal-dark)!important;border-radius:99px;padding:7px 15px!important;font-weight:700}
 .nav-login:hover{background:var(--teal);color:#fff!important}
+
+/* v4.3：導覽列直向小按鈕堆疊（會員升級/登入/等級徽章） */
+.nav-stack{display:flex;flex-direction:column;gap:4px;align-items:stretch;margin:0 2px}
+.nav-stack a{font-size:12px!important;padding:4px 12px!important;line-height:1.35;white-space:nowrap;text-align:center;border-radius:99px}
+.nav-stack .nav-upgrade{box-shadow:0 1px 5px rgba(232,162,61,.3)}
+.nav-stack .nav-tierbadge{padding:4px 12px!important;font-size:12px}
+@media (max-width:960px){.nav-stack{flex-direction:row;gap:6px}}

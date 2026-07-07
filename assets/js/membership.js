@@ -54,6 +54,7 @@ function gfSetTier(lv, code) {
 }
 function gfMemberLogout() {
   sessionStorage.removeItem("gf_tier"); sessionStorage.removeItem("gf_pass");
+  sessionStorage.removeItem("gf_email");
   location.reload();
 }
 
@@ -85,7 +86,7 @@ function gfEnsureUpgradeModal() {
       <p class="kicker" style="margin-bottom:6px">MEMBERSHIP · 會員分級方案</p>
       <h3 style="margin-bottom:4px">解鎖 Guide.Ferryman 深度研究</h3>
       <p style="font-size:14px;color:var(--slate);margin-bottom:18px">每週產業趨勢、政策解讀與台美補助資源，為決策者準備的付費情報。
-        ${gfShownTier() >= 1 ? `<span class="cur-tier">您目前的等級：${gfTierBadge(gfShownTier())}</span>` : ""}</p>
+        ${gfTier() >= 2 ? `<span class="cur-tier">您目前的等級：${gfTierBadge(gfTier())}</span>` : ""}</p>
 
       <div class="tier-grid">
         ${GF_TIERS.map(t => `
@@ -118,18 +119,18 @@ function gfEnsureUpgradeModal() {
         </form>
       </div>
 
-      <!-- 已是付費會員：輸入通行碼 -->
+      <!-- 會員登入：Email（青銅）或通行碼（白銀/黃金） -->
       <div style="margin-top:18px;text-align:center;font-size:13.5px;color:var(--slate)">
-        已是白銀／黃金會員？
-        <a href="#" onclick="gfOpenPassEntry(event)">輸入會員通行碼解鎖 →</a>
+        已是會員？
+        <a href="#" onclick="gfOpenPassEntry(event)">🔑 會員登入 →</a>
       </div>
       <div id="passEntry" style="display:none;margin-top:12px">
         <p style="text-align:center;font-size:13px;color:var(--slate);margin-bottom:10px">
-          🥈 白銀／🥇 黃金會員：輸入開通信中的通行碼即可登入解鎖。<br>
-          ⚪ 普通／🥉 青銅會員免登入——加入會員後即自動生效（週報將寄至您的信箱）。</p>
-        <div style="display:flex;gap:10px;max-width:420px;margin:0 auto">
-          <input class="inp" id="passInput" placeholder="輸入通行碼（如 GF-XXXXXX）" style="flex:1">
-          <button class="btn btn-teal" onclick="gfPassSubmit()">解鎖</button>
+          🥉 青銅會員：輸入加入會員時填寫的 <b>Email</b> 登入。<br>
+          🥈 白銀／🥇 黃金會員：輸入開通信中的<b>通行碼</b>（GF-XXXXXX）登入。</p>
+        <div style="display:flex;gap:10px;max-width:460px;margin:0 auto">
+          <input class="inp" id="passInput" placeholder="Email 或 通行碼" style="flex:1">
+          <button class="btn btn-teal" onclick="gfLoginSubmit()">登入</button>
         </div>
         <p id="passMsg" style="text-align:center;font-size:13px;margin-top:8px;color:var(--slate)"></p>
       </div>
@@ -190,41 +191,83 @@ function gfOpenPassEntry(e) {
   gfEnsureUpgradeModal();
   document.getElementById("upgradeModal").classList.add("open");
   document.getElementById("passEntry").style.display = "block";
-  document.getElementById("passInput").focus();
+  const inp = document.getElementById("passInput");
+  if (!inp.dataset.bound) { inp.dataset.bound = "1"; inp.addEventListener("keydown", ev => { if (ev.key === "Enter") gfLoginSubmit(); }); }
+  inp.focus();
 }
-async function gfPassSubmit() {
-  const code = document.getElementById("passInput").value.trim();
+async function gfLoginSubmit() {
+  const val = document.getElementById("passInput").value.trim();
   const msg = document.getElementById("passMsg");
+  if (!val) { msg.textContent = "請輸入 Email 或通行碼"; return; }
   msg.textContent = "驗證中…";
-  const lv = await gfVerifyPass(code);
+
+  if (val.includes("@")) {
+    /* Email 登入 → 青銅會員（付費等級仍須通行碼，確保安全） */
+    let lv = 0;
+    try { lv = parseInt(await gfSb("/rest/v1/rpc/gf_login_email", { method: "POST", body: { p_email: val } }), 10) || 0; }
+    catch (e) { msg.textContent = "登入失敗：" + e.message; return; }
+    if (lv >= 2) {
+      gfSetTier(2, ""); sessionStorage.setItem("gf_email", val);
+      msg.textContent = "✅ 已登入 " + gfTierBadge(2) + "，頁面即將重新整理…";
+      setTimeout(() => location.reload(), 700);
+    } else if (lv === 1) {
+      msg.innerHTML = '您已是會員，但尚未訂閱電子報（青銅需訂閱）。<a href="#" onclick="gfOptIn(event)">點此一鍵訂閱並登入 →</a>';
+    } else {
+      msg.textContent = "❌ 查無此 Email，請先點「加入會員/訂閱電子報」免費加入。";
+    }
+    return;
+  }
+
+  /* 通行碼登入 → 白銀／黃金 */
+  const lv = await gfVerifyPass(val);
   if (lv >= 3) {
-    gfSetTier(lv, code);
-    msg.textContent = "✅ 已解鎖 " + gfTierBadge(lv) + "，頁面即將重新整理…";
+    gfSetTier(lv, val);
+    msg.textContent = "✅ 已登入 " + gfTierBadge(lv) + "，頁面即將重新整理…";
     setTimeout(() => location.reload(), 700);
   } else {
-    msg.textContent = "❌ 通行碼無效或已停用，請確認 Email 中的通行碼，或聯繫 guide.ferryman@gmail.com";
+    msg.textContent = "❌ 通行碼無效或已停用，請確認開通信中的通行碼，或聯繫 guide.ferryman@gmail.com";
   }
+}
+/* 舊名相容 */
+const gfPassSubmit = gfLoginSubmit;
+
+/* 一鍵訂閱：既有會員補訂閱電子報 → 升為青銅並登入 */
+async function gfOptIn(e) {
+  if (e) e.preventDefault();
+  const val = document.getElementById("passInput").value.trim();
+  const msg = document.getElementById("passMsg");
+  msg.textContent = "處理中…";
+  try {
+    const lv = parseInt(await gfSb("/rest/v1/rpc/gf_opt_in", { method: "POST", body: { p_email: val } }), 10) || 0;
+    if (lv >= 2) {
+      gfSetTier(2, ""); sessionStorage.setItem("gf_email", val);
+      msg.textContent = "✅ 已訂閱並登入 " + gfTierBadge(2) + "，頁面即將重新整理…";
+      setTimeout(() => location.reload(), 700);
+    } else msg.textContent = "訂閱失敗，請聯繫 guide.ferryman@gmail.com";
+  } catch (err) { msg.textContent = "訂閱失敗：" + err.message; }
 }
 
 /* ---------- ⑥ 導覽列注入：隱藏頁連結（依等級）＋ 會員升級鈕 ---------- */
 function gfMembershipNav(path) {
   const links = document.querySelector(".nav-links");
   if (!links) return;
-  const lv = gfTier();
+  const lv = gfTier();   /* L1＝未登入訪客；L2 以 Email 登入；L3/L4 以通行碼登入 */
   const cta = links.querySelector(".nav-cta");
   let html = "";
   if (lv >= 3) html += `<a href="${path}trends.html" class="nav-premium">📈 產業趨勢分析</a>`;
   if (lv >= 4) html += `<a href="${path}resources.html" class="nav-premium">🏛 政府補助資源</a>`;
-  html += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
-  /* 會員登入鈕：尚未解鎖白銀/黃金時顯示（開啟通行碼輸入） */
-  if (lv < 3) html += `<a href="#" class="nav-login" onclick="gfOpenPassEntry(event)">🔑 會員登入</a>`;
-  /* 會員等級徽章：符號＋等級名稱（L3/L4 點擊可登出會員專區） */
-  const shown = gfShownTier();
-  if (lv >= 3) {
-    html += `<a href="#" class="nav-tierbadge t${lv}" title="點擊登出會員專區" onclick="if(confirm('登出會員專區？'))gfMemberLogout();return false;">${gfTierBadge(lv)}</a>`;
-  } else if (shown >= 1) {
-    html += `<span class="nav-tierbadge t${shown}" title="您在本站的會員等級">${gfTierBadge(shown)}</span>`;
+  /* 直向小按鈕堆疊：
+     未登入 → [⭐會員升級 / 🔑會員登入]
+     已登入 → [等級徽章 / ⭐會員升級（最高級則不顯示）] */
+  let stack = "";
+  if (lv >= 2) {
+    stack += `<a href="#" class="nav-tierbadge t${lv}" title="點擊登出" onclick="if(confirm('登出會員？'))gfMemberLogout();return false;">${gfTierBadge(lv)}</a>`;
+    if (lv < 4) stack += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
+  } else {
+    stack += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
+    stack += `<a href="#" class="nav-login" onclick="gfOpenPassEntry(event)">🔑 會員登入</a>`;
   }
+  html += `<div class="nav-stack">${stack}</div>`;
   if (cta) cta.insertAdjacentHTML("beforebegin", html);
   else links.insertAdjacentHTML("beforeend", html);
 }
@@ -244,15 +287,30 @@ function gfGatePage(minLevel, boxId) {
   if (lv >= minLevel) return true;
   const need = GF_TIERS.find(t => t.lv === minLevel);
   const el = document.getElementById(boxId);
-  if (el) el.innerHTML = `
+  if (!el) return false;
+  if (minLevel <= 2) {
+    /* 青銅閘門：免費加入即可解鎖 */
+    el.innerHTML = `
     <div class="lock-box">
       <div class="lock-ico">🔒</div>
-      <h3>此頁為【${need.name}】以上限定內容</h3>
+      <h3>此區為【${GF_TIER_ICON[2]} 青銅會員】以上限定</h3>
+      <p>免費加入會員並訂閱電子報，登入後即可查看各州完整投資情報。</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+        <button class="btn btn-amber" onclick="gfOpenMember()">免費加入會員/訂閱</button>
+        <button class="btn btn-ghost" onclick="gfOpenPassEntry()">已是會員？登入</button>
+      </div>
+    </div>`;
+  } else {
+    el.innerHTML = `
+    <div class="lock-box">
+      <div class="lock-ico">🔒</div>
+      <h3>此頁為【${gfTierBadge(minLevel)}】以上限定內容</h3>
       <p>解鎖後可閱讀完整的${minLevel>=4?"政策趨勢分析與台美政府補助資源":"每週產業趨勢分析"}。</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">
         <button class="btn btn-amber" onclick="gfOpenUpgrade(null,${minLevel})">查看方案並升級</button>
-        <button class="btn btn-ghost" onclick="gfOpenPassEntry()">我有會員通行碼</button>
+        <button class="btn btn-ghost" onclick="gfOpenPassEntry()">會員登入</button>
       </div>
     </div>`;
+  }
   return false;
 }

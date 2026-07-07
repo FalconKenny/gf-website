@@ -69,7 +69,13 @@
 <script src="assets/js/membership.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/investmap-data.js"></script>
-<script>gfNav("map");</script>
+<script>
+gfNav("map");
+/* v4.3：地圖可自由瀏覽；下方完整州別投資情報 → 青銅會員(L2)以上限定 */
+if (typeof gfGatePage === "function" && !gfGatePage(2, "imProfile")) {
+  window.GF_MAP_LOCK = true;
+}
+</script>
 <script src="assets/js/investmap.js" defer></script>
 </body>
 </html>

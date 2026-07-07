@@ -21,8 +21,7 @@ function gfNav(active) {
       <a href="${path}invest-map.html" ${active==="map"?'class="active"':''}>產業投資地圖</a>
       <a href="${path}insights.html" ${active==="ins"?'class="active"':''}>台美動態資訊</a>
       <a href="${path}about.html" ${active==="about"?'class="active"':''}>關於我們</a>
-      <a href="#" class="nav-member" onclick="gfOpenMember(event)">📩 訂閱電子報</a>
-      <a href="#" class="nav-member" onclick="gfOpenMember(event)">加入會員</a>
+      <a href="#" class="nav-member" onclick="gfOpenMember(event)">📩 加入會員/訂閱電子報</a>
       <a href="${path}contact.html" class="nav-cta">預約諮詢</a>
     </div>
   </div>`;
@@ -135,13 +134,13 @@ async function gfMemberSubmit(e) {
   }
   document.getElementById("memberOk").style.display = "block";
   btn.textContent = "已送出";
-  /* v4：於本瀏覽器記錄會員等級 → 導覽列顯示「符號＋等級」徽章 */
-  if (typeof gfSetLocalTier === "function") {
-    gfSetLocalTier(rec.tier_level || 1);
-    if (typeof gfMembershipNav === "function") {
-      const nav = document.querySelector(".nav-links");
-      if (nav) { document.querySelectorAll(".nav-tierbadge,.nav-upgrade,.nav-premium").forEach(x => x.remove()); gfMembershipNav(location.pathname.includes("/admin/") ? "../" : ""); }
-    }
+  /* v4.3：勾選訂閱者 → 自動登入為青銅會員（導覽列即時顯示徽章） */
+  if (rec.tier_level >= 2 && typeof gfSetTier === "function") {
+    gfSetTier(2, "");
+    sessionStorage.setItem("gf_email", rec.email || "");
+    document.getElementById("memberOk").textContent = "已完成加入並登入為 🥉 青銅會員！每週一將收到台美產業動態週報。";
+    document.querySelectorAll(".nav-stack,.nav-premium").forEach(x => x.remove());
+    if (typeof gfMembershipNav === "function") gfMembershipNav(location.pathname.includes("/admin/") ? "../" : "");
   }
   return false;
 }
