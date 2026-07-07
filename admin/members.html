@@ -71,7 +71,11 @@ if (gfAdminGate()) {
       const patch = {tier:t.name, tier_level:t.lv};
       /* 青銅以上自動列為週報發放對象 */
       if (t.lv>=2 && !LIST[i].subscribe) patch.subscribe = true;
-      await gfSbUpdate("members", LIST[i].id, patch); render();
+      const memEmail = LIST[i].email;
+      await gfSbUpdate("members", LIST[i].id, patch);
+      /* 白銀/黃金：提醒須核發通行碼，前台才能登入解鎖 */
+      if (t.lv >= 3) alert("已將分級改為「" + t.name + "」。\n\n⚠️ 別忘了到「⭐ 升級申請與通行碼」→「手動核發通行碼」\n為 " + memEmail + " 產生通行碼——客戶要用通行碼登入，前台才會顯示白銀/黃金並解鎖隱藏頁。");
+      render();
     }catch(e){ alert("更新失敗："+e.message);}
   };
   window.toggleSub = async i=>{ try{ await gfSbUpdate("members", LIST[i].id, {subscribe:!LIST[i].subscribe}); render(); }catch(e){ alert("更新失敗："+e.message);} };

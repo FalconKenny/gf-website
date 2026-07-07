@@ -24,6 +24,16 @@ if (gfAdminGate()) {
       </table>
     </div>
     <div class="panel">
+      <h2>手動核發通行碼</h2>
+      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">不經升級申請、直接為某位會員核發白銀／黃金通行碼（例如：後台已將其分級調高、或線下收款的客戶）。</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="field" style="min-width:240px"><label>會員 Email</label><input class="inp" id="issueEmail" placeholder="customer@example.com"></div>
+        <div class="field"><label>等級</label><select class="sel" id="issueTier"><option value="3">🥈 白銀會員</option><option value="4">🥇 黃金會員</option></select></div>
+        <button class="btn btn-teal" onclick="issuePass()">🔑 產生通行碼</button>
+      </div>
+      <p id="issueMsg" style="font-size:13.5px;margin-top:10px;color:var(--teal-dark)"></p>
+    </div>
+    <div class="panel">
       <h2>已核發通行碼</h2>
       <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">通行碼供付費會員在前台解鎖隱藏頁。取消訂閱（停止扣款）時，請將對應通行碼「停用」。</p>
       <table class="tbl">
@@ -77,6 +87,22 @@ if (gfAdminGate()) {
         </td>
       </tr>`).join("") || `<tr><td colspan="6" style="color:var(--slate)">尚未核發任何通行碼。</td></tr>`;
   }
+
+  window.issuePass = async () => {
+    const email = document.getElementById("issueEmail").value.trim();
+    const lv = parseInt(document.getElementById("issueTier").value, 10);
+    const msgEl = document.getElementById("issueMsg");
+    if (!email || !email.includes("@")) { alert("請輸入正確的 Email"); return; }
+    const code = genCode();
+    try {
+      await gfSbInsert("member_passes", { email: email, tier_level: lv, code: code, note: "手動核發" }, true);
+      /* 若該 Email 已是會員 → 同步分級與訂閱 */
+      try { await gfSbUpdateBy("members", "email", email, { tier: TIER_NAME[lv], tier_level: lv, subscribe: true }); } catch (e) {}
+    } catch (e) { alert("核發失敗：" + e.message); return; }
+    msgEl.innerHTML = "✅ 已核發 <b>" + TIER_NAME[lv] + "</b> 通行碼：<b class='mono'>" + code + "</b>（已同步會員分級，可按下方清單的「✉️ 通知信範本」寄給客戶）";
+    document.getElementById("issueEmail").value = "";
+    await render();
+  };
 
   window.approve = async i => {
     const r = REQS[i];

@@ -9,6 +9,12 @@
 alter table if exists public.members
   add column if not exists tier_level int not null default 1;
 
+-- 先解除舊版三級制的檢查規則（否則下方 UPDATE 會被擋），換成新四級版本
+alter table public.members drop constraint if exists members_tier_check;
+alter table public.members add constraint members_tier_check
+  check (tier in ('普通會員','青銅會員','白銀會員','黃金會員',
+                  '免費會員','標準訂閱','進階訂閱'));  -- 舊值暫時保留合法，轉換後即不再使用
+
 -- 舊資料轉換（原本的中文分級 → 新四級）
 update public.members set tier = '普通會員', tier_level = 1 where tier in ('免費會員') or tier is null;
 update public.members set tier = '白銀會員', tier_level = 3 where tier = '標準訂閱';
@@ -133,3 +139,8 @@ $$;
 
 grant execute on function public.gf_login_email(text) to anon, authenticated;
 grant execute on function public.gf_opt_in(text) to anon, authenticated;
+
+-- 8) 收尾：資料全數轉為四級後，把分級規則鎖定為新四級 --------
+alter table public.members drop constraint if exists members_tier_check;
+alter table public.members add constraint members_tier_check
+  check (tier in ('普通會員','青銅會員','白銀會員','黃金會員'));
