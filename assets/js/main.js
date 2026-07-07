@@ -26,6 +26,8 @@ function gfNav(active) {
       <a href="${path}contact.html" class="nav-cta">預約諮詢</a>
     </div>
   </div>`;
+  /* v4：依會員等級注入隱藏頁連結與「會員升級」鈕 */
+  if (typeof gfMembershipNav === "function") gfMembershipNav(path);
 }
 
 /* ---------- 頁尾 ---------- */
@@ -80,7 +82,7 @@ function gfMemberModalHTML() {
       <button class="close" onclick="gfCloseModal('memberModal')">✕</button>
       <p class="kicker">MEMBERSHIP</p>
       <h3>加入 Guide.Ferryman 會員</h3>
-      <p style="font-size:14px;color:var(--slate);margin-bottom:18px">免費加入會員即訂閱每週台美產業動態電子報(每週一發送)。未來將推出進階訂閱方案,提供更深入的分級內容。</p>
+      <p style="font-size:14px;color:var(--slate);margin-bottom:18px">免費加入會員並訂閱電子報，即成為「青銅會員」，每週一收到台美產業動態週報。進階研究內容請見「會員升級」方案（白銀／黃金）。</p>
       <form onsubmit="return gfMemberSubmit(event)">
         <div class="form-grid">
           <div class="field"><label>姓名 <span class="req">*</span></label><input class="inp" name="name" required></div>
@@ -106,7 +108,10 @@ async function gfMemberSubmit(e) {
   const rec = {
     id: "m" + Date.now(), name: f.get("name"), email: f.get("email"),
     company: f.get("company") || "", interest: f.get("interest"),
-    subscribe: !!f.get("subscribe"), tier: "免費會員",
+    subscribe: !!f.get("subscribe"),
+    /* v4 分級：加入會員＋訂閱電子報 → 自動列為青銅會員（週報發放對象）*/
+    tier: f.get("subscribe") ? "青銅會員" : "普通會員",
+    tier_level: f.get("subscribe") ? 2 : 1,
     joined: new Date().toISOString().slice(0, 10)
   };
   const btn = e.target.querySelector("button[type=submit]");
@@ -130,6 +135,14 @@ async function gfMemberSubmit(e) {
   }
   document.getElementById("memberOk").style.display = "block";
   btn.textContent = "已送出";
+  /* v4：於本瀏覽器記錄會員等級 → 導覽列顯示「符號＋等級」徽章 */
+  if (typeof gfSetLocalTier === "function") {
+    gfSetLocalTier(rec.tier_level || 1);
+    if (typeof gfMembershipNav === "function") {
+      const nav = document.querySelector(".nav-links");
+      if (nav) { document.querySelectorAll(".nav-tierbadge,.nav-upgrade,.nav-premium").forEach(x => x.remove()); gfMembershipNav(location.pathname.includes("/admin/") ? "../" : ""); }
+    }
+  }
   return false;
 }
 

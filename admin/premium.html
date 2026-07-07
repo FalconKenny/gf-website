@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>進階內容管理｜Guide.Ferryman Admin</title>
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<script src="../assets/js/sb.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+if (gfAdminGate()) {
+  gfAdminShell("prem", "進階內容管理", "管理付費會員隱藏頁的文章：每週產業趨勢分析（白銀+）、政策趨勢分析（黃金）、台灣／美國補助快訊（黃金）。", `
+    <div class="panel">
+      <h2 id="formTitle">新增進階文章</h2>
+      <form onsubmit="return save(event)" id="pf">
+        <input type="hidden" name="id">
+        <div class="form-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px">
+          <div class="field"><label>單元</label>
+            <select class="sel" name="section">
+              <option value="weekly">每週產業趨勢分析（白銀+）</option>
+              <option value="policy">政策趨勢分析（黃金）</option>
+              <option value="grant_tw">補助快訊・台灣（黃金）</option>
+              <option value="grant_us">補助快訊・美國（黃金）</option>
+            </select></div>
+          <div class="field"><label>地區</label>
+            <select class="sel" name="region"><option>台灣</option><option>美國</option></select></div>
+          <div class="field"><label>產業類別</label>
+            <select class="sel" name="cat"><option>AI</option><option>機器人</option><option>半導體</option><option>無人機</option><option>其他</option></select></div>
+          <div class="field"><label>發布日期</label>
+            <input class="inp" type="date" name="published"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px"><label>標題 *</label><input class="inp" name="title" required></div>
+        <div class="field" style="margin-bottom:12px"><label>摘要</label><input class="inp" name="summary"></div>
+        <div class="field" style="margin-bottom:14px"><label>內文（以空行分段）</label><textarea class="inp" name="body" rows="9"></textarea></div>
+        <button class="btn btn-teal" type="submit">💾 儲存</button>
+        <button class="btn btn-ghost" type="button" onclick="resetForm()">清空</button>
+      </form>
+    </div>
+    <div class="panel">
+      <h2>文章清單</h2>
+      <div style="margin-bottom:12px">
+        <select class="sel" id="filterSec" style="width:auto" onchange="render()">
+          <option value="">全部單元</option>
+          <option value="weekly">每週產業趨勢分析</option>
+          <option value="policy">政策趨勢分析</option>
+          <option value="grant_tw">補助快訊・台灣</option>
+          <option value="grant_us">補助快訊・美國</option>
+        </select>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>發布日</th><th>單元</th><th>地區</th><th>類別</th><th>權限</th><th>標題</th><th>操作</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  `);
+
+  const SEC_NAME = { weekly: "每週趨勢", policy: "政策趨勢", grant_tw: "補助・台灣", grant_us: "補助・美國" };
+  const SEC_LEVEL = { weekly: 3, policy: 4, grant_tw: 4, grant_us: 4 };
+  let LIST = [];
+
+  async function render() {
+    try { LIST = await gfSbSelect("premium_articles", "&order=published.desc,created_at.desc", true) || []; }
+    catch (e) { alert("讀取失敗（請先執行 supabase_upgrade_v4.sql）：" + e.message); return; }
+    const f = document.getElementById("filterSec").value;
+    const list = f ? LIST.filter(a => a.section === f) : LIST;
+    document.getElementById("rows").innerHTML = list.map(a => {
+      const i = LIST.indexOf(a);
+      return `<tr>
+        <td class="mono">${a.published || ""}</td>
+        <td>${SEC_NAME[a.section] || a.section}</td>
+        <td>${a.region}</td>
+        <td>${a.cat}</td>
+        <td>${a.access_level >= 4 ? '<span class="badge" style="background:#FBEBD2;color:#9A6614">黃金</span>' : '<span class="badge b-ok">白銀+</span>'}</td>
+        <td>${gfEsc(a.title)}</td>
+        <td><button class="btn-sm" onclick="edit(${i})">編輯</button>
+            <button class="btn-sm danger" onclick="del(${i})">刪除</button></td>
+      </tr>`;
+    }).join("") || `<tr><td colspan="7" style="color:var(--slate)">尚無文章。</td></tr>`;
+  }
+  window.render = render;
+
+  window.save = async e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const rec = {
+      section: f.get("section"), region: f.get("region"), cat: f.get("cat"),
+      access_level: SEC_LEVEL[f.get("section")] || 3,
+      title: f.get("title"), summary: f.get("summary") || "", body: f.get("body") || "",
+      published: f.get("published") || new Date().toISOString().slice(0, 10)
+    };
+    const id = f.get("id");
+    try {
+      if (id) await gfSbUpdate("premium_articles", id, rec);
+      else await gfSbInsert("premium_articles", rec, true);
+      resetForm(); render();
+    } catch (err) { alert("儲存失敗：" + err.message); }
+    return false;
+  };
+  window.edit = i => {
+    const a = LIST[i], f = document.getElementById("pf");
+    f.id.value = a.id; f.section.value = a.section; f.region.value = a.region;
+    f.cat.value = a.cat; f.published.value = a.published || "";
+    f.title.value = a.title; f.summary.value = a.summary || ""; f.body.value = a.body || "";
+    document.getElementById("formTitle").textContent = "編輯進階文章";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  window.del = async i => {
+    if (!confirm("刪除「" + LIST[i].title + "」？")) return;
+    try { await gfSbDelete("premium_articles", LIST[i].id); render(); } catch (e) { alert(e.message); }
+  };
+  window.resetForm = () => {
+    document.getElementById("pf").reset();
+    document.getElementById("pf").id.value = "";
+    document.getElementById("formTitle").textContent = "新增進階文章";
+  };
+
+  render();
+}
+</script>
+</body>
+</html>

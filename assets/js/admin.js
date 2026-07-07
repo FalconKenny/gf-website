@@ -78,9 +78,11 @@ function gfAdminShell(active, title, sub, contentHTML) {
       <a href="index.html" class="${active==='dash'?'active':''}">📊 儀表板</a>
       <p class="lbl">內容</p>
       <a href="articles.html" class="${active==='art'?'active':''}">📝 文章管理</a>
+      <a href="premium.html" class="${active==='prem'?'active':''}">🔒 進階內容管理</a>
       <a href="newsletter.html" class="${active==='news'?'active':''}">📮 推播內容管理</a>
       <p class="lbl">客戶</p>
       <a href="members.html" class="${active==='mem'?'active':''}">👥 會員與訂閱者</a>
+      <a href="upgrades.html" class="${active==='upg'?'active':''}">⭐ 升級申請與通行碼</a>
       <a href="consults.html" class="${active==='con'?'active':''}">🗓 諮詢排程管理</a>
     </aside>
     <main class="admin-main">

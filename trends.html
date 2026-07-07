@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>產業趨勢分析｜Guide.Ferryman 會員專區</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+
+<header class="page-hero">
+  <div class="wrap">
+    <p class="kicker">MEMBERS ONLY · 會員專區</p>
+    <h1 class="title">產業趨勢分析</h1>
+    <p>每週更新的台美產業趨勢與政策解讀，聚焦 AI、機器人、半導體、無人機。</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap" id="gateBox">
+
+    <!-- 子頁切換：每週產業趨勢分析（白銀+）／政策趨勢分析（黃金） -->
+    <div class="tabbar">
+      <button class="tab active" data-sec="weekly" onclick="switchSection('weekly',this)">📈 每週產業趨勢分析 <span class="tier-pill silver">白銀+</span></button>
+      <button class="tab" data-sec="policy" onclick="switchSection('policy',this)">🏛 政策趨勢分析 <span class="tier-pill gold">黃金</span></button>
+    </div>
+
+    <!-- 篩選：台灣／美國 × 產業類別 -->
+    <div class="filter-row">
+      <div class="seg" id="regionSeg">
+        <button class="seg-btn active" data-v="全部">全部地區</button>
+        <button class="seg-btn" data-v="台灣">🇹🇼 台灣</button>
+        <button class="seg-btn" data-v="美國">🇺🇸 美國</button>
+      </div>
+      <div class="chips" id="catChips"></div>
+    </div>
+
+    <div id="premiumList" class="prem-list"><p class="empty">載入中…</p></div>
+  </div>
+</section>
+
+<footer id="footer"></footer>
+
+<script src="assets/js/sb.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/membership.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+gfNav(""); gfFooter();
+
+let SEC = "weekly", REGION = "全部", CAT = "全部", CACHE = {};
+
+function switchSection(sec, btn) {
+  /* 政策趨勢分析需黃金級 */
+  if (sec === "policy" && gfTier() < 4) { gfOpenUpgrade(null, 4); return; }
+  SEC = sec;
+  document.querySelectorAll(".tabbar .tab").forEach(b => b.classList.toggle("active", b === btn));
+  render();
+}
+function buildChips() {
+  const cats = ["全部"].concat(GF_CATEGORIES);
+  document.getElementById("catChips").innerHTML = cats.map(c =>
+    `<button class="chip ${c===CAT?"active":""}" onclick="CAT='${c}';buildChips();render()">${c}</button>`).join("");
+}
+document.getElementById("regionSeg").addEventListener("click", e => {
+  const b = e.target.closest(".seg-btn"); if (!b) return;
+  REGION = b.dataset.v;
+  document.querySelectorAll("#regionSeg .seg-btn").forEach(x => x.classList.toggle("active", x === b));
+  render();
+});
+
+async function render() {
+  const box = document.getElementById("premiumList");
+  box.innerHTML = '<p class="empty">載入中…</p>';
+  if (!CACHE[SEC]) {
+    try { CACHE[SEC] = await gfPremiumList(SEC) || []; }
+    catch (e) { box.innerHTML = '<p class="empty">讀取失敗：' + e.message + '</p>'; return; }
+  }
+  let list = CACHE[SEC];
+  if (REGION !== "全部") list = list.filter(a => a.region === REGION);
+  if (CAT !== "全部") list = list.filter(a => a.cat === CAT);
+  box.innerHTML = list.length ? list.map(a => `
+    <article class="prem-card">
+      <div class="prem-meta">
+        <span class="badge b-sub">${a.region}</span>
+        <span class="badge b-free">${a.cat}</span>
+        ${a.access_level >= 4 ? '<span class="badge b-gold">黃金限定</span>' : ''}
+        <span class="mono" style="font-size:12px;color:var(--slate)">${a.published || ""}</span>
+      </div>
+      <h3>${gfEsc(a.title)}</h3>
+      <p class="prem-sum">${gfEsc(a.summary || "")}</p>
+      <div class="prem-body">${(a.body || "").split("\n").map(p => p.trim() ? "<p>" + gfEsc(p) + "</p>" : "").join("")}</div>
+    </article>`).join("")
+  : '<p class="empty">此分類目前尚無文章，將於每週更新後上架。</p>';
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!gfGatePage(3, "gateBox")) return;   /* 白銀級以上才進入本頁 */
+  buildChips();
+  render();
+});
+</script>
+</body>
+</html>

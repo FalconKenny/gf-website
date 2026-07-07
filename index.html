@@ -163,12 +163,14 @@
 <script src="assets/vendor/topojson-client.min.js"></script>
 <script src="assets/js/sb.js"></script>
 <script src="assets/js/data.js"></script>
+<script src="assets/js/membership.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
   gfNav("home");
   document.addEventListener("DOMContentLoaded", () => {
     gfRenderArticles("homeArticles", { limit: 3 });
     gfRenderHot("homeHot");
+    gfAutoAd();   /* 會員方案廣告：每個瀏覽階段自動跳出一次 */
   });
 </script>
 <script src="assets/js/usmap.js" defer></script>

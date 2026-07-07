@@ -242,3 +242,89 @@ li.hot-其他{background:rgba(91,107,124,.18);border-left-color:#5B6B7C}
 .hot-modal-sum{margin-top:10px;font-size:15px;line-height:1.7;color:var(--ink)}
 .hot-modal-impl{margin-top:14px;background:var(--paper,#F4F6F7);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.65}
 .hot-modal-impl span{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;color:#E8A23D;margin-bottom:4px}
+
+/* ============================================================
+   v4：會員分級制度（方案浮框、隱藏頁、進階內容）
+   ============================================================ */
+/* 導覽列：升級鈕與會員專區連結 */
+.nav-upgrade{background:linear-gradient(135deg,var(--amber),#F2BC6A);color:var(--ink)!important;border-radius:99px;padding:8px 16px!important;font-weight:700;box-shadow:0 2px 8px rgba(232,162,61,.35)}
+.nav-upgrade:hover{filter:brightness(1.05)}
+.nav-premium{color:var(--teal-dark)!important;font-weight:700}
+
+/* 方案浮框 */
+.modal-wide{max-width:1020px}
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tier-card{border:1.5px solid var(--line);border-radius:14px;padding:20px 16px;display:flex;flex-direction:column;position:relative;background:#fff}
+.tier-card.tier-hot{border-color:var(--amber);box-shadow:0 6px 22px rgba(232,162,61,.18)}
+.tier-flag{position:absolute;top:-11px;right:14px;background:var(--amber);color:var(--ink);font-size:11px;font-weight:800;border-radius:99px;padding:2px 10px;letter-spacing:.08em}
+.tier-name{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--tc,var(--ink))}
+.tier-price{font-family:var(--font-mono);font-size:12.5px;color:var(--slate);margin:4px 0 12px;min-height:34px}
+.tier-card ul{list-style:none;margin:0 0 16px;flex:1}
+.tier-card li{font-size:13px;color:#2B3E52;padding:5px 0 5px 20px;position:relative;line-height:1.55}
+.tier-card li::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:800}
+.btn-pay{display:inline-block;margin:4px 8px 4px 0;font-size:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+
+/* 分頁列與篩選 */
+.tabbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+.tabbar .tab{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;color:var(--slate);font-family:var(--font-body)}
+.tabbar .tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tier-pill{font-size:10.5px;font-weight:800;border-radius:99px;padding:2px 8px;margin-left:6px;letter-spacing:.05em;vertical-align:1px}
+.tier-pill.silver{background:#E4EBF1;color:#4A6076}
+.tier-pill.gold{background:#FBEBD2;color:#9A6614}
+.tab.active .tier-pill.silver{background:rgba(255,255,255,.18);color:#DDE7EF}
+.tab.active .tier-pill.gold{background:rgba(232,162,61,.9);color:var(--ink)}
+.filter-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.seg-btn{border:none;background:none;padding:9px 16px;font-size:14px;font-weight:700;cursor:pointer;color:var(--slate);font-family:var(--font-body)}
+.seg-btn.active{background:var(--teal);color:#fff}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips .chip{cursor:pointer;border:none}
+.chips .chip.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* 進階文章卡 */
+.prem-list{display:flex;flex-direction:column;gap:18px}
+.prem-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius,14px);padding:28px 30px}
+.prem-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.prem-card h3{font-family:var(--font-display);font-size:19px;line-height:1.5}
+.prem-sum{color:var(--slate);font-size:14.5px;margin-top:8px}
+.prem-body{margin-top:14px;font-size:15px;color:#2B3E52;border-top:1px dashed rgba(10,28,48,.14);padding-top:14px}
+.prem-body p{margin-bottom:10px}
+.prem-list .empty{color:var(--slate);font-size:14.5px}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 10px}
+.b-free{background:#EEF2F4;color:var(--slate)}
+.b-sub{background:#E2F4F4;color:var(--teal-dark)}
+.b-ok{background:#EDF9F0;color:#1F6B3A}
+.b-gold{background:#FBEBD2;color:#9A6614}
+
+/* 鎖定畫面 */
+.lock-box{background:#fff;border:1.5px dashed var(--line);border-radius:18px;text-align:center;padding:72px 30px;max-width:640px;margin:0 auto}
+.lock-ico{font-size:44px;margin-bottom:14px}
+.lock-box h3{font-family:var(--font-display);font-size:22px;margin-bottom:10px}
+.lock-box p{color:var(--slate);font-size:15px}
+
+/* 補助資源表格 */
+.res-h{font-family:var(--font-display);font-size:20px;margin:40px 0 14px;padding-left:14px;border-left:4px solid var(--teal)}
+.src-note{font-size:13px;color:var(--slate);font-family:var(--font-mono)}
+.tbl-scroll{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:12px}
+.res-tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+.res-tbl th{text-align:left;background:var(--ink);color:#fff;padding:12px 14px;font-size:13px;letter-spacing:.04em;white-space:nowrap}
+.res-tbl td{border-bottom:1px solid var(--line);padding:12px 14px;vertical-align:top;line-height:1.7}
+.res-tbl tr:last-child td{border-bottom:none}
+.res-tbl tr:hover td{background:#F7FAFB}
+
+@media (max-width:960px){.tier-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.tier-grid{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
+
+/* v4.1：會員等級徽章（符號＋等級名稱） */
+.nav-tierbadge{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;border-radius:99px;padding:6px 14px!important;border:1.5px solid var(--line);background:#fff;color:var(--ink)!important;cursor:default}
+a.nav-tierbadge{cursor:pointer}
+.nav-tierbadge.t1{background:#F1F4F6;border-color:#D8E0E6;color:var(--slate)!important}
+.nav-tierbadge.t2{background:#F8EFE3;border-color:#E3C9A4;color:#8A5A22!important}
+.nav-tierbadge.t3{background:#EEF3F8;border-color:#BFCEDC;color:#41586F!important}
+.nav-tierbadge.t4{background:linear-gradient(135deg,#FBEBD2,#F6DCAC);border-color:var(--amber);color:#7E5410!important;box-shadow:0 2px 8px rgba(232,162,61,.28)}
+.cur-tier{display:inline-block;margin-left:10px;font-size:12.5px;font-weight:800;background:#EEF2F4;border-radius:99px;padding:3px 12px;color:var(--ink)}
+
+/* v4.2：會員登入鈕 */
+.nav-login{border:1.5px solid var(--teal);color:var(--teal-dark)!important;border-radius:99px;padding:7px 15px!important;font-weight:700}
+.nav-login:hover{background:var(--teal);color:#fff!important}

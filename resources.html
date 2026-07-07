@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>政府補助資源｜Guide.Ferryman 會員專區</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+
+<header class="page-hero">
+  <div class="wrap">
+    <p class="kicker">MEMBERS ONLY · 黃金會員限定</p>
+    <h1 class="title">政府補助資源</h1>
+    <p>台灣與美國的機器人／AI 產業補助全景，由 Guide.Ferryman 持續更新維護。</p>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap" id="gateBox">
+    <div class="tabbar">
+      <button class="tab active" onclick="switchRegion('tw',this)">🇹🇼 台灣政府補助資源</button>
+      <button class="tab" onclick="switchRegion('us',this)">🇺🇸 美國政府補助資源</button>
+    </div>
+    <div id="staticBox"></div>
+    <div class="section-head" style="margin-top:44px">
+      <p class="kicker">UPDATES · 最新補助情報</p>
+      <h2 class="title" style="font-size:26px">補助快訊與申請提醒</h2>
+    </div>
+    <div id="grantList" class="prem-list"></div>
+  </div>
+</section>
+
+<footer id="footer"></footer>
+
+<script src="assets/js/sb.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/membership.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+gfNav(""); gfFooter();
+
+/* ---------- 靜態知識庫（資料來源：工研院產科國際所整理） ---------- */
+const TW_HTML = `
+<p class="src-note">資料來源：《台灣 AI 機器人相關政府補助總表》（2026/6）；工研院產科國際所整理。</p>
+
+<h3 class="res-h">五大旗艦計畫：機器人企業最核心的研發補助入口</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>計畫（主管機關）</th><th>補助金額／級距</th><th>機器人切點與適用對象</th></tr></thead>
+<tbody>
+<tr><td><b>A+ 企業創新研發淬鍊</b><br>產業技術司</td><td>前瞻技術補助 40–50%；AI 應用躍昇每案上限 2,000 萬</td><td>感知／控制／AI 模型、人形機器人零組件；國內企業可聯合或結合研究機構，非陸資、淨值為正。</td></tr>
+<tr><td><b>SBIR 小型企業創新研發</b><br>中小及新創企業署</td><td>個案 150–600 萬；跨域聯盟另計</td><td>新創與中小企業切入主力；115 跨域主軸含「AI 智慧應用／無人載具／淨零」三選一。</td></tr>
+<tr><td><b>CITD 協助傳統產業技術開發</b><br>產業發展署</td><td>個案約 200 萬；聯盟可達千萬級</td><td>對接機器人零組件傳產廠（減速器、馬達、機構件）製程／材料／新產品升級。</td></tr>
+<tr><td><b>SIIR 服務業創新研發</b><br>商業發展署</td><td>個別 150 萬／合作 500 萬；國際化進階最高 1,200 萬</td><td>服務型機器人導入餐飲、零售、長照等場域，結合商模創新。</td></tr>
+<tr><td><b>SITI 臺北市產業發展獎勵</b><br>臺北市產業發展局</td><td>研發 500 萬／創業 100 萬；投資獎勵最高 5,000 萬</td><td>設籍臺北市企業之 AI／機器人研發或創業，須與臺北市場景連結。</td></tr>
+</tbody></table></div>
+
+<h3 class="res-h">經濟部產業技術司：A+ 體系、業界科專與無人載具</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>計畫名稱</th><th>補助金額／條件</th><th>內容說明</th></tr></thead>
+<tbody>
+<tr><td>A+ 前瞻技術研發計畫</td><td>補助比例 40% 以上、最高 50%；隨到隨審</td><td>機器人關鍵技術（感知、控制、AI 模型）前瞻研發主入口。</td></tr>
+<tr><td>A+ AI 應用躍昇計畫</td><td>應用端每案上限 2,000 萬；期程 ≤3 年；聚焦八大關鍵產業</td><td>建 AI 示範場域，導入機器人智慧應用驗證。</td></tr>
+<tr><td>業界科專－無人機關鍵技術／AI 影像晶片</td><td>依提案審定；整機、飛導控、酬載、通訊、動力模組業者</td><td>無人機（空中機器人）關鍵零組件與 AI 影像晶片模組開發。</td></tr>
+<tr><td>無人載具科技創新應用－運行驗證</td><td>依提案審定；產學研於特定場域創新實驗</td><td>自駕車／AMR 等無人載具之沙盒運行與場域驗證補助。</td></tr>
+<tr><td>A+ 全球研發創新夥伴計畫</td><td>依辦法；吸引外商在台設研發中心</td><td>引進國際大廠機器人／AI 研發能量，鏈結本土供應鏈。</td></tr>
+<tr><td>晶創台灣－IC 設計攻頂補助</td><td>114 年核定 11 案共 57 億；晶創 10 年挹注 3,000 億</td><td>機器人邊緣 AI 晶片／控制 SoC 之上游 IC 設計能量。</td></tr>
+</tbody></table></div>
+
+<h3 class="res-h">中小及新創企業署＋商業發展署：新創研發與服務業導入</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>計畫名稱（機關）</th><th>補助金額／條件</th><th>內容說明</th></tr></thead>
+<tbody>
+<tr><td>SBIR 跨域研發引領升級轉型</td><td>聯盟型依公告；115 主軸 AI 智慧應用／無人載具／淨零三選一</td><td>中小／新創籌組跨域聯盟切入 AI 機器人系統整合。</td></tr>
+<tr><td>SBIR 小型企業創新研發</td><td>個案 150–600 萬；資本額 ≤1 億或員工 <200，非陸資</td><td>機器人新創自主研發主力工具。</td></tr>
+<tr><td>中小型製造業 AI 工具庫補助</td><td>補助點數制</td><td>協助中小製造業低門檻導入 AI／機器人工具。</td></tr>
+<tr><td>SIIR 服務業創新研發</td><td>個別 150 萬／合作 500 萬／國際化進階 ≤1,200 萬</td><td>服務型機器人導入餐飲、零售、長照之商模創新。</td></tr>
+</tbody></table></div>
+
+<h3 class="res-h">產業發展署：主題式（TIIP）、研發轉型與租稅抵減</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>計畫名稱</th><th>補助金額／條件</th><th>內容說明</th></tr></thead>
+<tbody>
+<tr><td>TIIP－機器人產業零組件發展應用</td><td>總經費 50% 上限；零組件商／整機廠／設計整合商，非陸資</td><td>最直接點名「機器人零組件」之主題式計畫，中心廠帶衛星廠。</td></tr>
+<tr><td>TIIP－軍民通用無人機能量籌建</td><td>依提案審定；無人機供應鏈業者</td><td>建構國產無人機（空中機器人）供應鏈量能。</td></tr>
+<tr><td>TIIP 四大常態（高值／優化／育成／主題）</td><td>總經費 50% 上限</td><td>製造業關鍵技術與新產品開發之常態研發補助。</td></tr>
+<tr><td>提升產業競爭力－研發轉型支持（產業聯盟）</td><td>補助比例 ≤ 全案 50%；因應美國關稅之產業聯盟</td><td>受美關稅影響製造業多元跨域合作，發展先進製造／半導體應用。</td></tr>
+<tr><td>產業競爭力輔導團（AI 數位轉型）</td><td>每家最高 42 萬（購 AI 工具＋課程）；後續另有 500 萬、4,000 萬</td><td>協助製造業以小額起步導入 AI／機器人。</td></tr>
+<tr><td>產創條例第 10 之 1／第 10 之 2 租稅抵減</td><td>智慧機械/5G/資安/AI 抵減 5% 或 3%；前瞻設備研發 5%、設備 3%</td><td>購置智慧機械／AI 設備與前瞻研發之投資抵減。</td></tr>
+</tbody></table></div>
+
+<h3 class="res-h">海外拓銷、投資促進與國際研發合作（鏈結美國）</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>計畫名稱（機關）</th><th>補助金額／條件</th><th>內容說明</th></tr></thead>
+<tbody>
+<tr><td><b>臺美創新研發合作</b><br>產業技術司（A+ 國合）</td><td>臺方總經費 ≤50%，AI 案可再加碼 20%（共 70%）；須美方共同提案</td><td>與「鏈結美國」最契合之政府研發金流工具。</td></tr>
+<tr><td>臺加創新研發合作（A+ 國合）</td><td>臺方 ≤50%，AI 案加碼 20%；須加方共同提案</td><td>北美鏈結之另一研發合作管道（2024 簽署）。</td></tr>
+<tr><td>補助分散及開拓海外市場<br>國際貿易署</td><td>單家最高 500 萬／聯盟 2,000 萬</td><td>協助機器人廠商分散市場、開拓海外（含美國）通路。</td></tr>
+<tr><td>補助參加海外國際展覽／TPPO<br>國際貿易署</td><td>實體展每攤 12 萬／每展 ≤16 萬；公協會每展最高 834–904 萬</td><td>以國際展會鏈結買主，推廣國產機器人解決方案。</td></tr>
+<tr><td>投資臺灣三大方案／園區優惠</td><td>土地租金優惠、專案貸款利息補貼；園區前 2 年免租金</td><td>協助機器人廠商在台擴產與設廠之投資誘因。</td></tr>
+</tbody></table></div>`;
+
+const US_HTML = `
+<p class="src-note">資料來源：工研院產科國際所；NSF（seedfund.nsf.gov）。</p>
+
+<h3 class="res-h">美國機器人聯邦政策時間軸（2025 年川普政府上任後）</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>時間</th><th>政策／事件</th><th>重點</th></tr></thead>
+<tbody>
+<tr><td class="mono">2025/1/23</td><td>EO 14179「移除美國 AI 領導障礙」</td><td>後續所有 AI（含機器人）政策的母法，基調為去管制（deregulation）。</td></tr>
+<tr><td class="mono">2025/4/23</td><td>EO 14277、EO 14278</td><td>推動青年 AI 教育、為高薪技術工作做準備，鋪墊機器人技師與自動化人力培訓管道。</td></tr>
+<tr><td class="mono">2025/7/23</td><td>America's AI Action Plan</td><td>90 項政策；「次世代製造」主張聯邦投資 AI 與機器人賦能的新製造技術，要求美國「及其信任的盟友（trusted allies）」成為製造者。</td></tr>
+<tr><td class="mono">2025/11/24</td><td>Genesis Mission</td><td>能源部整合式 AI 平台，重點含先進製造、關鍵材料、半導體；2026/7/22 前須盤點聯邦設施中的 AI 導向機器人實驗室。</td></tr>
+<tr><td class="mono">2026/2/3</td><td>National Commission on Robotics Act（H.R.7334）</td><td>跨黨派提出，指示商務部成立 18 人專家委員會，職權納入機器人供應鏈風險與境內製造政策。</td></tr>
+<tr><td class="mono">2026/3/26</td><td>American Security Robotics Act</td><td>Cotton×Schumer 共同提出，擬禁止聯邦機關採購或操作特定機器人與無人地面載具，禁令涵蓋外包契約；通過後 12 個月緩衝期。</td></tr>
+</tbody></table></div>
+
+<h3 class="res-h">美國機器人聯邦補助兩大類型</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>項目</th><th>A 類：研究型</th><th>B 類：產業型</th></tr></thead>
+<tbody>
+<tr><td>代表機制</td><td>NSF FRR、NSF SBIR/STTR、ARM Institute</td><td>州政府補助（MBDP、M2I2、CalCompetes）、聯邦製造綱領</td></tr>
+<tr><td>主要出資方</td><td>NSF；國防部（ARM）；AFRL</td><td>州經發局；商務部；CHIPS Office</td></tr>
+<tr><td>目的</td><td>推進機器人科學、技術成熟、人才培育</td><td>設廠、創造在地就業、製造回流、供應鏈韌性</td></tr>
+<tr><td>錢的性質</td><td>研究經費（grant）</td><td>資本補貼／稅收抵免／績效現金</td></tr>
+<tr><td>典型範例</td><td>FRR 17.4 萬至 500 萬；SBIR Ph.II 至 180 萬；ARM 單案約百萬級</td><td>MBDP 270 萬（Teradyne 案）；M2I2 至 20 萬；CalCompetes 單輪近 1 億</td></tr>
+<tr><td>綁定條件</td><td>學術產出、配比、會員資格、研究安全合規</td><td>在地就業、設備留在州內、存續年限（如賓州 5 年）</td></tr>
+<tr><td><b>台灣切入路徑</b></td><td>與美國大學／實驗室合作研究、技轉；加入 ARM 會員；新創走 SBIR</td><td>設組裝廠、合資、零組件供應，以配比補助降低設廠成本</td></tr>
+</tbody></table></div>
+
+<h3 class="res-h">研究型補助資源：NSF FRR vs NSF SBIR/STTR</h3>
+<div class="tbl-scroll"><table class="res-tbl">
+<thead><tr><th>屬性</th><th>NSF FRR（學研導向）</th><th>NSF SBIR／STTR（產業導向）</th></tr></thead>
+<tbody>
+<tr><td>定位</td><td>機器人系統基礎研究（感知、移動、人機互動、跨領域）</td><td>中小企業／新創深科技商業化，把研發推向市場</td></tr>
+<tr><td>主管</td><td>NSF CISE 與 ENG 聯合管理</td><td>NSF 技術創新與夥伴關係理事會（TIP）</td></tr>
+<tr><td>補助對象</td><td>大學、高教機構、NSF 資格非營利研究機構</td><td>美國中小企業／新創；STTR 須結合非營利機構</td></tr>
+<tr><td>補助金額</td><td>單案約 17 萬至 500 萬美元</td><td>Phase I ≤30.5 萬、Phase II ≤125 萬（單一公司最高約 200 萬）</td></tr>
+<tr><td>申請方式</td><td>全年滾動式收件、無固定截止</td><td>先提 Project Pitch、獲邀後送案；NSF 26-510／26-511，2026/6/2 起</td></tr>
+<tr><td>規模／特點</td><td>累計 227 項、1.22 億美元；前三州：麻州 $15.1M、賓州 $12.9M、密西根 $12.7M</td><td>每年逾 2 億美元、約 400 家新創；NSF 不取股權、保留智財；通過率約 10–20%</td></tr>
+</tbody></table></div>`;
+
+let REGION = "tw", CACHE = {};
+function switchRegion(r, btn) {
+  REGION = r;
+  document.querySelectorAll(".tabbar .tab").forEach(b => b.classList.toggle("active", b === btn));
+  document.getElementById("staticBox").innerHTML = r === "tw" ? TW_HTML : US_HTML;
+  renderGrants();
+}
+async function renderGrants() {
+  const box = document.getElementById("grantList");
+  const sec = REGION === "tw" ? "grant_tw" : "grant_us";
+  box.innerHTML = '<p class="empty">載入中…</p>';
+  if (!CACHE[sec]) {
+    try { CACHE[sec] = await gfPremiumList(sec) || []; }
+    catch (e) { CACHE[sec] = []; }
+  }
+  box.innerHTML = CACHE[sec].length ? CACHE[sec].map(a => `
+    <article class="prem-card">
+      <div class="prem-meta">
+        <span class="badge b-sub">${a.region}</span><span class="badge b-free">${a.cat}</span>
+        <span class="mono" style="font-size:12px;color:var(--slate)">${a.published || ""}</span>
+      </div>
+      <h3>${gfEsc(a.title)}</h3>
+      <p class="prem-sum">${gfEsc(a.summary || "")}</p>
+      <div class="prem-body">${(a.body || "").split("\n").map(p => p.trim() ? "<p>" + gfEsc(p) + "</p>" : "").join("")}</div>
+    </article>`).join("")
+  : '<p class="empty">目前以上方彙整表為主；補助快訊將於後台「進階內容管理」陸續上架。</p>';
+}
+document.addEventListener("DOMContentLoaded", () => {
+  if (!gfGatePage(4, "gateBox")) return;   /* 黃金級限定 */
+  document.getElementById("staticBox").innerHTML = TW_HTML;
+  renderGrants();
+});
+</script>
+</body>
+</html>

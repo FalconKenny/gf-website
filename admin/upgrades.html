@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>升級申請與通行碼｜Guide.Ferryman Admin</title>
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<script src="../assets/js/sb.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+if (gfAdminGate()) {
+  gfAdminShell("upg", "升級申請與通行碼", "審核前台送出的白銀／黃金升級申請。收款確認後點「開通」：系統會更新會員分級、產生通行碼，並帶出通知信範本（以您的 Gmail 寄給客戶）。", `
+    <div class="panel">
+      <h2>升級申請</h2>
+      <table class="tbl">
+        <thead><tr><th>申請日</th><th>姓名</th><th>Email</th><th>申請等級</th><th>幣別</th><th>備註</th><th>狀態</th><th>操作</th></tr></thead>
+        <tbody id="reqRows"></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>已核發通行碼</h2>
+      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">通行碼供付費會員在前台解鎖隱藏頁。取消訂閱（停止扣款）時，請將對應通行碼「停用」。</p>
+      <table class="tbl">
+        <thead><tr><th>核發日</th><th>Email</th><th>等級</th><th>通行碼</th><th>狀態</th><th>操作</th></tr></thead>
+        <tbody id="passRows"></tbody>
+      </table>
+    </div>
+  `);
+
+  const TIER_NAME = {3:"白銀會員", 4:"黃金會員"};
+  let REQS = [], PASSES = [];
+
+  function genCode() {
+    const abc = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    let s = "";
+    for (let i = 0; i < 6; i++) s += abc[Math.floor(Math.random() * abc.length)];
+    return "GF-" + s;
+  }
+
+  async function render() {
+    try {
+      REQS = await gfSbSelect("upgrade_requests", "&order=created_at.desc", true) || [];
+      PASSES = await gfSbSelect("member_passes", "&order=created_at.desc", true) || [];
+    } catch (e) { alert("讀取失敗（請先在 Supabase 執行 supabase_upgrade_v4.sql）：" + e.message); return; }
+
+    document.getElementById("reqRows").innerHTML = REQS.map((r, i) => `
+      <tr>
+        <td class="mono">${(r.created_at || "").slice(0, 10)}</td>
+        <td>${gfEsc(r.name)}</td>
+        <td class="mono">${gfEsc(r.email)}</td>
+        <td>${r.tier_requested === 4 ? '<span class="badge" style="background:#FBEBD2;color:#9A6614">黃金</span>' : '<span class="badge b-ok">白銀</span>'}</td>
+        <td class="mono">${r.currency}</td>
+        <td style="max-width:220px">${gfEsc(r.message || "")}</td>
+        <td>${r.status === "已開通" ? '<span class="badge b-ok">已開通</span>' : r.status === "已取消" ? '<span class="badge b-free">已取消</span>' : '<span class="badge b-sub">待付款</span>'}</td>
+        <td>
+          ${r.status === "待付款" ? `<button class="btn-sm" onclick="approve(${i})">✅ 收款確認・開通</button>
+          <button class="btn-sm danger" onclick="cancelReq(${i})">取消</button>` : ""}
+        </td>
+      </tr>`).join("") || `<tr><td colspan="8" style="color:var(--slate)">尚無升級申請。前台「會員升級」送出後會顯示於此，並同步 Email 通知您。</td></tr>`;
+
+    document.getElementById("passRows").innerHTML = PASSES.map((p, i) => `
+      <tr>
+        <td class="mono">${(p.created_at || "").slice(0, 10)}</td>
+        <td class="mono">${gfEsc(p.email)}</td>
+        <td>${TIER_NAME[p.tier_level] || p.tier_level}</td>
+        <td class="mono"><b>${gfEsc(p.code)}</b></td>
+        <td>${p.active ? '<span class="badge b-ok">有效</span>' : '<span class="badge b-free">已停用</span>'}</td>
+        <td>
+          <button class="btn-sm" onclick="mailPass(${i})">✉️ 通知信範本</button>
+          <button class="btn-sm ${p.active ? "danger" : ""}" onclick="togglePass(${i})">${p.active ? "停用" : "重新啟用"}</button>
+        </td>
+      </tr>`).join("") || `<tr><td colspan="6" style="color:var(--slate)">尚未核發任何通行碼。</td></tr>`;
+  }
+
+  window.approve = async i => {
+    const r = REQS[i];
+    if (!confirm("確認已收到 " + r.name + "（" + r.email + "）的款項，開通【" + TIER_NAME[r.tier_requested] + "】？")) return;
+    const code = genCode();
+    try {
+      /* 1) 核發通行碼 */
+      await gfSbInsert("member_passes", { email: r.email, tier_level: r.tier_requested, code: code, note: r.name }, true);
+      /* 2) 標記申請為已開通 */
+      await gfSbUpdate("upgrade_requests", r.id, { status: "已開通" });
+      /* 3) 同步會員分級（若該 Email 已是會員）*/
+      try { await gfSbUpdateBy("members", "email", r.email, { tier: TIER_NAME[r.tier_requested], tier_level: r.tier_requested, subscribe: true }); } catch (e) {}
+    } catch (e) { alert("開通失敗：" + e.message); return; }
+    await render();
+    openMail(r.email, r.name, r.tier_requested, code);
+  };
+  window.cancelReq = async i => {
+    if (!confirm("將此申請標記為已取消？")) return;
+    try { await gfSbUpdate("upgrade_requests", REQS[i].id, { status: "已取消" }); render(); } catch (e) { alert(e.message); }
+  };
+  window.togglePass = async i => {
+    const p = PASSES[i];
+    try { await gfSbUpdate("member_passes", p.id, { active: !p.active }); render(); } catch (e) { alert(e.message); }
+  };
+  window.mailPass = i => {
+    const p = PASSES[i];
+    openMail(p.email, p.note || "會員", p.tier_level, p.code);
+  };
+
+  function openMail(email, name, lv, code) {
+    const tn = TIER_NAME[lv];
+    const perks = lv >= 4
+      ? "「每週產業趨勢分析」、「政策趨勢分析」、「台灣政府補助資源」與「美國政府補助資源」"
+      : "「每週產業趨勢分析」";
+    const subject = "【Guide.Ferryman】您的" + tn + "已開通｜會員通行碼";
+    const body =
+`${name} 您好：
+
+感謝您升級為 Guide.Ferryman ${tn}！您的權益已開通。
+
+▍您的會員通行碼：${code}
+
+▍解鎖方式：
+1. 前往 https://falconkenny.github.io/gf-website/
+2. 點選導覽列「⭐ 會員升級」→「輸入會員通行碼解鎖」
+3. 輸入上方通行碼，即可閱讀 ${perks}。
+
+通行碼請妥善保管、勿轉發他人。若有任何問題，直接回覆本信即可。
+
+Guide.Ferryman Strategic Advisory
+台美產業策略顧問｜25.03°N 121.56°E ⇄ 38.90°N 77.03°W`;
+    location.href = "mailto:" + encodeURIComponent(email) +
+      "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  }
+
+  render();
+}
+</script>
+</body>
+</html>
