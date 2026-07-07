@@ -19,31 +19,52 @@ if (gfAdminGate()) {
     <div class="panel">
       <h2>升級申請</h2>
       <table class="tbl">
-        <thead><tr><th>申請日</th><th>姓名</th><th>Email</th><th>申請等級</th><th>幣別</th><th>備註</th><th>狀態</th><th>操作</th></tr></thead>
+        <thead><tr><th>申請日</th><th>姓名</th><th>Email</th><th>申請等級</th><th>方案金額</th><th>週期</th><th>備註</th><th>狀態</th><th>操作</th></tr></thead>
         <tbody id="reqRows"></tbody>
       </table>
     </div>
+    <div class="panel" style="border-left:4px solid var(--teal)">
+      <h2>🎁 全站限時免費開放</h2>
+      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">啟用後至截止時間前，<b>所有訪客（含未登入）</b>可免費瀏覽「產業趨勢分析」「政府補助資源」與投資地圖完整情報；前台會自動顯示開放公告橫幅。適合行銷活動、展會導流。</p>
+      <p id="openStatus" style="font-size:14px;font-weight:700;margin-bottom:10px">狀態載入中…</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="field"><label>開放截止時間</label><input class="inp" type="datetime-local" id="openUntil"></div>
+        <button class="btn btn-teal" onclick="setOpen()">✅ 啟用／更新</button>
+        <button class="btn btn-ghost" onclick="closeOpen()">⛔ 立即關閉</button>
+      </div>
+    </div>
+    <div class="panel" id="expirePanel" style="display:none;border-left:4px solid #E8A23D">
+      <h2>⚠️ 權限到期提醒（7 日內到期／已到期）</h2>
+      <div id="expireList" style="font-size:14px"></div>
+    </div>
     <div class="panel">
       <h2>手動核發通行碼</h2>
-      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">不經升級申請、直接為某位會員核發白銀／黃金通行碼（例如：後台已將其分級調高、或線下收款的客戶）。</p>
+      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">不經升級申請、直接為某位會員核發白銀／黃金通行碼（例如：後台已將其分級調高、或線下收款的客戶）。到期日會依繳費週期自動計算（月費 +1 個月、年費 +1 年）。</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-        <div class="field" style="min-width:240px"><label>會員 Email</label><input class="inp" id="issueEmail" placeholder="customer@example.com"></div>
+        <div class="field" style="min-width:220px"><label>會員 Email</label><input class="inp" id="issueEmail" placeholder="customer@example.com"></div>
         <div class="field"><label>等級</label><select class="sel" id="issueTier"><option value="3">🥈 白銀會員</option><option value="4">🥇 黃金會員</option></select></div>
+        <div class="field"><label>繳費週期</label><select class="sel" id="issueCycle"><option>月費</option><option>年費</option></select></div>
+        <div class="field"><label>繳費方式</label><select class="sel" id="issuePay"><option>信用卡定期定額</option><option>銀行轉帳</option><option>線上訂閱(USD)</option><option>待確認</option></select></div>
         <button class="btn btn-teal" onclick="issuePass()">🔑 產生通行碼</button>
       </div>
       <p id="issueMsg" style="font-size:13.5px;margin-top:10px;color:var(--teal-dark)"></p>
     </div>
     <div class="panel">
       <h2>已核發通行碼</h2>
-      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">通行碼供付費會員在前台解鎖隱藏頁。取消訂閱（停止扣款）時，請將對應通行碼「停用」。</p>
+      <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">通行碼供付費會員在前台解鎖隱藏頁；<b>到期日一過，前台登入自動失效</b>。客戶續費後按「⏫ 續期」延長。取消訂閱（停止扣款）時按「停用」。</p>
       <table class="tbl">
-        <thead><tr><th>核發日</th><th>Email</th><th>等級</th><th>通行碼</th><th>狀態</th><th>操作</th></tr></thead>
+        <thead><tr><th>Email</th><th>等級</th><th>通行碼</th><th>方案金額</th><th>週期</th><th>繳費方式</th><th>到期日</th><th>剩餘</th><th>狀態</th><th>操作</th></tr></thead>
         <tbody id="passRows"></tbody>
       </table>
     </div>
   `);
 
   const TIER_NAME = {3:"白銀會員", 4:"黃金會員"};
+  const AMT = {
+    3: { "月費": { TWD: "NT$3,200",  USD: "US$100"   }, "年費": { TWD: "NT$19,200", USD: "US$600"   } },
+    4: { "月費": { TWD: "NT$6,000",  USD: "US$180"   }, "年費": { TWD: "NT$36,000", USD: "US$1,080" } }
+  };
+  const amt = (lv, cycle, cur) => ((AMT[lv] || {})[cycle || "月費"] || {})[cur || "TWD"] || "—";
   let REQS = [], PASSES = [];
 
   function genCode() {
@@ -65,27 +86,51 @@ if (gfAdminGate()) {
         <td>${gfEsc(r.name)}</td>
         <td class="mono">${gfEsc(r.email)}</td>
         <td>${r.tier_requested === 4 ? '<span class="badge" style="background:#FBEBD2;color:#9A6614">黃金</span>' : '<span class="badge b-ok">白銀</span>'}</td>
-        <td class="mono">${r.currency}</td>
-        <td style="max-width:220px">${gfEsc(r.message || "")}</td>
+        <td class="mono">${amt(r.tier_requested, r.billing_cycle, r.currency)}</td>
+        <td>${r.billing_cycle || "月費"}</td>
+        <td style="max-width:200px">${gfEsc(r.message || "")}</td>
         <td>${r.status === "已開通" ? '<span class="badge b-ok">已開通</span>' : r.status === "已取消" ? '<span class="badge b-free">已取消</span>' : '<span class="badge b-sub">待付款</span>'}</td>
         <td>
           ${r.status === "待付款" ? `<button class="btn-sm" onclick="approve(${i})">✅ 收款確認・開通</button>
           <button class="btn-sm danger" onclick="cancelReq(${i})">取消</button>` : ""}
         </td>
-      </tr>`).join("") || `<tr><td colspan="8" style="color:var(--slate)">尚無升級申請。前台「會員升級」送出後會顯示於此，並同步 Email 通知您。</td></tr>`;
+      </tr>`).join("") || `<tr><td colspan="9" style="color:var(--slate)">尚無升級申請。前台「會員升級」送出後會顯示於此，並同步 Email 通知您（客戶也會被引導加入 LINE 官方帳號）。</td></tr>`;
 
-    document.getElementById("passRows").innerHTML = PASSES.map((p, i) => `
-      <tr>
-        <td class="mono">${(p.created_at || "").slice(0, 10)}</td>
+    const today = new Date().toISOString().slice(0, 10);
+    const daysLeft = p => p.expires_at ? Math.ceil((new Date(p.expires_at) - new Date(today)) / 86400000) : null;
+
+    document.getElementById("passRows").innerHTML = PASSES.map((p, i) => {
+      const d = daysLeft(p);
+      const expired = d !== null && d < 0;
+      const soon = d !== null && d >= 0 && d <= 7;
+      return `<tr${expired ? ' style="background:#FDF3F0"' : (soon ? ' style="background:#FFF9EE"' : "")}>
         <td class="mono">${gfEsc(p.email)}</td>
         <td>${TIER_NAME[p.tier_level] || p.tier_level}</td>
         <td class="mono"><b>${gfEsc(p.code)}</b></td>
-        <td>${p.active ? '<span class="badge b-ok">有效</span>' : '<span class="badge b-free">已停用</span>'}</td>
-        <td>
-          <button class="btn-sm" onclick="mailPass(${i})">✉️ 通知信範本</button>
-          <button class="btn-sm ${p.active ? "danger" : ""}" onclick="togglePass(${i})">${p.active ? "停用" : "重新啟用"}</button>
+        <td class="mono">${amt(p.tier_level, p.billing_cycle, (p.pay_method || "").includes("USD") ? "USD" : "TWD")}</td>
+        <td>${p.billing_cycle || "月費"}</td>
+        <td style="font-size:12.5px">${gfEsc(p.pay_method || "待確認")}${p.auto_renew ? '<br><span class="badge b-ok">自動續費</span>' : ""}</td>
+        <td class="mono">${p.expires_at || "無期限"}</td>
+        <td>${d === null ? "—" : expired ? '<span class="badge" style="background:#FBE9E1;color:#B4521B">已到期 ' + Math.abs(d) + ' 天</span>' : soon ? '<span class="badge" style="background:#FBEBD2;color:#9A6614">剩 ' + d + ' 天</span>' : d + " 天"}</td>
+        <td>${p.active && !expired ? '<span class="badge b-ok">有效</span>' : '<span class="badge b-free">' + (expired ? "已到期" : "已停用") + '</span>'}</td>
+        <td style="white-space:nowrap">
+          <button class="btn-sm" onclick="renewPass(${i})">⏫ 續期</button>
+          <button class="btn-sm" onclick="mailPass(${i})">✉️ 範本</button>
+          <button class="btn-sm ${p.active ? "danger" : ""}" onclick="togglePass(${i})">${p.active ? "停用" : "啟用"}</button>
         </td>
-      </tr>`).join("") || `<tr><td colspan="6" style="color:var(--slate)">尚未核發任何通行碼。</td></tr>`;
+      </tr>`;
+    }).join("") || `<tr><td colspan="10" style="color:var(--slate)">尚未核發任何通行碼。</td></tr>`;
+
+    /* 到期提醒面板：7 日內到期或已到期且仍為「有效」的通行碼 */
+    const warn = PASSES.filter(p => p.active && p.expires_at && daysLeft(p) <= 7);
+    const panel = document.getElementById("expirePanel");
+    if (warn.length) {
+      panel.style.display = "block";
+      document.getElementById("expireList").innerHTML = warn.map(p => {
+        const d = daysLeft(p);
+        return `<p style="margin:6px 0">${d < 0 ? "🔴 <b>已到期</b>" : "🟡 <b>剩 " + d + " 天</b>"}｜${gfEsc(p.email)}｜${TIER_NAME[p.tier_level]}｜${p.billing_cycle || "月費"}・${gfEsc(p.pay_method || "待確認")}${p.auto_renew ? "（自動續費：金流將自動扣款，扣款成功後請按續期）" : "（未設自動續費：請確認是否續費，未續請停用）"}</p>`;
+      }).join("");
+    } else panel.style.display = "none";
   }
 
   window.issuePass = async () => {
@@ -93,24 +138,72 @@ if (gfAdminGate()) {
     const lv = parseInt(document.getElementById("issueTier").value, 10);
     const msgEl = document.getElementById("issueMsg");
     if (!email || !email.includes("@")) { alert("請輸入正確的 Email"); return; }
+    const cycle = document.getElementById("issueCycle").value;
+    const payM = document.getElementById("issuePay").value;
     const code = genCode();
+    const exp = new Date();
+    if (cycle === "年費") exp.setFullYear(exp.getFullYear() + 1); else exp.setMonth(exp.getMonth() + 1);
+    const expStr = exp.toISOString().slice(0, 10);
     try {
-      await gfSbInsert("member_passes", { email: email, tier_level: lv, code: code, note: "手動核發" }, true);
+      await gfSbInsert("member_passes", { email: email, tier_level: lv, code: code, note: "手動核發",
+        expires_at: expStr, billing_cycle: cycle, pay_method: payM,
+        auto_renew: payM === "信用卡定期定額" || payM === "線上訂閱(USD)" }, true);
       /* 若該 Email 已是會員 → 同步分級與訂閱 */
       try { await gfSbUpdateBy("members", "email", email, { tier: TIER_NAME[lv], tier_level: lv, subscribe: true }); } catch (e) {}
     } catch (e) { alert("核發失敗：" + e.message); return; }
-    msgEl.innerHTML = "✅ 已核發 <b>" + TIER_NAME[lv] + "</b> 通行碼：<b class='mono'>" + code + "</b>（已同步會員分級，可按下方清單的「✉️ 通知信範本」寄給客戶）";
+    msgEl.innerHTML = "✅ 已核發 <b>" + TIER_NAME[lv] + "</b> 通行碼：<b class='mono'>" + code + "</b>（" + cycle + "，效期至 " + expStr + "；已同步會員分級，可按清單的「✉️ 範本」寄給客戶）";
     document.getElementById("issueEmail").value = "";
     await render();
   };
+
+  async function loadOpen() {
+    try {
+      const rows = await gfSbSelect("gf_settings", "&key=eq.open_access", true) || [];
+      const until = rows[0] && rows[0].value && rows[0].value.until;
+      const el = document.getElementById("openStatus");
+      if (until && new Date(until) > new Date()) {
+        el.innerHTML = "🟢 開放中，至 <b>" + new Date(until).toLocaleString("zh-TW") + "</b>";
+        const d = new Date(until); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        document.getElementById("openUntil").value = d.toISOString().slice(0, 16);
+      } else {
+        el.innerHTML = "⚪ 目前未開放（會員內容依分級鎖定）";
+      }
+    } catch (e) {
+      document.getElementById("openStatus").textContent = "狀態讀取失敗（請先執行 supabase_patch_v5.sql）：" + e.message;
+    }
+  }
+  async function saveOpen(valueObj) {
+    const rows = await gfSbSelect("gf_settings", "&key=eq.open_access", true) || [];
+    if (rows.length) await gfSbUpdateBy("gf_settings", "key", "open_access", { value: valueObj });
+    else await gfSbInsert("gf_settings", { key: "open_access", value: valueObj }, true);
+  }
+  window.setOpen = async () => {
+    const v = document.getElementById("openUntil").value;
+    if (!v) { alert("請先選擇開放截止時間"); return; }
+    const until = new Date(v);
+    if (until <= new Date()) { alert("截止時間需晚於現在"); return; }
+    try { await saveOpen({ until: until.toISOString() }); await loadOpen(); alert("已啟用全站限時開放！前台重新整理即可看到公告橫幅。"); }
+    catch (e) { alert("設定失敗：" + e.message); }
+  };
+  window.closeOpen = async () => {
+    if (!confirm("立即關閉全站開放？前台將恢復依會員分級鎖定。")) return;
+    try { await saveOpen({}); await loadOpen(); } catch (e) { alert("關閉失敗：" + e.message); }
+  };
+  loadOpen();
 
   window.approve = async i => {
     const r = REQS[i];
     if (!confirm("確認已收到 " + r.name + "（" + r.email + "）的款項，開通【" + TIER_NAME[r.tier_requested] + "】？")) return;
     const code = genCode();
+    const cycle = r.billing_cycle || "月費";
+    const exp = new Date();
+    if (cycle === "年費") exp.setFullYear(exp.getFullYear() + 1); else exp.setMonth(exp.getMonth() + 1);
     try {
-      /* 1) 核發通行碼 */
-      await gfSbInsert("member_passes", { email: r.email, tier_level: r.tier_requested, code: code, note: r.name }, true);
+      /* 1) 核發通行碼（依申請週期計算到期日） */
+      await gfSbInsert("member_passes", { email: r.email, tier_level: r.tier_requested, code: code, note: r.name,
+        expires_at: exp.toISOString().slice(0, 10), billing_cycle: cycle,
+        pay_method: r.currency === "USD" ? "線上訂閱(USD)" : "待確認",
+        auto_renew: false }, true);
       /* 2) 標記申請為已開通 */
       await gfSbUpdate("upgrade_requests", r.id, { status: "已開通" });
       /* 3) 同步會員分級（若該 Email 已是會員）*/
@@ -122,6 +215,18 @@ if (gfAdminGate()) {
   window.cancelReq = async i => {
     if (!confirm("將此申請標記為已取消？")) return;
     try { await gfSbUpdate("upgrade_requests", REQS[i].id, { status: "已取消" }); render(); } catch (e) { alert(e.message); }
+  };
+  window.renewPass = async i => {
+    const p = PASSES[i];
+    const cycle = prompt("續期週期？輸入「月」延長 1 個月、「年」延長 1 年（自現有到期日或今日起算，取較晚者）", (p.billing_cycle === "年費") ? "年" : "月");
+    if (cycle !== "月" && cycle !== "年") return;
+    const base = p.expires_at && new Date(p.expires_at) > new Date() ? new Date(p.expires_at) : new Date();
+    if (cycle === "年") base.setFullYear(base.getFullYear() + 1); else base.setMonth(base.getMonth() + 1);
+    try {
+      await gfSbUpdate("member_passes", p.id, { expires_at: base.toISOString().slice(0, 10), active: true,
+        billing_cycle: cycle === "年" ? "年費" : "月費" });
+      render();
+    } catch (e) { alert("續期失敗：" + e.message); }
   };
   window.togglePass = async i => {
     const p = PASSES[i];

@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
-<script src="assets/js/ga.js"></script>
 </head>
 <body>
 <nav class="nav" id="nav"></nav>
@@ -100,8 +99,9 @@ async function render() {
   : '<p class="empty">此分類目前尚無文章，將於每週更新後上架。</p>';
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (!gfGatePage(3, "gateBox")) return;   /* 白銀級以上才進入本頁 */
+document.addEventListener("DOMContentLoaded", async () => {
+  await gfInitOpenAccess();                 /* 先確認是否於全站限時開放期間 */
+  if (!gfGatePage(3, "gateBox")) return;   /* 白銀級以上（或開放期間）才進入本頁 */
   buildChips();
   render();
 });

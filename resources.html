@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
-<script src="assets/js/ga.js"></script>
 </head>
 <body>
 <nav class="nav" id="nav"></nav>
@@ -175,8 +174,9 @@ async function renderGrants() {
     </article>`).join("")
   : '<p class="empty">目前以上方彙整表為主；補助快訊將於後台「進階內容管理」陸續上架。</p>';
 }
-document.addEventListener("DOMContentLoaded", () => {
-  if (!gfGatePage(4, "gateBox")) return;   /* 黃金級限定 */
+document.addEventListener("DOMContentLoaded", async () => {
+  await gfInitOpenAccess();                 /* 先確認是否於全站限時開放期間 */
+  if (!gfGatePage(4, "gateBox")) return;   /* 黃金級限定（或開放期間） */
   document.getElementById("staticBox").innerHTML = TW_HTML;
   renderGrants();
 });

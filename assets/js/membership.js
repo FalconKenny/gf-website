@@ -13,24 +13,27 @@
 
 /* ---------- ① 金流連結設定（申請完成後填入即可） ---------- */
 const GF_PAY = {
-  /* 台幣（台灣客戶）：綠界 ECPay 或 藍新 NewebPay 的
-     「信用卡定期定額 授權/收款連結」貼於此。 */
-  silver_twd: "",
-  gold_twd:   "",
+  /* 台幣（台灣客戶）：藍新 NewebPay 後台建立的
+     「信用卡定期定額 委託連結」貼於此（見 NEWEBPAY-GUIDE.md）。 */
+  silver_twd: "",        gold_twd: "",          /* 月繳 */
+  silver_twd_year: "",   gold_twd_year: "",     /* 年繳（半價） */
   /* 美元（國際客戶）：Lemon Squeezy / Polar / Gumroad 的
      訂閱商品 Checkout 連結貼於此。 */
-  silver_usd: "",
-  gold_usd:   ""
+  silver_usd: "",        gold_usd: "",          /* 月繳 */
+  silver_usd_year: "",   gold_usd_year: ""      /* 年繳（半價） */
 };
+
+/* LINE 官方帳號（升級付款流程用） */
+const GF_LINE = { id: "@396whyo", url: "https://lin.ee/ZGQkHj7" };
 
 const GF_TIERS = [
   { lv:1, key:"free",   name:"普通會員", price:"免費", color:"#5B6B7C",
     perks:["瀏覽台美動態資訊與每日熱門動態","使用美洲產業地圖","預約諮詢"] },
   { lv:2, key:"bronze", name:"青銅會員", price:"免費（加入會員＋訂閱）", color:"#B07A3F",
     perks:["包含普通會員全部權益","每週一收到《台美產業動態週報》","優先取得活動與研究發布通知"] },
-  { lv:3, key:"silver", name:"白銀會員", price:"US$100 / 月（NT$3,200）", color:"#8FA6B8",
+  { lv:3, key:"silver", name:"白銀會員", price:"US$100 / 月（NT$3,200）\n年繳半價：US$600（NT$19,200）/ 年", color:"#8FA6B8",
     perks:["包含青銅會員全部權益","解鎖【每週產業趨勢分析】隱藏頁","台灣×美國 · AI／機器人／半導體／無人機 分類深度短評"] },
-  { lv:4, key:"gold",   name:"黃金會員", price:"US$180 / 月（NT$6,000）", color:"#E8A23D",
+  { lv:4, key:"gold",   name:"黃金會員", price:"US$180 / 月（NT$6,000）\n年繳半價：US$1,080（NT$36,000）/ 年", color:"#E8A23D",
     perks:["包含白銀會員全部權益","解鎖【政策趨勢分析】","解鎖【台灣政府補助資源】＋【美國政府補助資源】","補助申請重點時程提醒"] }
 ];
 
@@ -75,7 +78,7 @@ function gfEnsureUpgradeModal() {
   if (document.getElementById("upgradeModal")) return;
   const payRow = (twd, usd) => {
     let h = "";
-    if (twd) h += `<a class="btn btn-teal btn-pay" href="${twd}" target="_blank" rel="noopener">以台幣付款（信用卡定期定額）</a>`;
+    if (twd) h += `<a class="btn btn-teal btn-pay" href="${twd}" target="_blank" rel="noopener">台幣付款：藍新信用卡定期定額</a>`;
     if (usd) h += `<a class="btn btn-ghost btn-pay" href="${usd}" target="_blank" rel="noopener">Pay in USD（International）</a>`;
     return h;
   };
@@ -93,7 +96,7 @@ function gfEnsureUpgradeModal() {
         <div class="tier-card ${t.lv===4?"tier-hot":""}" style="--tc:${t.color}">
           ${t.lv===4?'<span class="tier-flag">最完整</span>':""}
           <p class="tier-name">${t.name}</p>
-          <p class="tier-price">${t.price}</p>
+          <p class="tier-price">${t.price.split("\n").join("<br>")}</p>
           <ul>${t.perks.map(p=>`<li>${p}</li>`).join("")}</ul>
           ${t.lv<=2
             ? `<button class="btn btn-ghost" style="width:100%" onclick="gfCloseModal('upgradeModal');gfOpenMember()">${t.lv===1?"免費加入":"加入並訂閱週報"}</button>`
@@ -104,18 +107,21 @@ function gfEnsureUpgradeModal() {
       <!-- 升級表單（選了白銀/黃金後顯示） -->
       <div id="upgForm" style="display:none;margin-top:22px;border-top:1px dashed rgba(10,28,48,.2);padding-top:18px">
         <h4 style="font-family:var(--font-display);margin-bottom:4px">升級為 <span id="upgTierName"></span></h4>
-        <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">送出後我們會立即收到通知；完成付款並經確認後，將以 Email 寄送您的「會員通行碼」以解鎖隱藏頁。</p>
+        <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">送出後我們會立即收到通知；完成付款並經確認後，將以 Email 寄送您的「會員通行碼」以解鎖隱藏頁。<br>
+<b>續約說明</b>：訂閱將依您選擇的週期（月／年）於到期日自動續費扣款；您可隨時來信取消，取消後權限保留至當期結束。</p>
         <form onsubmit="return gfUpgradeSubmit(event)">
           <div class="grid-2">
             <div class="field"><label>姓名 *</label><input class="inp" name="name" required></div>
             <div class="field"><label>Email *</label><input class="inp" type="email" name="email" required></div>
             <div class="field"><label>付款幣別</label>
               <select class="sel" name="currency"><option value="TWD">台幣 TWD</option><option value="USD">美元 USD</option></select></div>
+            <div class="field"><label>繳費週期</label>
+              <select class="sel" name="billing_cycle" onchange="gfCycleChange(this.value)"><option value="月費">月費（每月自動扣款）</option><option value="年費">年費（享 12 個月半價優惠）</option></select></div>
             <div class="field"><label>備註（選填）</label><input class="inp" name="message" placeholder="想了解的產業、發票需求…"></div>
           </div>
           <div id="upgPayLinks" style="margin:10px 0"></div>
           <button class="btn btn-amber" type="submit" style="width:100%">送出升級申請</button>
-          <div class="ok-box" id="upgOk">已收到您的升級申請！我們將於 1 個工作日內以 Email 與您確認付款方式與開通時間。</div>
+          <div class="ok-box" id="upgOk">✅ 已收到您的升級申請！請立即加入 LINE 官方帳號（<b>@396whyo</b>）由服務人員為您完成付款與開通：<br><a class="btn btn-line" style="margin-top:8px" href="https://lin.ee/ZGQkHj7" target="_blank" rel="noopener">➕ 加入 LINE 官方帳號</a></div>
         </form>
       </div>
 
@@ -136,8 +142,10 @@ function gfEnsureUpgradeModal() {
       </div>
     </div>
   </div>`);
-  const links = { 3: payRow(GF_PAY.silver_twd, GF_PAY.silver_usd), 4: payRow(GF_PAY.gold_twd, GF_PAY.gold_usd) };
-  window.GF_PAY_LINKS_HTML = links;
+  window.GF_PAY_LINKS_HTML = {
+    "月費": { 3: payRow(GF_PAY.silver_twd, GF_PAY.silver_usd), 4: payRow(GF_PAY.gold_twd, GF_PAY.gold_usd) },
+    "年費": { 3: payRow(GF_PAY.silver_twd_year, GF_PAY.silver_usd_year), 4: payRow(GF_PAY.gold_twd_year, GF_PAY.gold_usd_year) }
+  };
 }
 
 function gfOpenUpgrade(e, tier) {
@@ -151,10 +159,20 @@ function gfPickTier(lv) {
   document.getElementById("upgForm").style.display = "block";
   document.getElementById("upgTierName").textContent = t.name + "（" + t.price + "）";
   document.getElementById("upgForm").dataset.tier = lv;
-  const linkHtml = (window.GF_PAY_LINKS_HTML || {})[lv] || "";
+  const cyc = (document.querySelector('#upgForm select[name=billing_cycle]') || {}).value || "月費";
+  const linkHtml = ((window.GF_PAY_LINKS_HTML || {})[cyc] || {})[lv] || "";
   document.getElementById("upgPayLinks").innerHTML = linkHtml
     ? `<p style="font-size:13px;color:var(--slate);margin-bottom:6px">您可直接透過以下連結完成訂閱付款（付款後仍請送出本表單，以便我們開通權限）：</p>${linkHtml}`
-    : `<p style="font-size:13px;color:var(--slate)">💳 線上金流即將開通。目前送出申請後，我們將以 Email 提供付款方式（信用卡定期定額連結／銀行轉帳）。</p>`;
+    : `<div class="line-flow">
+        <p class="lf-title">💬 本網站目前透過 <b>LINE 官方帳號</b>完成升級與付款，流程如下：</p>
+        <ol>
+          <li>加入我們的 LINE 官方帳號（ID：<b>${GF_LINE.id}</b>）</li>
+          <li>加入後，服務人員將與您聯繫確認方案</li>
+          <li>請提供您的 Email，服務人員將提供收款帳號</li>
+          <li>確認收款後，平台將以 <b>Email＋LINE</b> 提供您的「會員通行碼」與資格截止期限</li>
+        </ol>
+        <a class="btn btn-line" href="${GF_LINE.url}" target="_blank" rel="noopener">➕ 加入 LINE 官方帳號 ${GF_LINE.id}</a>
+      </div>`;
   document.getElementById("upgForm").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 async function gfUpgradeSubmit(e) {
@@ -163,7 +181,9 @@ async function gfUpgradeSubmit(e) {
   const lv = parseInt(document.getElementById("upgForm").dataset.tier, 10);
   const t = GF_TIERS.find(x => x.lv === lv);
   const rec = { name: f.get("name"), email: f.get("email"),
-    tier_requested: lv, currency: f.get("currency"), message: f.get("message") || "" };
+    tier_requested: lv, currency: f.get("currency"),
+    billing_cycle: f.get("billing_cycle") || "月費",
+    message: f.get("message") || "" };
   const btn = e.target.querySelector("button[type=submit]");
   btn.disabled = true; btn.textContent = "送出中…";
   /* a) 寫入 Supabase（後台「升級申請」清單） */
@@ -176,13 +196,18 @@ async function gfUpgradeSubmit(e) {
       body: JSON.stringify({
         _subject: "🔔 會員升級申請：" + t.name + "（" + rec.name + "）",
         類型: "會員升級申請", 申請等級: t.name, 姓名: rec.name, Email: rec.email,
-        幣別: rec.currency, 備註: rec.message
+        幣別: rec.currency, 繳費週期: rec.billing_cycle, 備註: rec.message
       })
     });
   } catch (err) { console.warn("Formspree 通知失敗：", err.message); }
   document.getElementById("upgOk").style.display = "block";
   btn.textContent = "已送出";
   return false;
+}
+
+function gfCycleChange() {
+  const lv = parseInt(document.getElementById("upgForm").dataset.tier, 10);
+  if (lv) gfPickTier(lv);
 }
 
 /* ---------- ⑤ 通行碼輸入 ---------- */
@@ -225,7 +250,7 @@ async function gfLoginSubmit() {
     msg.textContent = "✅ 已登入 " + gfTierBadge(lv) + "，頁面即將重新整理…";
     setTimeout(() => location.reload(), 700);
   } else {
-    msg.textContent = "❌ 通行碼無效或已停用，請確認開通信中的通行碼，或聯繫 guide.ferryman@gmail.com";
+    msg.textContent = "❌ 通行碼無效、已停用或已到期。若您的訂閱剛到期，續費後即可恢復；請聯繫 guide.ferryman@gmail.com";
   }
 }
 /* 舊名相容 */
@@ -266,6 +291,7 @@ function gfMembershipNav(path) {
     <div class="nav-acct">
       <a href="#" class="nav-tierbadge t${lv}" onclick="gfToggleAcctMenu(event)">${gfTierBadge(lv)} <span class="caret">▾</span></a>
       <div class="nav-menu" id="gfAcctMenu">
+        <a href="#" onclick="gfOpenProfile(event)">👤 我的會員資料</a>
         ${lv < 4 ? `<a href="#" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>` : ""}
         <a href="#" class="danger" onclick="gfMemberLogout();return false;">🚪 會員登出</a>
       </div>
@@ -301,9 +327,40 @@ function gfAutoAd() {
   } catch (e) {}
 }
 
+/* ---------- ⑧-0 全站限時免費開放 ---------- */
+async function gfInitOpenAccess() {
+  if (window.GF_OPEN !== undefined) return window.GF_OPEN;
+  try {
+    const until = await gfSb("/rest/v1/rpc/gf_open_until", { method: "POST", body: {} });
+    window.GF_OPEN = !!until;
+    window.GF_OPEN_UNTIL = until || "";
+  } catch (e) { window.GF_OPEN = false; }
+  if (window.GF_OPEN) gfShowOpenBanner();
+  return window.GF_OPEN;
+}
+/* 有效等級 = 開放期間人人視同黃金 */
+function gfEffectiveTier() { return window.GF_OPEN ? 4 : gfTier(); }
+
+function gfShowOpenBanner() {
+  if (document.getElementById("gfOpenBanner")) return;
+  const d = window.GF_OPEN_UNTIL ? new Date(window.GF_OPEN_UNTIL) : null;
+  const untilTxt = d ? (d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate() + " " +
+    String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0")) : "";
+  document.body.insertAdjacentHTML("afterbegin",
+    `<div id="gfOpenBanner" class="open-banner">🎉 全站會員內容<b>限時免費開放中</b>${untilTxt ? "（至 " + untilTxt + "）" : ""} — <a href="trends.html">產業趨勢分析</a>・<a href="resources.html">政府補助資源</a></div>`);
+  /* 導覽列補上隱藏頁連結（若尚未顯示） */
+  const links = document.querySelector(".nav-links");
+  if (links && !links.querySelector('a[href$="trends.html"]')) {
+    const cta = links.querySelector(".nav-cta");
+    const html = `<a href="trends.html" class="nav-premium">📈 產業趨勢分析</a><a href="resources.html" class="nav-premium">🏛 政府補助資源</a>`;
+    if (cta) cta.insertAdjacentHTML("beforebegin", html); else links.insertAdjacentHTML("beforeend", html);
+  }
+}
+document.addEventListener("DOMContentLoaded", () => { gfInitOpenAccess(); });
+
 /* ---------- ⑧ 隱藏頁閘門：權限不足時顯示鎖定畫面 ---------- */
 function gfGatePage(minLevel, boxId) {
-  const lv = gfTier();
+  const lv = gfEffectiveTier();
   if (lv >= minLevel) return true;
   const need = GF_TIERS.find(t => t.lv === minLevel);
   const el = document.getElementById(boxId);
@@ -333,4 +390,56 @@ function gfGatePage(minLevel, boxId) {
     </div>`;
   }
   return false;
+}
+
+
+/* ---------- ⑩ 我的會員資料（含資格截止期限） ---------- */
+async function gfOpenProfile(e) {
+  if (e) e.preventDefault();
+  if (!document.getElementById("profileModal")) {
+    document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal-bg" id="profileModal" onclick="if(event.target===this)gfCloseModal('profileModal')">
+      <div class="modal" role="dialog" aria-label="我的會員資料">
+        <button class="close" onclick="gfCloseModal('profileModal')">✕</button>
+        <p class="kicker" style="margin-bottom:6px">MY ACCOUNT · 我的會員資料</p>
+        <div id="profileBody"><p style="color:var(--slate)">載入中…</p></div>
+      </div>
+    </div>`);
+  }
+  document.getElementById("profileModal").classList.add("open");
+  const box = document.getElementById("profileBody");
+  const lv = gfTier();
+  const row = (k, v) => `<div class="pf-row"><span>${k}</span><b>${v || "—"}</b></div>`;
+  try {
+    if (lv >= 3 && gfPass()) {
+      const r = (await gfSb("/rest/v1/rpc/gf_pass_info", { method: "POST", body: { p_code: gfPass() } }) || [])[0];
+      if (!r) throw new Error("查無資料");
+      box.innerHTML = `
+        <div class="pf-badge">${gfTierBadge(r.tier_level)}</div>
+        ${row("Email", gfEsc(r.email))}
+        ${row("繳費週期", r.billing_cycle || "月費")}
+        ${row("繳費方式", gfEsc(r.pay_method || "待確認"))}
+        ${row("開通日期", (r.created_at || "").slice(0, 10))}
+        ${row("⏰ 會員資格截止期限", r.expires_at ? '<span style="color:#B4521B">' + r.expires_at + "</span>" : "無期限")}
+        <p class="pf-note">續費或方案異動，請透過 LINE 官方帳號（${GF_LINE.id}）或 guide.ferryman@gmail.com 與我們聯繫。</p>
+        <a class="btn btn-line" style="width:100%;text-align:center" href="${GF_LINE.url}" target="_blank" rel="noopener">💬 聯繫 LINE 官方帳號</a>`;
+    } else if (lv >= 2) {
+      const em = sessionStorage.getItem("gf_email") || "";
+      const r = (await gfSb("/rest/v1/rpc/gf_member_info", { method: "POST", body: { p_email: em } }) || [])[0];
+      if (!r) throw new Error("查無資料");
+      box.innerHTML = `
+        <div class="pf-badge">${gfTierBadge(Math.max(r.tier_level || 2, 2))}</div>
+        ${row("姓名", gfEsc(r.name))}
+        ${row("Email", gfEsc(r.email))}
+        ${row("加入日期", gfEsc(r.joined || ""))}
+        ${row("電子報訂閱", r.subscribe ? "✅ 訂閱中（每週一發送）" : "未訂閱")}
+        ${row("會員資格截止期限", "免費會員・無期限")}
+        <p class="pf-note">升級白銀／黃金可解鎖每週產業趨勢與台美補助資源。</p>
+        <button class="btn btn-amber" style="width:100%" onclick="gfCloseModal('profileModal');gfOpenUpgrade()">⭐ 查看升級方案</button>`;
+    } else {
+      box.innerHTML = `<p style="color:var(--slate)">請先登入會員後查看。</p>`;
+    }
+  } catch (err) {
+    box.innerHTML = `<p style="color:var(--slate)">讀取失敗：${gfEsc(err.message)}（請重新登入後再試）</p>`;
+  }
 }

@@ -10,7 +10,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/investmap.css">
-<script src="assets/js/ga.js"></script>
 </head>
 <body>
 <nav class="nav" id="nav"></nav>
@@ -72,10 +71,13 @@
 <script src="assets/js/investmap-data.js"></script>
 <script>
 gfNav("map");
-/* v4.3：地圖可自由瀏覽；下方完整州別投資情報 → 青銅會員(L2)以上限定 */
-if (typeof gfGatePage === "function" && !gfGatePage(2, "imProfile")) {
-  window.GF_MAP_LOCK = true;
-}
+/* 地圖可自由瀏覽；下方完整州別投資情報 → 青銅會員(L2)以上限定（全站開放期間免登入） */
+(async () => {
+  if (typeof gfInitOpenAccess === "function") await gfInitOpenAccess();
+  if (typeof gfGatePage === "function" && !gfGatePage(2, "imProfile")) {
+    window.GF_MAP_LOCK = true;
+  }
+})();
 </script>
 <script src="assets/js/investmap.js" defer></script>
 </body>
