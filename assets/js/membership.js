@@ -107,8 +107,9 @@ function gfEnsureUpgradeModal() {
       <!-- 升級表單（選了白銀/黃金後顯示） -->
       <div id="upgForm" style="display:none;margin-top:22px;border-top:1px dashed rgba(10,28,48,.2);padding-top:18px">
         <h4 style="font-family:var(--font-display);margin-bottom:4px">升級為 <span id="upgTierName"></span></h4>
-        <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">送出後我們會立即收到通知；完成付款並經確認後，將以 Email 寄送您的「會員通行碼」以解鎖隱藏頁。<br>
-<b>續約說明</b>：訂閱將依您選擇的週期（月／年）於到期日自動續費扣款；您可隨時來信取消，取消後權限保留至當期結束。</p>
+        <p style="font-size:13.5px;color:var(--slate);margin-bottom:12px">
+<b>資料用途說明</b>：以下姓名、Email 與方案選擇，僅供平台<b>開通會員權限、核對款項與寄送通行碼</b>作業使用，不會用於其他用途。送出後系統會立即以 Email 通知我們的服務團隊。<br>
+<b>續約說明</b>：會籍依您選擇的週期（月／年）計算，到期前我們將以 Email／LINE 與您確認續約；您可隨時取消，權限保留至當期結束。</p>
         <form onsubmit="return gfUpgradeSubmit(event)">
           <div class="grid-2">
             <div class="field"><label>姓名 *</label><input class="inp" name="name" required></div>
@@ -125,20 +126,10 @@ function gfEnsureUpgradeModal() {
         </form>
       </div>
 
-      <!-- 會員登入：Email（青銅）或通行碼（白銀/黃金） -->
+      <!-- 已是會員 → 前往獨立的會員登入視窗 -->
       <div style="margin-top:18px;text-align:center;font-size:13.5px;color:var(--slate)">
         已是會員？
-        <a href="#" onclick="gfOpenPassEntry(event)">🔑 會員登入 →</a>
-      </div>
-      <div id="passEntry" style="display:none;margin-top:12px">
-        <p style="text-align:center;font-size:13px;color:var(--slate);margin-bottom:10px">
-          🥉 青銅會員：輸入加入會員時填寫的 <b>Email</b> 登入。<br>
-          🥈 白銀／🥇 黃金會員：輸入開通信中的<b>通行碼</b>（GF-XXXXXX）登入。</p>
-        <div style="display:flex;gap:10px;max-width:460px;margin:0 auto">
-          <input class="inp" id="passInput" placeholder="Email 或 通行碼" style="flex:1">
-          <button class="btn btn-teal" onclick="gfLoginSubmit()">登入</button>
-        </div>
-        <p id="passMsg" style="text-align:center;font-size:13px;margin-top:8px;color:var(--slate)"></p>
+        <a href="#" onclick="gfCloseModal('upgradeModal');gfOpenPassEntry(event)">🔑 前往會員登入 →</a>
       </div>
     </div>
   </div>`);
@@ -164,7 +155,8 @@ function gfPickTier(lv) {
   document.getElementById("upgPayLinks").innerHTML = linkHtml
     ? `<p style="font-size:13px;color:var(--slate);margin-bottom:6px">您可直接透過以下連結完成訂閱付款（付款後仍請送出本表單，以便我們開通權限）：</p>${linkHtml}`
     : `<div class="line-flow">
-        <p class="lf-title">💬 本網站目前透過 <b>LINE 官方帳號</b>完成升級與付款，流程如下：</p>
+        <p class="lf-safe">🛡️ <b>交易安全說明</b>：因近期網路金流詐騙事件頻傳，為保障您的交易安全，本平台目前採 <b>LINE 官方帳號專人一對一</b>方式完成付款確認——全程由專人核對身分與款項，<b>不會</b>要求您操作 ATM、提供信用卡完整卡號或任何驗證碼。</p>
+        <p class="lf-title">💬 升級與付款流程如下：</p>
         <ol>
           <li>加入我們的 LINE 官方帳號（ID：<b>${GF_LINE.id}</b>）</li>
           <li>加入後，服務人員將與您聯繫確認方案</li>
@@ -213,12 +205,34 @@ function gfCycleChange() {
 /* ---------- ⑤ 通行碼輸入 ---------- */
 function gfOpenPassEntry(e) {
   if (e) e.preventDefault();
-  gfEnsureUpgradeModal();
-  document.getElementById("upgradeModal").classList.add("open");
-  document.getElementById("passEntry").style.display = "block";
-  const inp = document.getElementById("passInput");
-  if (!inp.dataset.bound) { inp.dataset.bound = "1"; inp.addEventListener("keydown", ev => { if (ev.key === "Enter") gfLoginSubmit(); }); }
-  inp.focus();
+  if (!document.getElementById("loginModal")) {
+    document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal-bg" id="loginModal" onclick="if(event.target===this)gfCloseModal('loginModal')">
+      <div class="modal" role="dialog" aria-label="會員登入">
+        <button class="close" onclick="gfCloseModal('loginModal')">✕</button>
+        <p class="kicker" style="margin-bottom:6px">MEMBER LOGIN · 會員登入</p>
+        <h3 style="margin-bottom:12px">歡迎回來</h3>
+        <div class="login-hint">
+          <p>🥉 <b>青銅會員</b>：輸入加入會員時填寫的 <b>Email</b> 登入</p>
+          <p>🥈 <b>白銀</b>／🥇 <b>黃金會員</b>：輸入開通信中的<b>會員通行碼</b>（GF-XXXXXX）登入</p>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <input class="inp" id="passInput" placeholder="Email 或 會員通行碼" style="flex:1">
+          <button class="btn btn-teal" onclick="gfLoginSubmit()">登入</button>
+        </div>
+        <p id="passMsg" style="font-size:13px;margin-top:10px;color:var(--slate)"></p>
+        <div style="margin-top:16px;border-top:1px dashed rgba(10,28,48,.15);padding-top:12px;text-align:center;font-size:13.5px;color:var(--slate)">
+          還不是會員？
+          <a href="#" onclick="gfCloseModal('loginModal');gfOpenMember()">免費加入會員</a>　｜　
+          <a href="#" onclick="gfCloseModal('loginModal');gfOpenUpgrade()">⭐ 查看升級方案</a>
+        </div>
+      </div>
+    </div>`);
+    const inp = document.getElementById("passInput");
+    inp.addEventListener("keydown", ev => { if (ev.key === "Enter") gfLoginSubmit(); });
+  }
+  document.getElementById("loginModal").classList.add("open");
+  document.getElementById("passInput").focus();
 }
 async function gfLoginSubmit() {
   const val = document.getElementById("passInput").value.trim();
