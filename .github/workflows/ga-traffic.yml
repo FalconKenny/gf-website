@@ -1,0 +1,30 @@
+name: GF-GA-Traffic
+
+on:
+  schedule:
+    - cron: "30 23 * * *"   # 每日台北時間 07:30(UTC 23:30),在每日彙整之後
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  ga-traffic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install packages
+        run: pip install requests google-auth
+
+      - name: Sync GA4 traffic to Supabase
+        env:
+          GA_PROPERTY_ID: ${{ secrets.GA_PROPERTY_ID }}
+          GA_SERVICE_ACCOUNT_JSON: ${{ secrets.GA_SERVICE_ACCOUNT_JSON }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python scripts/ga_traffic.py
