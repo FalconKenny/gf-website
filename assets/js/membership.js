@@ -261,17 +261,36 @@ function gfMembershipNav(path) {
      已登入 → [等級徽章 / ⭐會員升級（最高級則不顯示）] */
   let stack = "";
   if (lv >= 2) {
-    stack += `<span class="nav-tierbadge t${lv}" title="您的會員等級">${gfTierBadge(lv)}</span>`;
-    if (lv < 4) stack += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
-    stack += `<a href="#" class="nav-logout" onclick="gfMemberLogout();return false;">🚪 會員登出</a>`;
+    /* 已登入：只顯示一顆等級徽章，點擊展開選單（升級／登出），不佔版面 */
+    stack = `
+    <div class="nav-acct">
+      <a href="#" class="nav-tierbadge t${lv}" onclick="gfToggleAcctMenu(event)">${gfTierBadge(lv)} <span class="caret">▾</span></a>
+      <div class="nav-menu" id="gfAcctMenu">
+        ${lv < 4 ? `<a href="#" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>` : ""}
+        <a href="#" class="danger" onclick="gfMemberLogout();return false;">🚪 會員登出</a>
+      </div>
+    </div>`;
   } else {
-    stack += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
-    stack += `<a href="#" class="nav-login" onclick="gfOpenPassEntry(event)">🔑 會員登入</a>`;
+    stack = `<div class="nav-stack">
+      <a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>
+      <a href="#" class="nav-login" onclick="gfOpenPassEntry(event)">🔑 會員登入</a>
+    </div>`;
   }
-  html += `<div class="nav-stack">${stack}</div>`;
+  html += stack;
   if (cta) cta.insertAdjacentHTML("beforebegin", html);
   else links.insertAdjacentHTML("beforeend", html);
 }
+
+/* 徽章選單：點徽章開關、點頁面其他地方自動收合 */
+function gfToggleAcctMenu(e) {
+  if (e) e.preventDefault();
+  const m = document.getElementById("gfAcctMenu");
+  if (m) m.classList.toggle("open");
+}
+document.addEventListener("click", e => {
+  const m = document.getElementById("gfAcctMenu");
+  if (m && m.classList.contains("open") && !e.target.closest(".nav-acct")) m.classList.remove("open");
+});
 
 /* ---------- ⑦ 首頁自動跳出方案廣告（每個瀏覽階段一次） ---------- */
 function gfAutoAd() {
