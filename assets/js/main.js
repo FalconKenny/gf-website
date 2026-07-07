@@ -58,7 +58,7 @@ function gfFooter() {
       <h4>聯絡我們</h4>
       <ul>
         <li><a href="${path}contact.html">諮詢表單</a></li>
-        <li><span style="font-size:13.5px">Email：待補（部署時設定）</span></li>
+        <li><span style="font-size:13.5px">Email：guide.ferryman@gmail.com</span></li>
         <li><span style="font-size:13.5px">台灣・台北</span></li>
       </ul>
     </div>
@@ -232,7 +232,7 @@ function gfOpenHotModal(cat, idx) {
 /* ---------- 諮詢表單 ----------
    正式寄信：於部署指南設定 Formspree（免費），把下方 GF_FORM_ENDPOINT
    換成您的 Formspree 網址後，客戶送出即自動寄 Gmail 通知給您。 */
-const GF_FORM_ENDPOINT = ""; // 例："https://formspree.io/f/xxxxxxx"
+const GF_FORM_ENDPOINT = "https://formspree.io/f/xrewdyqj"; // 諮詢表單即時 Email 通知
 
 async function gfConsultSubmit(e) {
   e.preventDefault();
