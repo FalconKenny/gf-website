@@ -335,3 +335,9 @@ a.nav-tierbadge{cursor:pointer}
 .nav-stack .nav-upgrade{box-shadow:0 1px 5px rgba(232,162,61,.3)}
 .nav-stack .nav-tierbadge{padding:4px 12px!important;font-size:12px}
 @media (max-width:960px){.nav-stack{flex-direction:row;gap:6px}}
+
+/* v4.5：會員登出鈕、補助申請時程標籤 */
+.nav-logout{border:1.5px solid var(--line);color:var(--slate)!important;border-radius:99px;font-weight:700}
+.nav-logout:hover{border-color:#D14343;color:#D14343!important;background:#FDF3F3}
+.badge.b-apply{background:#EAF5F5;color:var(--teal-dark)}
+.badge.b-deadline{background:#FBE9E1;color:#B4521B}

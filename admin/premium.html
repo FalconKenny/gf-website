@@ -35,6 +35,12 @@ if (gfAdminGate()) {
           <div class="field"><label>發布日期</label>
             <input class="inp" type="date" name="published"></div>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="field"><label>申請開始時間（補助快訊用，選填）</label>
+            <input class="inp" name="apply_start" placeholder="例：2026/6/2、隨到隨審"></div>
+          <div class="field"><label>申請截止時間（選填）</label>
+            <input class="inp" name="apply_end" placeholder="例：2026/8/31、額滿為止"></div>
+        </div>
         <div class="field" style="margin-bottom:12px"><label>標題 *</label><input class="inp" name="title" required></div>
         <div class="field" style="margin-bottom:12px"><label>摘要</label><input class="inp" name="summary"></div>
         <div class="field" style="margin-bottom:14px"><label>內文（以空行分段）</label><textarea class="inp" name="body" rows="9"></textarea></div>
@@ -54,7 +60,7 @@ if (gfAdminGate()) {
         </select>
       </div>
       <table class="tbl">
-        <thead><tr><th>發布日</th><th>單元</th><th>地區</th><th>類別</th><th>權限</th><th>標題</th><th>操作</th></tr></thead>
+        <thead><tr><th>發布日</th><th>單元</th><th>地區</th><th>類別</th><th>權限</th><th>標題</th><th>申請截止</th><th>操作</th></tr></thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
@@ -78,10 +84,11 @@ if (gfAdminGate()) {
         <td>${a.cat}</td>
         <td>${a.access_level >= 4 ? '<span class="badge" style="background:#FBEBD2;color:#9A6614">黃金</span>' : '<span class="badge b-ok">白銀+</span>'}</td>
         <td>${gfEsc(a.title)}</td>
+        <td class="mono" style="white-space:nowrap">${gfEsc(a.apply_end || "—")}</td>
         <td><button class="btn-sm" onclick="edit(${i})">編輯</button>
             <button class="btn-sm danger" onclick="del(${i})">刪除</button></td>
       </tr>`;
-    }).join("") || `<tr><td colspan="7" style="color:var(--slate)">尚無文章。</td></tr>`;
+    }).join("") || `<tr><td colspan="8" style="color:var(--slate)">尚無文章。</td></tr>`;
   }
   window.render = render;
 
@@ -92,6 +99,7 @@ if (gfAdminGate()) {
       section: f.get("section"), region: f.get("region"), cat: f.get("cat"),
       access_level: SEC_LEVEL[f.get("section")] || 3,
       title: f.get("title"), summary: f.get("summary") || "", body: f.get("body") || "",
+      apply_start: f.get("apply_start") || "", apply_end: f.get("apply_end") || "",
       published: f.get("published") || new Date().toISOString().slice(0, 10)
     };
     const id = f.get("id");
@@ -107,6 +115,7 @@ if (gfAdminGate()) {
     f.id.value = a.id; f.section.value = a.section; f.region.value = a.region;
     f.cat.value = a.cat; f.published.value = a.published || "";
     f.title.value = a.title; f.summary.value = a.summary || ""; f.body.value = a.body || "";
+    f.apply_start.value = a.apply_start || ""; f.apply_end.value = a.apply_end || "";
     document.getElementById("formTitle").textContent = "編輯進階文章";
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

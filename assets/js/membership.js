@@ -261,8 +261,9 @@ function gfMembershipNav(path) {
      已登入 → [等級徽章 / ⭐會員升級（最高級則不顯示）] */
   let stack = "";
   if (lv >= 2) {
-    stack += `<a href="#" class="nav-tierbadge t${lv}" title="點擊登出" onclick="if(confirm('登出會員？'))gfMemberLogout();return false;">${gfTierBadge(lv)}</a>`;
+    stack += `<span class="nav-tierbadge t${lv}" title="您的會員等級">${gfTierBadge(lv)}</span>`;
     if (lv < 4) stack += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
+    stack += `<a href="#" class="nav-logout" onclick="gfMemberLogout();return false;">🚪 會員登出</a>`;
   } else {
     stack += `<a href="#" class="nav-upgrade" onclick="gfOpenUpgrade(event)">⭐ 會員升級</a>`;
     stack += `<a href="#" class="nav-login" onclick="gfOpenPassEntry(event)">🔑 會員登入</a>`;

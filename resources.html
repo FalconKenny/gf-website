@@ -164,6 +164,8 @@ async function renderGrants() {
     <article class="prem-card">
       <div class="prem-meta">
         <span class="badge b-sub">${a.region}</span><span class="badge b-free">${a.cat}</span>
+        ${a.apply_start ? `<span class="badge b-apply">📅 申請開始：${gfEsc(a.apply_start)}</span>` : ""}
+        ${a.apply_end ? `<span class="badge b-deadline">⏰ 截止：${gfEsc(a.apply_end)}</span>` : ""}
         <span class="mono" style="font-size:12px;color:var(--slate)">${a.published || ""}</span>
       </div>
       <h3>${gfEsc(a.title)}</h3>

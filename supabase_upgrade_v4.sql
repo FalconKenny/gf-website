@@ -144,3 +144,7 @@ grant execute on function public.gf_opt_in(text) to anon, authenticated;
 alter table public.members drop constraint if exists members_tier_check;
 alter table public.members add constraint members_tier_check
   check (tier in ('普通會員','青銅會員','白銀會員','黃金會員'));
+
+-- 9) v4.5：補助快訊申請時程欄位 -------------------------------
+alter table public.premium_articles add column if not exists apply_start text not null default '';
+alter table public.premium_articles add column if not exists apply_end   text not null default '';
