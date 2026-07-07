@@ -34,3 +34,22 @@ table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
 .bar-chart .bar{flex:1;background:linear-gradient(180deg,var(--teal),#0B7F83);border-radius:6px 6px 0 0;position:relative;min-width:20px}
 .bar-chart .bar span{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:10.5px;color:var(--slate);font-family:var(--font-mono);white-space:nowrap}
 .bar-chart .bar b{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;font-family:var(--font-mono);color:var(--ink)}
+
+/* v5.1 修正：後台頂欄不套用前台的行動版下拉選單樣式
+   （前台 style.css 在 ≤1180px 會把 .nav-links 變成絕對定位白色下拉，
+     後台頂欄需維持橫排，否則會蓋住側欄選項） */
+@media (max-width:1180px){
+  .admin-layout ~ *, body .nav .nav-links{
+    position:static !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    background:none !important;
+    box-shadow:none !important;
+    border:none !important;
+    padding:0 !important;
+    max-height:none !important;
+    overflow:visible !important;
+  }
+  body .nav .nav-links a{padding:8px 10px !important;white-space:nowrap}
+}

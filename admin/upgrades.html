@@ -114,7 +114,8 @@ if (gfAdminGate()) {
         <td>${d === null ? "—" : expired ? '<span class="badge" style="background:#FBE9E1;color:#B4521B">已到期 ' + Math.abs(d) + ' 天</span>' : soon ? '<span class="badge" style="background:#FBEBD2;color:#9A6614">剩 ' + d + ' 天</span>' : d + " 天"}</td>
         <td>${p.active && !expired ? '<span class="badge b-ok">有效</span>' : '<span class="badge b-free">' + (expired ? "已到期" : "已停用") + '</span>'}</td>
         <td style="white-space:nowrap">
-          <button class="btn-sm" onclick="renewPass(${i})">⏫ 續期</button>
+          <button class="btn-sm" onclick="renewPass(${i},'月')">⏫ +1月</button>
+          <button class="btn-sm" onclick="renewPass(${i},'年')">⏫ +1年</button>
           <button class="btn-sm" onclick="mailPass(${i})">✉️ 範本</button>
           <button class="btn-sm ${p.active ? "danger" : ""}" onclick="togglePass(${i})">${p.active ? "停用" : "啟用"}</button>
         </td>
@@ -216,17 +217,19 @@ if (gfAdminGate()) {
     if (!confirm("將此申請標記為已取消？")) return;
     try { await gfSbUpdate("upgrade_requests", REQS[i].id, { status: "已取消" }); render(); } catch (e) { alert(e.message); }
   };
-  window.renewPass = async i => {
+  window.renewPass = async (i, unit) => {
     const p = PASSES[i];
-    const cycle = prompt("續期週期？輸入「月」延長 1 個月、「年」延長 1 年（自現有到期日或今日起算，取較晚者）", (p.billing_cycle === "年費") ? "年" : "月");
-    if (cycle !== "月" && cycle !== "年") return;
+    /* 自「現有到期日」或「今日」起算（取較晚者）延長 1 個月／1 年 */
     const base = p.expires_at && new Date(p.expires_at) > new Date() ? new Date(p.expires_at) : new Date();
-    if (cycle === "年") base.setFullYear(base.getFullYear() + 1); else base.setMonth(base.getMonth() + 1);
+    if (unit === "年") base.setFullYear(base.getFullYear() + 1); else base.setMonth(base.getMonth() + 1);
+    const expStr = base.toISOString().slice(0, 10);
+    if (!confirm((p.email || "") + "（" + (TIER_NAME[p.tier_level] || "") + "）\n延長 1 " + unit + "，新到期日：" + expStr + "\n確認續期？")) return;
     try {
-      await gfSbUpdate("member_passes", p.id, { expires_at: base.toISOString().slice(0, 10), active: true,
-        billing_cycle: cycle === "年" ? "年費" : "月費" });
-      render();
-    } catch (e) { alert("續期失敗：" + e.message); }
+      await gfSbUpdate("member_passes", p.id, { expires_at: expStr, active: true,
+        billing_cycle: unit === "年" ? "年費" : "月費" });
+      await render();
+      alert("✅ 已續期至 " + expStr);
+    } catch (e) { alert("續期失敗：" + e.message + "\n（若訊息提到欄位不存在，請先於 Supabase 執行 supabase_patch_v4.8.sql）"); }
   };
   window.togglePass = async i => {
     const p = PASSES[i];
