@@ -347,9 +347,31 @@ def push_daily_article(items, url, key):
     print(f"[Articles] 已發布日報文章:台美產業動態日報|{DATE_STR}")
 
 # ---------------------------------------------------------------
-# 6. Gmail 通知
+# 6. Gmail 通知(含昨日新進會員與新諮詢)
 # ---------------------------------------------------------------
-def send_mail(items, ok_supabase, user, app_pw, to_addr):
+def fetch_new_signups(url, key):
+    """讀取前一天(含)以後的新會員與新諮詢單,供每日通知信使用"""
+    h = {"apikey": key, "Authorization": f"Bearer {key}"}
+    consults, members = [], []
+    try:
+        r = requests.get(f"{url}/rest/v1/consults?created=gte.{TARGET_DATE.isoformat()}"
+                         "&select=name,email,company,service,date1,time1&order=created.desc",
+                         headers=h, timeout=30)
+        if r.ok:
+            consults = r.json()
+    except Exception as ex:
+        print(f"[新諮詢讀取失敗] {ex}")
+    try:
+        r = requests.get(f"{url}/rest/v1/members?joined=gte.{TARGET_DATE.isoformat()}"
+                         "&select=name,email,company,interest,subscribe,tier&order=joined.desc",
+                         headers=h, timeout=30)
+        if r.ok:
+            members = r.json()
+    except Exception as ex:
+        print(f"[新會員讀取失敗] {ex}")
+    return consults, members
+
+def send_mail(items, ok_supabase, user, app_pw, to_addr, consults=None, members=None):
     counts = {}
     for it in items:
         counts.setdefault(REGIONS[it["region"]], {}).setdefault(it["category"], 0)
@@ -361,13 +383,31 @@ def send_mail(items, ok_supabase, user, app_pw, to_addr):
     top = "".join(f"<li>{html.escape(it['title'])}<br><small style='color:#5B6B7C'>{html.escape(it['summary'])}</small></li>"
                   for it in items[:8])
     status = "✅ 網站內容已同步更新" if ok_supabase else "⚠️ Supabase 寫入失敗,請查看 Actions log"
+
+    # 昨日新進會員與新諮詢區塊
+    signup_html = ""
+    if consults:
+        rows = "".join(f"<li><b>{html.escape(c.get('name',''))}</b>({html.escape(c.get('company','') or '—')})"
+                       f"|{html.escape(c.get('service',''))}|期望 {html.escape(c.get('date1',''))} {html.escape(c.get('time1','') or '')}"
+                       f"|{html.escape(c.get('email',''))}</li>" for c in consults)
+        signup_html += (f"<h3 style='color:#C0392B'>🔔 新諮詢單 {len(consults)} 件(請至後台確認排程)</h3><ul>{rows}</ul>")
+    if members:
+        rows = "".join(f"<li>{html.escape(m.get('name',''))}({html.escape(m.get('company','') or '—')})"
+                       f"|{html.escape(m.get('interest','') or '—')}|{'訂閱' if m.get('subscribe') else '未訂閱'}"
+                       f"|{html.escape(m.get('email',''))}</li>" for m in members)
+        signup_html += f"<h3 style='color:#0FA3A8'>👤 新進會員 {len(members)} 位</h3><ul>{rows}</ul>"
+    if not consults and not members:
+        signup_html = "<p style='color:#5B6B7C;font-size:13px'>昨日無新諮詢單與新會員。</p>"
+
     body = f"""<div style="font-family:sans-serif;max-width:640px">
 <h2 style="color:#0A1C30">Guide.Ferryman 每日臺美動態彙整|{DATE_STR}</h2>
 <p>共彙整 <b>{len(items)}</b> 則。{status}。</p>{lines}
-<h3 style="color:#0FA3A8">重點預覽</h3><ul>{top}</ul>
+{signup_html}
+<h3 style="color:#0FA3A8">動態重點預覽</h3><ul>{top}</ul>
 <p style="color:#5B6B7C;font-size:13px">知識圖卡已存入 repo:daily-briefs/{DATE_STR}/</p></div>"""
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"【GF 每日動態】{DATE_STR} 共 {len(items)} 則|{'更新成功' if ok_supabase else '需檢查'}"
+    alert = f"|🔔{len(consults)}件新諮詢" if consults else ""
+    msg["Subject"] = f"【GF 每日動態】{DATE_STR} 共 {len(items)} 則|{'更新成功' if ok_supabase else '需檢查'}{alert}"
     msg["From"], msg["To"] = user, to_addr
     msg.attach(MIMEText(body, "html", "utf-8"))
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
@@ -441,9 +481,12 @@ def main():
             print(f"[錯誤] {ex}")
 
     try:
+        new_consults, new_members = fetch_new_signups(
+            os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
         send_mail(items, ok,
                   os.environ["GMAIL_USER"], os.environ["GMAIL_APP_PASSWORD"],
-                  os.environ.get("NOTIFY_EMAIL", os.environ["GMAIL_USER"]))
+                  os.environ.get("NOTIFY_EMAIL") or os.environ["GMAIL_USER"],
+                  consults=new_consults, members=new_members)
     except Exception as ex:
         print(f"[Gmail 失敗] {ex}")
 
