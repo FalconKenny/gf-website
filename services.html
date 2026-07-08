@@ -125,5 +125,6 @@ function showSvc(t){
 tabs.forEach(b=>b.addEventListener("click",()=>{showSvc(b.dataset.t);history.replaceState(null,"","#"+b.dataset.t);}));
 if(location.hash) showSvc(location.hash.slice(1));
 </script>
+<script src="assets/js/i18n.js" defer></script>
 </body>
 </html>
