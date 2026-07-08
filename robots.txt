@@ -1,0 +1,7 @@
+# 注意：GitHub Pages 專案網站（project site）的 robots.txt
+# 必須放在網域根目錄 https://falconkenny.github.io/robots.txt 才會生效。
+# 詳見部署指南「robots.txt 的限制」一節。
+User-agent: *
+Allow: /
+Disallow: /gf-website/admin/
+Sitemap: https://falconkenny.github.io/gf-website/sitemap.xml
