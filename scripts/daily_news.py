@@ -234,7 +234,16 @@ def render_cards(items):
     return f"""<!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>臺美動態知識圖卡|{DATE_STR}</title>
+<title>臺美動態知識圖卡|{DATE_STR}｜AI・機器人・半導體・無人機｜Guide.Ferryman</title>
+<meta name="description" content="{DATE_STR} 台美產業動態知識圖卡：AI、機器人、半導體、無人機等領域之台灣與美國政策、技術與市場焦點，由 Guide.Ferryman 每日彙整。">
+<link rel="canonical" href="https://falconkenny.github.io/gf-website/daily-briefs/{DATE_STR}/knowledge-cards.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Guide.Ferryman Strategic Advisory">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:url" content="https://falconkenny.github.io/gf-website/daily-briefs/{DATE_STR}/knowledge-cards.html">
+<meta property="og:title" content="臺美動態知識圖卡|{DATE_STR}">
+<meta property="og:description" content="{DATE_STR} 台美產業動態：AI、機器人、半導體、無人機焦點彙整。">
+<meta property="og:image" content="https://falconkenny.github.io/gf-website/assets/img/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {{ --ink:{BRAND['ink']}; --paper:{BRAND['paper']}; --teal:{BRAND['teal']}; --amber:{BRAND['amber']}; --gray:{BRAND['gray']}; }}
@@ -459,6 +468,24 @@ def main():
     with open(os.path.join(OUT_DIR, "data.json"), "w", encoding="utf-8") as f:
         json.dump(items, f, ensure_ascii=False, indent=2)
     print(f"[存檔] daily-briefs/{DATE_STR}/")
+
+    # SEO：將本日圖卡頁加入 sitemap.xml（失敗不影響主流程）
+    try:
+        sm_path = os.path.join(BASE_DIR, "sitemap.xml")
+        brief_url = f"https://falconkenny.github.io/gf-website/daily-briefs/{DATE_STR}/knowledge-cards.html"
+        if os.path.exists(sm_path):
+            sm = open(sm_path, encoding="utf-8").read()
+            if brief_url not in sm and "</urlset>" in sm:
+                entry = (f"  <url>\n    <loc>{brief_url}</loc>\n"
+                         f"    <lastmod>{DATE_STR}</lastmod>\n"
+                         f"    <changefreq>never</changefreq>\n"
+                         f"    <priority>0.5</priority>\n  </url>\n")
+                sm = sm.replace("</urlset>", entry + "</urlset>")
+                with open(sm_path, "w", encoding="utf-8") as f:
+                    f.write(sm)
+                print("[SEO] sitemap.xml 已加入本日圖卡頁")
+    except Exception as ex:
+        print(f"[SEO] sitemap 更新略過：{ex}")
 
     if demo:
         print("[DEMO 模式] 略過 Supabase 與 Gmail")
