@@ -286,9 +286,31 @@ async function gfConsultSubmit(e) {
   return false;
 }
 
+/* ---------- LINE 浮動諮詢按鈕（全站，v5.4） ---------- */
+function gfLineFab() {
+  if (document.getElementById("gfLineFab")) return;
+  if (location.pathname.indexOf("/admin") !== -1) return;   // 後台不顯示
+  const a = document.createElement("a");
+  a.id = "gfLineFab";
+  a.className = "gf-line-fab";
+  a.href = "https://lin.ee/ZGQkHj7";
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.setAttribute("aria-label", "加 LINE 免費諮詢");
+  a.innerHTML =
+    '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+    '<path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.77.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1.02.9.56 1.1-.47 5.92-3.49 8.08-5.97C21.63 13.35 22 11.8 22 10.13 22 5.64 17.52 2 12 2zM8.9 12.9H6.6a.53.53 0 0 1-.53-.53V8.2a.53.53 0 0 1 1.06 0v3.64H8.9a.53.53 0 0 1 0 1.06zm1.9-.53a.53.53 0 0 1-1.06 0V8.2a.53.53 0 0 1 1.06 0v4.17zm5.08 0a.53.53 0 0 1-.95.32l-2.14-2.9v2.58a.53.53 0 0 1-1.06 0V8.2a.53.53 0 0 1 .95-.32l2.14 2.9V8.2a.53.53 0 0 1 1.06 0v4.17zm3.42-2.62a.53.53 0 0 1 0 1.06h-1.77v1.03h1.77a.53.53 0 0 1 0 1.06h-2.3a.53.53 0 0 1-.53-.53V8.2c0-.29.24-.53.53-.53h2.3a.53.53 0 0 1 0 1.06h-1.77v1.02h1.77z"/>' +
+    '</svg><span>LINE 免費諮詢</span>';
+  a.addEventListener("click", function () {
+    if (window.gtag) { try { gtag("event", "line_click", { event_category: "conversion", event_label: location.pathname }); } catch (e) {} }
+  });
+  document.body.appendChild(a);
+}
+
 /* ---------- 初始化 ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   gfFooter();
+  gfLineFab();
   if (!document.getElementById("memberModal") && document.getElementById("nav")) {
     document.body.insertAdjacentHTML("beforeend", gfMemberModalHTML());
   }
