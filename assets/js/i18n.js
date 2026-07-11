@@ -331,6 +331,18 @@
     "此分類目前尚無文章，將於每週更新後上架。": "No articles in this category yet — new pieces are published weekly.",
     "黃金限定": "Gold only",
 
+    /* ===== 台美電力資源藍圖（Power Atlas，黃金會員限定） ===== */
+    "台美電力資源藍圖": "TW–US Power Atlas",
+    "POWER ATLAS · 進階研究工具": "POWER ATLAS · ADVANCED RESEARCH TOOL",
+    "🥇 黃金會員限定": "🥇 Gold members only",
+    "AI 資料中心、半導體廠與機器人產線的選址，最終都會回到「電從哪裡來」。": "For AI data centers, fabs and robotics production lines, site selection ultimately comes down to one question: where does the power come from?",
+    "盤點台灣與美國各州的電力供給結構、電網與能源政策動向，協助您在赴美佈局評估中，把電力成本與供電穩定性一併納入決策。": "maps the power supply mix, grid conditions and energy policy trends across Taiwan and the U.S. states — so electricity cost and reliability become part of your U.S. expansion decisions.",
+    "本工具為": "This tool is a",
+    "專屬研究資源；尚未達等級的訪客，點選後將顯示會員方案說明，或可直接": "exclusive research resource. Visitors below this tier will see the membership plans, or you can",
+    "，由顧問為您導讀。": "for a guided walkthrough with our advisors.",
+    "開啟 台美電力資源藍圖 →": "Open the TW–US Power Atlas →",
+    "已是黃金會員？登入解鎖": "Already a Gold member? Log in to unlock",
+
     /* ===== 會員專區：補助資源頁 ===== */
     "MEMBERS ONLY · 黃金會員限定": "MEMBERS ONLY · GOLD TIER",
     "政府補助資源": "Government Grant Resources",

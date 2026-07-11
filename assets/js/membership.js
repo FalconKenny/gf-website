@@ -457,3 +457,25 @@ async function gfOpenProfile(e) {
     box.innerHTML = `<p style="color:var(--slate)">讀取失敗：${gfEsc(err.message)}（請重新登入後再試）</p>`;
   }
 }
+
+/* ============================================================
+   ⑨ 台美電力資源藍圖（TW–US Power Atlas）— 黃金會員限定外部站台
+   ------------------------------------------------------------
+   ・黃金會員（L4）或全站限時開放期間：直接於新分頁開啟。
+   ・等級不足：跳出會員升級浮框（預選黃金方案），
+     浮框內已含「前往會員登入」與升級申請流程。
+   ============================================================ */
+const GF_POWER_ATLAS_URL = "https://falconkenny.github.io/TW-US-power-atlas/";
+
+function gfOpenPowerAtlas(e) {
+  if (e) e.preventDefault();
+  const lv = (typeof gfEffectiveTier === "function") ? gfEffectiveTier() : gfTier();
+  if (lv >= 4) {
+    try { if (typeof gtag === "function") gtag("event", "power_atlas_open", { member_tier: lv }); } catch (err) {}
+    window.open(GF_POWER_ATLAS_URL, "_blank", "noopener");
+  } else {
+    try { if (typeof gtag === "function") gtag("event", "power_atlas_gate", { member_tier: lv }); } catch (err) {}
+    gfOpenUpgrade(null, 4);
+  }
+  return false;
+}

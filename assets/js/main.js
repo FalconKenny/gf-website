@@ -49,6 +49,7 @@ function gfFooter() {
       <ul>
         <li><a href="${path}services.html">服務項目</a></li>
         <li><a href="${path}invest-map.html">產業投資地圖</a></li>
+        <li><a href="#" onclick="return (typeof gfOpenPowerAtlas==='function')?gfOpenPowerAtlas(event):true">台美電力資源藍圖 <span class="mono" style="font-size:10px;opacity:.75">🥇</span></a></li>
         <li><a href="${path}insights.html">台美動態資訊</a></li>
         <li><a href="${path}about.html">關於我們</a></li>
         <li><a href="${path}contact.html">預約諮詢</a></li>
