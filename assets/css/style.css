@@ -466,3 +466,19 @@ html[lang="en"] .im-hero h1 .en{ display:none; }
 .gf-line-fab svg{width:22px;height:22px;flex:0 0 auto}
 @media(max-width:640px){.gf-line-fab{right:14px;bottom:16px;font-size:14px;padding:12px 16px 12px 13px}}
 @media print{.gf-line-fab{display:none}}
+
+/* ===== v5.9 策略顧問服務（五大模組）===== */
+.svc-group-label{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;color:var(--teal-dark);text-transform:uppercase;margin:0 0 12px}
+.svc-tabs+.svc-group-label{margin-top:-20px}
+.svc-tabs-strategy .svc-tab{border-color:var(--teal)}
+.svc-tabs-strategy .svc-tab.active{background:var(--teal-dark);border-color:var(--teal-dark)}
+.svc-deliverable{margin-top:24px;padding:18px 22px;border-left:4px solid var(--amber);background:var(--paper);border-radius:0 12px 12px 0}
+.svc-deliverable h4,.svc-case h4{font-family:var(--font-display);font-size:16px;margin-bottom:6px;color:var(--ink)}
+.svc-deliverable p,.svc-case p{margin:0;font-size:14.5px}
+.svc-case{margin-top:16px;padding:18px 22px;border:1px dashed var(--line);border-radius:12px}
+.svc-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+@media (max-width:1100px){.svc-grid-5{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.svc-grid-5{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.svc-grid-5{grid-template-columns:1fr}}
+.svc-grid-5 .svc-card{padding:24px 20px}
+.svc-grid-5 .svc-card h3{font-size:17px}
