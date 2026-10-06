@@ -468,8 +468,9 @@ html[lang="en"] .im-hero h1 .en{ display:none; }
 @media print{.gf-line-fab{display:none}}
 
 /* ===== v5.9 策略顧問服務（五大模組）===== */
-.svc-group-label{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;color:var(--teal-dark);text-transform:uppercase;margin:0 0 12px}
-.svc-tabs+.svc-group-label{margin-top:-20px}
+.svc-group-label{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;color:var(--teal-dark);text-transform:uppercase;margin:0 0 14px;position:relative;z-index:1}
+.svc-group-label+.svc-tabs{margin-top:0}
+.svc-tabs+.svc-group-label{margin-top:-16px}
 .svc-tabs-strategy .svc-tab{border-color:var(--teal)}
 .svc-tabs-strategy .svc-tab.active{background:var(--teal-dark);border-color:var(--teal-dark)}
 .svc-deliverable{margin-top:24px;padding:18px 22px;border-left:4px solid var(--amber);background:var(--paper);border-radius:0 12px 12px 0}
